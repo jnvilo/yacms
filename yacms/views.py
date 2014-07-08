@@ -1,0 +1,51 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
+from django.shortcuts import render, render_to_response
+from django.http import HttpResponse
+
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseNotFound
+# Create your views here.
+
+from . models import Pages
+
+def page(request, **kwargs):
+    
+    """The main entry view into the CMS. It will try to load
+    the path and let it do the rest of the work."""
+    
+    path = kwargs.get("path", "/cms")
+    if not path.startswith("/"):
+        path = "/" + path    
+    try:
+        page = Pages.objects.get(path__path=path)
+        return page.response(request, **kwargs)
+        
+    except ObjectDoesNotExist as e:
+        """
+        Initially the /admin path is not created. We create it here.
+        """
+        if path == "/admin":
+            p = Pages.get_or_create_from_request(request, 
+                                            path="/admin",
+                                            title="CMS Administration",
+                                            page_type="ADMINVIEW")
+        
+        #also create the root path if it does not yet exist
+        if path == "/":            
+            p = Pages.get_or_create_from_request(request, 
+                                                path="/",
+                                                title="cms",
+                                                page_type="CATEGORYVIEW")
+            
+            return p.response(request, **kwargs)
+        return HttpResponseNotFound("Page does not exist")
+        
+
+def index(request, **kwargs):
+    
+    return HttpResponse("Index page")

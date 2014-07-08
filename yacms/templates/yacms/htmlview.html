@@ -1,0 +1,117 @@
+{% extends "cmsbase.html" %}
+
+
+{% block TITLE %}
+    CMS Admin
+{% endblock TITLE %}
+
+
+{% block ENTRYTITLE %}
+    {{pageview.title}}
+{% endblock ENTRYTITLE%}
+
+
+{%block BREADCRUMBS %}
+    <li><a href="/">Home</a> <span class="divider">/</span></li>
+    {% for each in handler.breadcrumbs_as_list %}
+        <li><a href={{each.get_absolute_url}}>{{ each }}</a><span class="divider">/</span></li>
+    {% endfor %}
+    {% if allowed_edit %}
+        <li><a href="{{each.get_absolute_url}}?action=edit">&nbsp;[edit]</a></li>
+    {% endif %}
+{%endblock BREADCRUMBS %}
+
+
+{% block INNERBLOCK %}
+<div id="CONTENT">
+{{pageview.html | safe}}
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <!-- Tabs -->
+        <h2>Tabs</h2>
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab">Edit Page</a></li>
+                <li class=""><a href="#tab2" data-toggle="tab">Manage Pages</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+		    <div class="row-fluid">
+		    <table>
+		    <tr>
+			<td>
+			<div id="SAVEBUTTON" style="padding-left: 10px; padding-right: 10px;">
+				<i class="icon-save"></i> <span>Save Page</span></div>
+			</td>
+			<td>
+				<div id="IPSUMBUTTON" style="padding-left: 10px; padding-right: 10px;"><i class="icon-paste"></i><span>Paste</span></div>
+			</td>
+		    </tr>
+		    </table>
+		    </div>
+		
+                    <div class="row-fluid">
+			<textarea id="EDITOR_TEXTAREA" rows="40" placeholder="Message" class="span12">{{pageview.content}}</textarea>
+		    </div>
+
+
+                </div>
+                <div class="tab-pane" id="tab2">
+                <div id="notification" class="span12"></div>
+
+                <form action="" method="POST">			
+                    <div><input type="text" id="CreateTitle" name="title" placeholder="Title" class="input-xxlarge"> </div>
+                    <div><input type="text" id="CreateSlug" name="slug" placeholder="slug" class="input-xxlarge">	</div>
+                
+                    <select id="PageType" name="page_type">	    
+                        <option value="CATEGORYVIEW">Category Page</option>    
+                        <option value="HTMLVIEW">HTML Page</option>    
+                    </select>
+                    <button id="CreateButton" class="btn btn-primary" type="button">Create</button>
+                </form>
+
+
+
+
+<table id="CreateTable" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Path</th>
+            <th>Published</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for child_page in pageview.get_child_categories %}
+    <tr>
+        <td id="CENTOS">{{child_page.title}}</td>
+        <td>{{child_page.path}}</td>
+        <td><a href="{{child_page.get_absolute_url}}">Edit</a></td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>   
+                   
+                   
+                </div>
+            </div>
+        </div>							
+        <!-- Tabs end -->				
+    </div>
+
+</div>
+
+
+
+{% endblock INNERBLOCK %}
+
+
+
+{% block SCRIPT %}
+<script src="/static/js/jquery.cookie.js"></script>
+<script src="/static/yacms/js/yacms.js"></script>
+{% endblock SCRIPT %}

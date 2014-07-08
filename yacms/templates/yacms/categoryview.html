@@ -1,0 +1,178 @@
+{% extends "cmsbase.html" %}
+
+
+{% block TITLE %}
+    CMS Admin
+{% endblock TITLE %}
+
+
+{% block ENTRYTITLE %}
+    {{pageview.title}}
+{% endblock ENTRYTITLE%}
+
+
+{%block BREADCRUMBS %}
+    <li><a href="/">Home</a> <span class="divider">/</span></li>
+    {% for each in handler.breadcrumbs_as_list %}
+        <li><a href={{each.get_absolute_url}}>{{ each }}</a><span class="divider">/</span></li>
+    {% endfor %}
+    {% if allowed_edit %}
+        <li><a href="{{each.get_absolute_url}}?action=edit">&nbsp;[edit]</a></li>
+    {% endif %}
+{%endblock BREADCRUMBS %}
+			
+
+{% block INNERBLOCK %}
+
+
+{% for page in pageview.iter_child_html_pages %}
+
+	<h1 id="cms_frontpage"><a href="{{page.get_absolute_url}}" style="color: #4367DE">{{page.title}}</a></h1>
+	<p>
+	{{page.introduction | truncatewords_html:90}} [<a href="{{page.get_absolute_url}}" style="color: #4367DE">read more</a>]
+	{% if show_edit %}
+	[<a href="{{entry.get_absolute_url}}?action=edit" style="color: #4367DE">edit</a>]
+	{% endif%}
+	</p>
+	</br>
+
+{% endfor %}
+
+
+
+<div id="notification" class="span12"></div>
+
+<form action="" method="POST">			
+    <div><input type="text" id="CreateTitle" name="title" placeholder="Title" class="input-xxlarge"> </div>
+    <div><input type="text" id="CreateSlug" name="slug" placeholder="slug" class="input-xxlarge">	</div>
+  
+    <select id="PageType" name="page_type">	    
+	    <option value="CATEGORYVIEW">Category Page</option>    
+	    <option value="HTMLVIEW">HTML Page</option>    
+    </select>
+    <button id="CreateButton" class="btn btn-primary" type="button">Create</button>
+</form>
+
+
+
+
+<table id="CreateTable" class="table table-hover">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Path</th>
+              <th>Published</th>
+            </tr>
+          </thead>
+          <tbody>
+
+	    {% for child_page in pageview.get_child_categories %}
+            <tr>
+              <td id="CENTOS">{{child_page.title}}</td>
+              <td>{{child_page.path}}</td>
+	      <td><a href="{{child_page.get_absolute_url}}">Edit</a></td>
+            </tr>
+	    {% endfor %}
+        
+  </tbody>
+</table>
+
+{% endblock INNERBLOCK %}
+
+
+
+{% block SCRIPT %}
+<script src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	function convertToSlug(Text)
+	{
+	    return Text
+	        .toLowerCase()
+	        .replace(/ /g,'-')
+	        .replace(/[^\w-]+/g,'')
+	        ;
+	}
+
+	$('input[name=title]').change(function() {
+		var page_title = $("#CreateTitle").val();
+		$("#CreateSlug").val(convertToSlug(page_title)); 
+	  
+	});
+	
+	
+    
+	
+    $('#CreateTable').find('tr').click( function(){
+    
+	if ( this.rowIndex != 0){    
+	    var row = $(this).find('td:first').text();
+	    var rows = document.getElementById("CreateTable").rows;
+	    var next_row = rows[this.rowIndex + 1];
+	    var next_row_text = 	$(next_row).find('td:first').text();
+	    var next_row_text_startswith = next_row_text.substring(0,3)
+	    
+	    
+	    if (next_row_text_startswith == " - "){
+		alert("Not going to do anything");		
+	    }
+	    else{
+		$(this).after("<tr><td> - This is a new entry</td><td>another</td><td></td></tr>");
+	    }
+	    
+	    alert('You clicked ' + row);
+	
+	}else{
+	    
+	    console.log("Not going to do anything since you clicked the Headers.");
+	    }
+    });
+
+
+    $("#CreateButton").click(function() { 
+        var csst = $.cookie('csrftoken');
+	var page_title = $("#CreateTitle").val();
+        var page_slug = $("#CreateSlug").val();
+	var pathname = window.location.pathname;
+	var handler_name = $('#PageType option:selected').attr('value');
+        var request = $.ajax({
+          url: pathname + "?action=make_page",          
+          type: "POST",
+          data: { page_type : handler_name, csrfmiddlewaretoken : csst, title : page_title , slug : page_slug },
+          dataType: "json"
+        });
+		
+	    
+	request.success(function(data){
+					
+		
+			if (typeof(data.error_msg) !== 'undefined') {
+			    console.log("Got error: " + data.error_msg)
+			    var div = document.getElementById('notification');
+			    div.innerHTML = div.innerHTML +  "<div class=\"alert alert-error\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>Error:  " + data.error_msg + "</div>";
+			
+			} else { 
+		
+			    $('#CreateTitle').val("");
+			    $('#CreateSlug').val("")
+			    var edit_link = '<td><a href="' + data.absolute_url + '">Edit</a></td>'
+			    $('#CreateTable tr:first').after('<tr><td>'+  data.title + '</td><td>'+ data.path + '</td><a>' + edit_link + '</tr>');
+			    var div = document.getElementById('notification');
+			    div.innerHTML = div.innerHTML +  "<div class=\"alert alert-success\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>Created: " + data.title + "</div>";
+			}
+	});
+       
+         
+	request.fail(function( jqXHR, textStatus) {
+	    var div = document.getElementById('notification');
+	    div.innerHTML = div.innerHTML +  "<div class=\"alert alert-error\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>Error:  " + textStatus + "</div>";
+        });
+    });
+
+});
+
+</script>
+
+{% endblock SCRIPT %}

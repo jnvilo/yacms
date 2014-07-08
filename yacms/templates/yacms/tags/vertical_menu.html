@@ -1,0 +1,6 @@
+<li class="dropdown">
+    <a href=" {{root_obj.entry_obj.get_absolute_url}}" title="{{root_obj.path}}">{{root_obj.entry_obj.title}}</a>
+    <ul class="dropdown-menu">
+      {% for child in child_entries%}
+      <li><a href="{{child.get_absolute_url}}" title="">{{child.title}}</a></li>
+      {% endfor %}

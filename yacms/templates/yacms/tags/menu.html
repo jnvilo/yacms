@@ -1,0 +1,14 @@
+
+<ul class="nav nav-list">
+{% for pageview in pageviews %}
+    <li class="nav-header"><a href="{{pageview.get_absolute_url}}">{{pageview.title}}</a></li>
+        {% for child_pageview in pageview.iter_child_categories%}
+        <li><a href="{{child_pageview.get_absolute_url}}">{{child_pageview.title}}</a></li>
+                {% for grandchild_pageview in child_pageview.iter_child_categories %}
+                         <li><a href="{{grandchild_pageview.get_absolute_url}}">&nbsp; - &nbsp;{{grandchild_pageview.title}}</a></li>
+                {% endfor %}        
+        {% endfor %}
+{% endfor %}
+</ul>
+
+

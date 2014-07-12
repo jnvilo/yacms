@@ -8,18 +8,25 @@ from random import randrange
 import loremipsum
 
 from bs4 import BeautifulSoup
-
 from django.http import JsonResponse
 
 from .base import BaseView
 from .base import register
+from .creole_macros import code
+from .creole_macros import pre
+from .creole_macros import html
 
 class PageView(BaseView):
     
     def html(self):
         
         content = self.page_obj.content
-        return creole2html(content)
+        return creole2html(content, debug=False, parser_kwargs={}, 
+                   emitter_kwargs={}, block_rules=None, 
+                   blog_line_breaks=True, macros={ "code": code, 
+                                                   "pre": pre,
+                                                   "html": html}, 
+                   verbose=None,  stderr=None)
         
         
     def exec_action(self, request, **kwargs):

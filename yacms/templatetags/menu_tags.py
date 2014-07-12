@@ -4,8 +4,41 @@ from django.template import Template, Context
 from django.template.loader import get_template
 
 from yacms.models import Paths, Pages
+from yacms.pageview.base import get_pageview
 register = template.Library()
 
+class MenuNode(template.Node):
+
+    def __init__(self,values):
+        self.template=get_template("yacms/tags/menu.html")
+        self.values = values
+    
+    def render(self, context):
+
+        pageviews = []
+        
+        for path in self.values:
+            pageview = get_pageview(path)
+            if pageview:
+                pageviews.append(pageview)
+            
+            
+        request = context.get("request")
+        
+        
+        
+        self.c = Context({"request":request,
+                          "pageviews":pageviews})
+        
+        return self.template.render(self.c)
+
+
+def menu(parser, token):
+
+    values = token.split_contents()
+    return MenuNode(values[1:])
+
+register.tag("menu", menu)
 
 class VerticalMenuNode(template.Node):
 

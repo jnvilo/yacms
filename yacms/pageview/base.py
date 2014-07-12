@@ -18,6 +18,7 @@ from yacms.exceptions import PageActionNotFound
 
 
 from django.template import RequestContext
+from django.core.exceptions import ObjectDoesNotExist
 
 
 _page_class_map = {}
@@ -41,6 +42,17 @@ def get_page_class(page_type):
         raise PageClassNotFound(msg.format(page_type))
     
     
+    
+def get_pageview(path):
+    
+    from yacms.models import Paths, Pages
+    
+    try:
+        page = Pages.objects.get(path__path = path)
+        return page.view
+    
+    except ObjectDoesNotExist as e: 
+        return None
 
 class BaseView(object):
     
@@ -177,6 +189,16 @@ class BaseView(object):
         return children
     
 
+    def iter_child_categories(self):
+        
+        path_obj = self.page_obj.path
+        children = Pages.objects.filter(path__parent=path_obj, page_type="CATEGORYVIEW")
+        
+        for each in children:
+            yield each.view
+
+
+
     def iter_child_html_pages(self):
         
         path_obj = self.page_obj.path
@@ -184,3 +206,34 @@ class BaseView(object):
         
         for each in children:
             yield each.view
+            
+            
+    def iter_frontpage_pages(self):
+        children = Pages.objects.filter(page_type="HTMLVIEW").order_by("date_modified")    
+        for each in children:
+            yield each.view
+        
+    def get_absolute_url(self):
+        return self.page_obj.get_absolute_url()
+    
+    def iter_parent_pages(self):
+        x = self.page_obj.path.path
+        path_parts =  x.split("/")[1:len(x.split("/"))-1]
+        
+        complete_path = ""
+        for each in path_parts:
+            try:
+                
+                complete_path = complete_path + "/" + each 
+                each_obj = Pages.objects.get(path__path = complete_path)
+                
+                yield each_obj
+                
+            except ObjectDoesNotExist as e:
+                yield None
+                
+                
+           
+        
+        
+        

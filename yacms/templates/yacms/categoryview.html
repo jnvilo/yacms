@@ -27,7 +27,7 @@
 
 {% for page in pageview.iter_child_html_pages %}
 
-	<h1 id="cms_frontpage"><a href="{{page.get_absolute_url}}" style="color: #4367DE">{{page.title}}</a></h1>
+	<h1 id="cms_frontpage"><a href="{{page.get_absolute_url}}" style="font-size: 16px;color: #4367DE; font-weight:bold;">{{page.title}}</a></h1>
 	<p>
 	{{page.introduction | truncatewords_html:90}} [<a href="{{page.get_absolute_url}}" style="color: #4367DE">read more</a>]
 	{% if show_edit %}
@@ -39,6 +39,7 @@
 {% endfor %}
 
 
+{% if request.user.is_staff %}
 
 <div id="notification" class="span12"></div>
 
@@ -77,6 +78,7 @@
   </tbody>
 </table>
 
+{% endif %}
 {% endblock INNERBLOCK %}
 
 

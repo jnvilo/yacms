@@ -13,8 +13,8 @@
 
 {%block BREADCRUMBS %}
     <li><a href="/">Home</a> <span class="divider">/</span></li>
-    {% for each in handler.breadcrumbs_as_list %}
-        <li><a href={{each.get_absolute_url}}>{{ each }}</a><span class="divider">/</span></li>
+    {% for each in pageview.iter_parent_pages %}
+        <li><a href={{each.get_absolute_url}}>{{ each.title }}</a><span class="divider">/</span></li>
     {% endfor %}
     {% if allowed_edit %}
         <li><a href="{{each.get_absolute_url}}?action=edit">&nbsp;[edit]</a></li>
@@ -27,6 +27,7 @@
 {{pageview.html | safe}}
 </div>
 
+{% if request.user.is_staff %}
 <div class="row-fluid">
     <div class="span12">
         <!-- Tabs -->
@@ -105,7 +106,7 @@
 
 </div>
 
-
+{% endif %}
 
 {% endblock INNERBLOCK %}
 

@@ -19,6 +19,8 @@ from yacms.exceptions import PageActionNotFound
 
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 
 _page_class_map = {}
@@ -162,13 +164,31 @@ class BaseView(object):
                     
                     return JsonResponse({ "error_msg": e.message})
                     
-        
+        elif action == "toggle_publish":
+            
+            if request.is_ajax():
+                published = self.page_obj.published
+                
+                if published:
+                    self.page_obj.published=False
+                else:
+                    self.page_obj.published=True
+                
+                self.page_obj.save()
+                
+                data = {"published": self.page_obj.published}
+                return JsonResponse(data=data)
         
         #This expects to recieve a page_form 
             
             #make the page
             
             # and return the page.
+        else:
+            
+            return HttpResponse("Application Error: Action requested is not possible.")
+    def toggle_frontpage(self):
+        pass
             
         
     def __getattr__(self, value):
@@ -209,7 +229,7 @@ class BaseView(object):
             
             
     def iter_frontpage_pages(self):
-        children = Pages.objects.filter(page_type="HTMLVIEW").order_by("date_modified")    
+        children = Pages.objects.filter(page_type="HTMLVIEW").filter(frontpage=True).order_by("date_modified")    
         for each in children:
             yield each.view
         
@@ -231,9 +251,10 @@ class BaseView(object):
                 
             except ObjectDoesNotExist as e:
                 yield None
+    
+
                 
-                
-           
+    
         
-        
+
         

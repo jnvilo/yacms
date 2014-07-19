@@ -1,1 +1,70 @@
-this is adminview.html
+{% extends "cmsbase.html" %}
+
+
+{% block TITLE %}
+    CMS Admin
+{% endblock TITLE %}
+
+
+{% block ENTRYTITLE %}
+    CMS ADMIN
+{% endblock ENTRYTITLE%}
+
+
+{%block BREADCRUMBS %}
+    <li><a href="/">Home</a> <span class="divider">/</span></li>
+    {% for each in handler.breadcrumbs_as_list %}
+        <li><a href={{each.get_absolute_url}}>{{ each }}</a><span class="divider">/</span></li>
+    {% endfor %}
+    {% if allowed_edit %}
+        <li><a href="{{each.get_absolute_url}}?action=edit">&nbsp;[edit]</a></li>
+    {% endif %}
+{%endblock BREADCRUMBS %}
+			
+
+{% block INNERBLOCK %}
+
+{% if request.user.is_staff %}
+<div class="row-fluid">
+    <div class="span12">
+        <!-- Tabs -->
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab">Edit Page</a></li>
+                <li class=""><a href="#tab2" data-toggle="tab">DB Admin</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+		    <!-- TAB 1 Contents  -->
+		    <div class="row-fluid">
+				   
+		   
+		   
+		    </div>
+		    <!-- END TAB 1 Contents  -->
+                </div>
+                <div class="tab-pane" id="tab2">
+		    <!-- TAB 1 Contents  -->
+		    		
+		    
+		
+		
+		    <!-- END TAB 1 Contents  -->
+                </div>
+            </div>
+        </div>							
+        <!-- Tabs end -->				
+    </div>
+
+</div>
+
+{% endif %}
+
+
+{% endblock INNERBLOCK %}
+
+
+
+{% block SCRIPT %}
+
+{% endblock SCRIPT %}

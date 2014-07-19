@@ -4,6 +4,8 @@ from __future__ import division
 from __future__ import absolute_import
 
 import pathlib
+from datetime import datetime
+
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -35,12 +37,14 @@ class Pages(models.Model):
     path = models.ForeignKey("Paths",null=True)
     title = models.CharField(max_length=1024)
     slug = models.SlugField(max_length=1024)
-    content = models.TextField(max_length=4096, default="Empty")
+    content = models.TextField(max_length=20480, default="Empty")
     date_created = models.DateTimeField(auto_now_add=True)
-    date_modified = models.DateTimeField(auto_now=True)
+    date_modified = models.DateTimeField(default=datetime.utcnow)
     page_type = models.CharField(max_length=255, default="HTML")
     template = models.CharField(max_length=244, default=None)
     frontpage = models.BooleanField(default=False)
+    published = models.BooleanField(default=False)
+    
 
     @classmethod
     def get_or_create_from_request(self, request, 

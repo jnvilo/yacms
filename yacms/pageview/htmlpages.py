@@ -10,6 +10,9 @@ import loremipsum
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 
+from django.core.cache import cache
+
+
 from .base import BaseView
 from .base import register
 from .creole_macros import code
@@ -60,23 +63,85 @@ class PageView(BaseView):
             
                 return JsonResponse(data=data)
         
+        
+        
+        if action == "toggle_frontpage":
+            
+            if request.is_ajax():
+                frontpage = self.page_obj.frontpage
+                
+                if frontpage:
+                    self.page_obj.frontpage = False
+                else:
+                    self.page_obj.frontpage = True
+                    
+                self.page_obj.save()
+                
+                data = {"frontpage": self.page_obj.frontpage }
+                return JsonResponse(data=data)
+        
+        if action == "modify_page_data":
+            
+            if request.is_ajax():
+                
+                date = request.get("date_submitted")
+                pass
+                
+                
+        if action == "save_meta_data":
+            
+            if request.is_ajax():
+                
+                page_header_title = request.POST.get("json_page_header_title", None)
+                date_submitted = request.POST.get("json_date_submitted", None)
+                date_modified = request.POST.get("json_date_modified", None)
+                meta_header = request.POST.get("json_meta_header", None)
+                
+                
+                if page_title:
+                    self.page_obj.page_header_title = page_header_title
+                if date_submitted:
+                    self.page_obj.date_submitted = date_submitted
+                if date_modified:
+                    self.page_obj.date_modified = date_modified
+                if meta_header:
+                    self.page_obj.meta_header = meta_header
+                    
+                self.page_obj.save()
+                
+                return JsonResponse(data={"success": "Successfully Saved data."})
+                
+            
+                
+            
         return super(PageView, self).exec_action(request, **kwargs)
 
 
     
     def introduction(self):
         
-        html = self.html()
+        path = self.page_obj.path.path
+        title = self.page_obj.title
         
-        soup = BeautifulSoup(html)
+        key_name = "{0}:{1}:{2}".format("introduction",path, title)  
         
-        p = soup.find("p")
+        value = cache.get(key_name)
         
-        s = str(p)
-        s = s.lstrip("<p>")
-        s = s.rstrip("</p>")
-        
-        return s
+        if not value:
+    
+            html = self.html()
+            
+            soup = BeautifulSoup(html)
+            
+            p = soup.find("p")
+            
+            value = str(p)
+            value = value.lstrip("<p>")
+            value = value.rstrip("</p>")
+            
+            cache.set(key_name, value)
+            
+        return value
         
         
         

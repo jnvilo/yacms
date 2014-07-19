@@ -49,7 +49,7 @@ content that is being edited and then update the page.
 **/
 
 $("#SAVEBUTTON").click(function(){
-    alert("Clicked the SAVEBUTTON");
+ 
     var csst = $.cookie('csrftoken');    
     var pathname = window.location.pathname;
     page_content = $("#EDITOR_TEXTAREA").val();
@@ -72,7 +72,7 @@ $("#SAVEBUTTON").click(function(){
 
 
 $("#IPSUMBUTTON").click(function(){
-    alert("Clicked the IPSUMBUTTON");
+
     var csst = $.cookie('csrftoken');    
     var pathname = window.location.pathname;
    
@@ -87,6 +87,51 @@ $("#IPSUMBUTTON").click(function(){
     
 	console.log(data.paragraphs)
 	$("#EDITOR_TEXTAREA").val(data.paragraphs);
+    
+    });
+    
+});
+
+$("#FRONTPAGEBUTTON").click(function(){
+    var csst = $.cookie('csrftoken');    
+    var pathname = window.location.pathname;
+   
+    
+    var request = $.ajax({
+	url: pathname + "?action=toggle_frontpage",          
+	type: "GET",
+	dataType: "json"
+    });
+    
+    request.success(function(data){
+	if (data.frontpage == true){
+	    $("#FRONTPAGEBUTTON").html('<i class="icon-check"></i><span>Frontpage</span>');	    
+	}else {
+	    $("#FRONTPAGEBUTTON").html('<i class="icon-check-empty"></i><span>Frontpage</span>');		
+	}
+    
+    });
+    
+});
+
+
+$("#PUBLISHPAGEBUTTON").click(function(){
+    var csst = $.cookie('csrftoken');    
+    var pathname = window.location.pathname;
+   
+    
+    var request = $.ajax({
+	url: pathname + "?action=toggle_publish",          
+	type: "GET",
+	dataType: "json"
+    });
+    
+    request.success(function(data){
+	if (data.published == true){
+	    $("#PUBLISHPAGEBUTTON").html('<i class="icon-check"></i><span>Publish</span>');	    
+	}else {
+	    $("#PUBLISHPAGEBUTTON").html('<i class="icon-check-empty"></i><span>Published</span>');		
+	}
     
     });
     
@@ -145,6 +190,35 @@ $("#SAVEBUTTON").mouseleave(function(){
     });
 });
 
-//});
 
+
+$("#PAGE_META_BUTTON").click(function() { 
+	console.log("PAGE_META_BUTTON");
+        var csst = $.cookie('csrftoken');
+        var page_header_title = $("#PAGE_HEADER_TITLE").val();
+	var date_submitted = $("#DATE_SUBMITTED_PICKER").val();
+	var date_modified = $("#DATE_MODIFIED_PICKER").val();
+	var meta_header = $("#META_HEADER").val();
+         var pathname = window.location.pathname;
+        var request = $.ajax({
+            url: pathname + "?action=save_meta_data",          
+            type: "POST",
+            data: { json_page_header_title : page_header_title, 
+		    csrfmiddlewaretoken : csst, 
+		    json_date_submitted : date_submitted,
+		    json_date_modified : date_modified,
+		    json_meta_header : meta_header, 
+		    },
+            dataType: "json"
+        });
+
+	request.success(function(data){
+	    console.log("Success: " + data);
+	
+	});
+    
+	request.fail(function( jqXHR, textStatus) {
+	    console.log("FAiled");		
+	});
+});
 

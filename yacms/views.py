@@ -22,9 +22,32 @@ def page(request, **kwargs):
     if not path.startswith("/"):
         path = "/" + path    
     try:
-        page = Pages.objects.get(path__path=path)
-        return page.response(request, **kwargs)
         
+        """
+        
+        TODO:
+        
+        Optimize this by creating  a CachedPageView class. 
+        
+        The CachedPageView class simply implements a wrapper 
+        around the yacmls.pageview.* classes so that if the request 
+        is just a simple get. Then we return a cached page instead.
+        
+        
+        """
+        import cProfile, pstats, StringIO
+        pr = cProfile.Profile()
+        pr.enable()        
+        page = Pages.objects.get(path__path=path)
+        r =  page.response(request, **kwargs)
+        pr.disable()
+        s = StringIO.StringIO()
+        sortby = 'cumulative'
+        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        ps.print_stats()
+        print(s.getvalue())        
+
+        return r
     except ObjectDoesNotExist as e:
         """
         Initially the /admin path is not created. We create it here.

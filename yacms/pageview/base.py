@@ -222,14 +222,14 @@ class BaseView(object):
     def iter_child_html_pages(self):
         
         path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj, page_type="HTMLVIEW").order_by("date_modified")
+        children = Pages.objects.filter(path__parent=path_obj, page_type="HTMLVIEW").order_by("-date_modified")
         
         for each in children:
             yield each.view
             
             
     def iter_frontpage_pages(self):
-        children = Pages.objects.filter(page_type="HTMLVIEW").filter(frontpage=True).order_by("date_modified")    
+        children = Pages.objects.filter(page_type="HTMLVIEW").filter(frontpage=True).order_by("-date_modified")    
         for each in children:
             yield each.view
         
@@ -252,6 +252,33 @@ class BaseView(object):
             except ObjectDoesNotExist as e:
                 yield None
     
+    def introduction(self):
+
+        path = self.page_obj.path.path
+        title = self.page_obj.title
+
+        key_name = "{0}:{1}:{2}".format("introduction",path, title)  
+
+        from django.core.cache import cache
+        value = cache.get(key_name)
+
+        if not value:
+
+            from creole import creole2html
+            from bs4 import BeautifulSoup
+            html = creole2html(self.page_obj.content)
+
+            soup = BeautifulSoup(html)
+
+            p = soup.find("p")
+
+            value = str(p)
+            value = value.lstrip("<p>")
+            value = value.rstrip("</p>")
+
+            cache.set(key_name, value)
+
+        return value
 
                 
     

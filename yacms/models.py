@@ -5,11 +5,10 @@ from __future__ import absolute_import
 
 import pathlib
 from datetime import datetime
+from django.core.cache import cache
 
 from django.db import models
 from django.template.defaultfilters import slugify
-
-
 
 
 
@@ -75,9 +74,19 @@ class Pages(models.Model):
 
         if self.template is None:
             self.template = "{}.html".format(self.page_type.lower()) 
+          
+        
+        
         super(Pages, self).save(*args, **kwargs)
-
-
+        
+        #Invalidate our caches.
+        key_name = "{0}:{1}:{2}".format("introduction",
+                                        self.path.path, 
+                                        self.title) 
+        
+        key_name = key_name.replace(" ", "_")
+        cache.delete(key_name)
+        
     def response(self,request, **kwargs):    
         return self.view.response(request, **kwargs)
 
@@ -106,30 +115,4 @@ class Pages(models.Model):
         return self.title
 
 
-    def introduction(self):
-
-        path = self.path.path
-        title = self.title
-
-        key_name = "{0}:{1}:{2}".format("introduction",path, title)  
-
-        from django.core.cache import cache
-        value = cache.get(key_name)
-
-        if not value:
-
-            from creole import creole2html
-            from bs4 import BeautifulSoup
-            html = creole2html(self.content)
-
-            soup = BeautifulSoup(html)
-
-            p = soup.find("p")
-
-            value = str(p)
-            value = value.lstrip("<p>")
-            value = value.rstrip("</p>")
-
-            cache.set(key_name, value)
-
-        return value
+ 

@@ -35,12 +35,14 @@
         <div class="tabbable"> <!-- Only required for left/right tabs -->
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab1" data-toggle="tab">Edit Page</a></li>
-		 <li class=""><a href="#tab2" data-toggle="tab">Edit Page Data</a></li>
+				<li class=""><a href="#tab2" data-toggle="tab">Edit Page Data</a></li>
                 <li class=""><a href="#tab3" data-toggle="tab">Manage Pages</a></li>
             </ul>
             <div class="tab-content">
+		
+		
 		<!-- TAB-->
-                <div class="tab-pane active" id="tab1">
+		<div class="tab-pane active" id="tab1">
 		    <div class="row-fluid">
 		    <table>
 		    <tr>
@@ -83,55 +85,52 @@
 		<!-- END TAB-->
 
 		<!-- TAB 2 STARTS HERE -->
-                <div class="tab-pane active" id="tab2">
+		<div class="tab-pane active" id="tab2">
 		    <div class="row-fluid">
-		    <div class="span10">
-			<form class="form" action="features.html" method="get">
-			    <div class="row-fluid">		
-        			<div  class="span4" ><span style="float: right;">Page Header Title</span></div>
-				<div class="span8" ><input id="PAGE_HEADER_TITLE" type="text" placeholder="Name" class="input-block-level"></div>
-			    </div>
-			    
-			    <div class="row-fluid">		
-        			<div id="DATE_SUBMITTED" class="span4"><span style="float: right;">Date Submitted</span></div>
-				<div class="span8">
-				    <input type="text" value="{{pageview.date_created}}" id="DATE_SUBMITTED_PICKER"  data-date-format="yyyy-mm-dd hh:ii:ss" class="input-block-level">
-				</div>
-			    </div>
-
-			    <div class="row-fluid">		
-        			<div id="DATE_MODIFIED" class="span4"><span style="float: right;">Date Modified</span></div>
-				    <div class="span8">
-					<input type="text" value="{{pageview.date_created}}" id="DATE_MODIFIED_PICKER"  data-date-format="yyyy-mm-dd hh:ii:ss" class="input-block-level">
-				    </div>
-			    </div>
-			   
-			    
-			    <div class="row-fluid">		
-        			<div id="META_HEADER" class="span4"><span style="float: right;">META Description</span></div>
-				<div class="span8">
-				    <textarea rows="6" id="META_HEADER" class="input-block-level">{{pageview.introduction}}</textarea>
-				</div>
-			    </div>
-			    
-			    			    
-			    </form>
-			    <div class="row-fluid">
-				<div class="span2"></div>
-				<div class="span8">
-				    <span><button id="PAGE_META_BUTTON" type="submit" class="btn btn-primary">Submit</button></span>
-				</div>
-			    </div>
-		    </div>			
-		    <div class="span2"></div>
-		    </div>         
-                </div>
-		<!-- END TAB-->
+				<div class="span10">
+					<form class="form" action="features.html" method="get">
+						<div class="row-fluid">		
+							<div  class="span4" ><span style="float: right;">Page Header Title</span></div>
+							<div class="span8" ><input id="PAGE_HEADER_TITLE" type="text" placeholder="Name" class="input-block-level"></div>
+						</div>
+						
+						<div class="row-fluid">		
+							<div id="DATE_SUBMITTED" class="span4"><span style="float: right;">Date Submitted</span></div>
+							<div class="span8"><input type="text" value="{{pageview.date_created}}" id="DATE_SUBMITTED_PICKER"  data-date-format="yyyy-mm-dd hh:ii:ss" class="input-block-level"></div>
+						</div>
 		
-
+						<div class="row-fluid">		
+							<div id="DATE_MODIFIED" class="span4"><span style="float: right;">Date Modified</span></div>
+							<div class="span8"><input type="text" value="{{pageview.date_created}}" id="DATE_MODIFIED_PICKER"  data-date-format="yyyy-mm-dd hh:ii:ss" class="input-block-level"></div>
+						</div>
+					   
+						
+						<div class="row-fluid">		
+							<div id="META_HEADER" class="span4"><span style="float: right;">META Description</span></div>
+							<div class="span8"><textarea rows="6" id="META_HEADER" class="input-block-level">{{pageview.introduction}}</textarea></div>
+						</div>
+						
+										
+					</form>
+					<div class="row-fluid">
+						<div class="span2"></div>
+						<div class="span8">
+							<span><button id="PAGE_META_BUTTON" type="submit" class="btn btn-primary">Submit</button></span>
+						</div>
+					</div>
+			</div>	<!-- End span10-->		
+		
+				<div class="span2"></div>
+			</div> <!-- End row-fluid -->        
+		
+		
+		
+		
+		</div>
+		<!-- END TAB-->
 
 		<!-- TAB 3 STARTS HERE -->
-                <div class="tab-pane" id="tab3">
+		<div class="tab-pane" id="tab3">
                 <div id="notification" class="span12"></div>
 		
 		
@@ -174,9 +173,12 @@
 				   
                 </div>
             </div>
-        </div>							
+	</div>							
         <!-- Tabs end -->				
-    </div>
+	</div><!-- End span12-->
+
+
+
 
 </div>
 

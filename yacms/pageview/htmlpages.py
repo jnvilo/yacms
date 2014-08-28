@@ -98,7 +98,7 @@ class PageView(BaseView):
                 meta_header = request.POST.get("json_meta_header", None)
                 
                 
-                if page_title:
+                if page_header_title:
                     self.page_obj.page_header_title = page_header_title
                 if date_submitted:
                     self.page_obj.date_submitted = date_submitted
@@ -124,10 +124,10 @@ class PageView(BaseView):
         title = self.page_obj.title
         
         key_name = "{0}:{1}:{2}".format("introduction",path, title)  
-        
+        key_name = key_name.replace(" ", "_")
         value = cache.get(key_name)
         
-        if not value:
+        if value is None:
     
             html = self.html()
             

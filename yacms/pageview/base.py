@@ -21,10 +21,15 @@ from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.cache import cache_page
 from django.core.cache import cache
-
+from django.forms import ModelForm
 
 _page_class_map = {}
 
+
+class PagesForm(ModelForm):
+    class Meta:
+        model = Pages 
+        fields = '__all__'
 
 def register(page_type, page_class):
     if not  issubclass(page_class, BaseView):
@@ -222,14 +227,14 @@ class BaseView(object):
     def iter_child_html_pages(self):
         
         path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj, page_type="HTMLVIEW").order_by("-date_modified")
+        children = Pages.objects.filter(path__parent=path_obj, page_type="HTMLVIEW").order_by("-date_created")
         
         for each in children:
             yield each.view
             
             
     def iter_frontpage_pages(self):
-        children = Pages.objects.filter(page_type="HTMLVIEW").filter(frontpage=True).order_by("-date_modified")    
+        children = Pages.objects.filter(page_type="HTMLVIEW").filter(frontpage=True).order_by("-date_created")    
         for each in children:
             yield each.view
         
@@ -282,6 +287,65 @@ class BaseView(object):
 
                 
     
+    def form(self):
         
-
+        model_form = PagesForm(instance=self.page_obj)
+        return model_form
+        
+        
+    def date_created_str(self):
+        
+        dt = self.page_obj.date_created.date()
+        
+        year = dt.year
+        month = str(dt.month)
+        if len(month) <=1:
+            month = "0"+month
+        day = str(dt.day)
+        if len(day) <=1:
+            day = "0"+day
+        
+        return("{}-{}-{}".format(year,month,day))
+    
+    def date_modified_str(self):
+        
+        dt = self.page_obj.date_modified
+        
+        year = dt.year
+        month = str(dt.month)
+        if len(month) <=1:
+            month = "0"+month
+        day = str(dt.day)
+        if len(day) <=1:
+            day = "0"+day
+        
+        
+        return("{}-{}-{}".format(year,month,day))
+    
+    
+    def hour_created_str(self):
+        
+        dt = self.page_obj.date_created
+        hour = str(dt.hour)
+        if hour <=1:
+            hour = "0"+hour
+        minute = str(dt.minute)
+        if minute <1:
+            minute = "0"+minute
+            
+        return ("{}:{}".format(hour,minute))
+    
+    def hour_modified_str(self):
+        
+        dt = self.page_obj.date_modified
+        hour = str(dt.hour)
+        if hour <=1:
+            hour = "0"+hour
+        minute = str(dt.minute)
+        if minute <1:
+            minute = "0"+minute
+            
+        return ("{}:{}".format(hour,minute))
+        
+        
         

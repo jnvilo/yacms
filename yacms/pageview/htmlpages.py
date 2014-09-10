@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from creole import creole2html
 from random import randrange
 import loremipsum
+import arrow
 
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
@@ -94,22 +95,48 @@ class PageView(BaseView):
                 
                 page_header_title = request.POST.get("json_page_header_title", None)
                 date_submitted = request.POST.get("json_date_submitted", None)
+                time_submitted = request.POST.get("json_time_submitted", None)
                 date_modified = request.POST.get("json_date_modified", None)
+                time_modified = request.POST.get("json_time_modified", None)
                 meta_header = request.POST.get("json_meta_header", None)
+                
+                page_obj = self.page_obj
                 
                 
                 if page_header_title:
                     self.page_obj.page_header_title = page_header_title
-                if date_submitted:
-                    self.page_obj.date_submitted = date_submitted
-                if date_modified:
-                    self.page_obj.date_modified = date_modified
-                if meta_header:
                     self.page_obj.meta_header = meta_header
-                    
-                self.page_obj.save()
+               
+                if date_modified:
                 
-                return JsonResponse(data={"success": "Successfully Saved data."})
+                    if time_modified is None:
+                        time_modified = "20:00"
+                    
+                    if len(time_modified) <=4:
+                        time_modified = "0{}".format(time_modified)
+                    
+                        
+                    datetime_str = "{} {}".format(date_modified, time_modified)
+                    a_date = arrow.get(datetime_str, 'YYYY-MM-DD HH:mm')
+                    page_obj.date_modified = a_date.datetime
+                
+                if date_submitted:
+                                    
+                    if time_submitted is None:
+                        time_submitted = "20:00"
+                                        
+                    if len(time_submitted) <=4:
+                        time_submitted = "0{}".format(time_submitted)
+                                            
+                    datetime_str = "{} {}".format(date_submitted, time_submitted)
+                    a_date = arrow.get(datetime_str, 'YYYY-MM-DD HH:mm')
+                    page_obj.date_created = a_date.datetime                
+            
+            
+                page_obj.save()
+                self.page_obj = page_obj
+                
+                return JsonResponse(data={"message": "Successfully Saved data."})
                 
             
                 

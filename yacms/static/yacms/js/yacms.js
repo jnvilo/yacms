@@ -193,12 +193,15 @@ $("#SAVEBUTTON").mouseleave(function(){
 
 
 $("#PAGE_META_BUTTON").click(function() { 
-	console.log("PAGE_META_BUTTON");
+	
         var csst = $.cookie('csrftoken');
         var page_header_title = $("#PAGE_HEADER_TITLE").val();
 	var date_submitted = $("#DATE_SUBMITTED_PICKER").val();
+	var time_submitted = 	$("#TIME_SUBMITTED_PICKER").val();
 	var date_modified = $("#DATE_MODIFIED_PICKER").val();
+	var time_modified = $("#TIME_MODIFIED_PICKER").val();
 	var meta_header = $("#META_HEADER").val();
+	
          var pathname = window.location.pathname;
         var request = $.ajax({
             url: pathname + "?action=save_meta_data",          
@@ -208,17 +211,26 @@ $("#PAGE_META_BUTTON").click(function() {
 		    json_date_submitted : date_submitted,
 		    json_date_modified : date_modified,
 		    json_meta_header : meta_header, 
+		    json_time_submitted : time_submitted,
+		    json_date_submitted : date_submitted,
 		    },
             dataType: "json"
         });
 
 	request.success(function(data){
-	    console.log("Success: " + data);
+	   
+	    var div = document.getElementById("PAGE_META_MSG")
+	    div.innerHTML = "<div class=\"alert alert-info\">" + data.message + "</div>";
 	
 	});
     
 	request.fail(function( jqXHR, textStatus) {
-	    console.log("FAiled");		
+	
+	var div = document.getElementById("PAGE_META_MSG")
+	    div.innerHTML = "<div class=\"alert alert-error\">" + data.message + "</div>";
+	
+
+	   
 	});
 });
 

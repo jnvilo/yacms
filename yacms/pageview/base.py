@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 
+from bs4 import BeautifulSoup
+
 from django.http import JsonResponse 
 from django.shortcuts import HttpResponse
 from django.shortcuts import render_to_response
@@ -347,5 +349,38 @@ class BaseView(object):
             
         return ("{}:{}".format(hour,minute))
         
+    def introduction(self):
+        
+        path = self.page_obj.path.path
+        title = self.page_obj.title
+        
+        key_name = "{0}:{1}:{2}".format("introduction",path, title)  
+        key_name = key_name.replace(" ", "_")
+        value = cache.get(key_name)
+        
+        if value is None:
+    
+            html = self.html()
+            
+            soup = BeautifulSoup(html)
+            
+            p = soup.find("p")
+            
+            value = str(p)
+            value = value.lstrip("<p>")
+            value = value.rstrip("</p>")
+            
+            cache.set(key_name, value)
+            
+        return value
         
         
+    def meta_description(self):
+        
+        if ((self.page_obj.meta_description is None) or
+            (self.page_obj.meta_description == "")):
+            
+            return self.introduction()
+            
+        else:
+            return self.page_obj.meta_description

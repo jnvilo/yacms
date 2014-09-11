@@ -132,9 +132,14 @@ class PageView(BaseView):
                     a_date = arrow.get(datetime_str, 'YYYY-MM-DD HH:mm')
                     page_obj.date_created = a_date.datetime                
             
+                if meta_header:
+                    page_obj.meta_description = meta_header
             
                 page_obj.save()
                 self.page_obj = page_obj
+                
+                    
+                    
                 
                 return JsonResponse(data={"message": "Successfully Saved data."})
                 

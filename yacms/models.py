@@ -43,6 +43,7 @@ class Pages(models.Model):
     template = models.CharField(max_length=244, default=None)
     frontpage = models.BooleanField(default=False)
     published = models.BooleanField(default=False)
+    meta_description = models.TextField(max_length=20480, default="")
 
 
     @classmethod

@@ -5,13 +5,20 @@ from __future__ import absolute_import
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
-
+from django.contrib.sitemaps import Sitemap
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 # Create your views here.
 
 from . models import Pages
+
+
+
+
+def sitemap(request):
+    
+    pass
 
 def page(request, **kwargs):
     

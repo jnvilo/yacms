@@ -116,3 +116,5 @@ class Pages(models.Model):
 
 
  
+    def introduction(self):
+        return self.view.introduction()

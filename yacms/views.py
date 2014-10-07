@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 
+import logging
+
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.contrib.sitemaps import Sitemap
@@ -14,6 +16,7 @@ from django.http import HttpResponseNotFound
 from . models import Pages
 
 
+logger = logging.getLogger(name="yacms.views")
 
 
 def sitemap(request):
@@ -25,10 +28,13 @@ def page(request, **kwargs):
     """The main entry view into the CMS. It will try to load
     the path and let it do the rest of the work."""
     
+    
+    
     path = kwargs.get("path", "/cms")
     if not path.startswith("/"):
         path = "/" + path    
     try:
+        logger.debug("Recieved request for: {}".format(path))        
         
         """
         
@@ -40,19 +46,21 @@ def page(request, **kwargs):
         around the yacmls.pageview.* classes so that if the request 
         is just a simple get. Then we return a cached page instead.
         
-        
+       
         """
-        import cProfile, pstats, StringIO
-        pr = cProfile.Profile()
-        pr.enable()        
+        #import cProfile, pstats, StringIO
+        #pr = cProfile.Profile()
+        #pr.enable()        
+      
         page = Pages.objects.get(path__path=path)
+        
         r =  page.response(request, **kwargs)
-        pr.disable()
-        s = StringIO.StringIO()
-        sortby = 'cumulative'
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        print(s.getvalue())        
+        #pr.disable()
+        #s = StringIO.StringIO()
+        #sortby = 'cumulative'
+        #ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        #ps.print_stats()
+        #print(s.getvalue())        
 
         return r
     except ObjectDoesNotExist as e:

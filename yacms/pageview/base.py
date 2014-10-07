@@ -384,3 +384,6 @@ class BaseView(object):
             
         else:
             return self.page_obj.meta_description
+    
+    def article_logo(self):
+        pass

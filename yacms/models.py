@@ -10,13 +10,21 @@ from django.core.cache import cache
 from django.db import models
 from django.template.defaultfilters import slugify
 
+from django.conf import settings
 
+from yacms import YACMS_ARTICLE_LOGOS_URL
+from yacms import YACMS_BASE_URL
 
 class Paths(models.Model):
-    path = models.CharField(max_length=1024, default="/")
+    path = models.CharField(max_length=1024, default="/", unique=True)
     parent = models.ForeignKey("Paths", null=True)
 
     def save(self, *args, **kwargs):    
+        """
+        We override the save so that we can ensure that if we are 
+        not saving a root path, we create the parent. this happens
+        recursively. 
+        """
 
         parent_path = pathlib.Path(self.path).parent.as_posix()
 
@@ -44,6 +52,10 @@ class Pages(models.Model):
     frontpage = models.BooleanField(default=False)
     published = models.BooleanField(default=False)
     meta_description = models.TextField(max_length=20480, default="")
+    article_logo = models.TextField(max_length=1023, null=True, blank=True)
+    
+    
+    
 
 
     @classmethod
@@ -70,7 +82,7 @@ class Pages(models.Model):
 
     def save(self, *args, **kwargs):    
 
-        if self.slug is None:
+        if self.slug is None or self.slug=="":
             self.slug = slugify(self.title)
 
         if self.template is None:
@@ -94,12 +106,13 @@ class Pages(models.Model):
 
 
     def get_absolute_url(self):
+        """Returns the absolute url. Prepending the YACMS_BASE_URL."""
 
         path = self.path.path
 
-        if not path.startswith("/"):
-            path = "/{}".format(path)
-        return "/cms{}".format(path)
+        if path.startswith("/"):
+            path = path.lstrip("/")
+        return "/{}{}".format(YACMS_BASE_URL,path)
 
     def data_dict(self):
 
@@ -119,3 +132,20 @@ class Pages(models.Model):
  
     def introduction(self):
         return self.view.introduction()
+    
+    
+    def logo(self):
+        
+        if self.article_logo:
+            if not self.article_log.startswith("/"):
+                return "{}{}".format(YACMS_ARTICLE_LOGOS_URL, self.article_logo)
+            else:
+                return "{}{}".format(YACMS_ARTICLE_LOGOS_URL, self.article_logo)
+        
+        else:
+            return None
+                
+                
+            
+            
+            

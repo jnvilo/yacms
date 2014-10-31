@@ -24,5 +24,8 @@ urlpatterns = [
    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
 
+    url(r'^(?P<path>[-/\.a-z\d_]*)/mediauploader_endpoint/$', 'yacms.views.fileupload', name="page"),
+    url(r'^(?P<path>[-/\.a-z\d_]*)/fileUploader/$', 'yacms.views.fileupload', name="page"),
+    url(r'^(?P<path>[-/\.a-z\d_]*)/$', 'yacms.views.page', name="page"),
     url(r'^(?P<path>[-/\.a-z\d_]*)$', 'yacms.views.page', name="page"),
 ]

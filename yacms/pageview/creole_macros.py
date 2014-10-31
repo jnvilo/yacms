@@ -56,3 +56,35 @@ def code(ext, text):
     finally:
         #return highlighted_text.replace('\n', '<br />\n')
         return highlighted_text
+    
+    
+def image(*args, **kwargs):
+    
+    width=kwargs.get("width", None)
+    height=kwargs.get("height", None)
+    text = kwargs.get("text", None)
+    
+    if text is None:
+        return ""
+    
+    html = """
+<div class="row-fluid">
+    <div class="span2"></div>
+    <div class="span8">
+        <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px;"></img>
+    </div>
+    <div class="span2"></div>
+</div>
+    """
+    
+    html = """
+    <div class="row-fluid">
+        <div class="span8">
+            <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px;"></img>
+        </div>
+    </div>
+        """
+            
+    
+    return html.format(text)
+    

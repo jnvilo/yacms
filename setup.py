@@ -15,7 +15,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-from yacms  import VERSION_STRING
+VERSION_STRING="0.0.1"
 
 
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))

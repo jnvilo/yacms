@@ -387,3 +387,7 @@ class BaseView(object):
     
     def article_logo(self):
         pass
+    
+    
+    
+    

@@ -7,6 +7,7 @@ from creole import creole2html
 from random import randrange
 import loremipsum
 import arrow
+import re
 
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
@@ -19,20 +20,36 @@ from .base import register
 from .creole_macros import code
 from .creole_macros import pre
 from .creole_macros import html
+from .creole_macros import image
 
 class PageView(BaseView):
     
     def html(self):
+        """This parses the content using creole."""
+        
         
         content = self.page_obj.content
-        return creole2html(content, debug=False, parser_kwargs={}, 
+        html_str = creole2html(content, debug=False, parser_kwargs={}, 
                    emitter_kwargs={}, block_rules=None, 
-                   blog_line_breaks=True, macros={ "code": code, 
+                    blog_line_breaks=True, macros={ "code": code, 
                                                    "pre": pre,
-                                                   "html": html}, 
+                                                   "html": html,
+                                                   "image": image}, 
                    verbose=None,  stderr=None)
         
+        #now parse for the "__DOCUMENT_URL_REGEX_REPLACED__
+        #to replace it with our url path. 
         
+        page_path = self.page_obj.path.path
+        
+        if page_path.startswith("/"):
+            page_path = page_path.lstrip("/")
+        
+        path = "/assets/{}".format(page_path)
+      
+        result =  re.sub("__DOCUMENT_URL_REGEX_REPLACED__", path, html_str)        
+        return result
+    
     def exec_action(self, request, **kwargs):
         
         

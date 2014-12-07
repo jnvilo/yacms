@@ -69,21 +69,23 @@ def image(*args, **kwargs):
     
     html = """
 <div class="row-fluid">
+<div class="span12">
     <div class="span2"></div>
     <div class="span8">
-        <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px;"></img>
+        <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block;"></img>
     </div>
     <div class="span2"></div>
 </div>
+</div>
     """
     
-    html = """
-    <div class="row-fluid">
-        <div class="span8">
-            <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px;"></img>
-        </div>
-    </div>
-        """
+    #html = """
+    #<div class="row-fluid">
+        #<div class="span8">
+            #<img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px;"></img>
+        #</div>
+    #</div>
+        #"""
             
     
     return html.format(text)

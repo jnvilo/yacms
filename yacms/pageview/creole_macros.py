@@ -70,11 +70,12 @@ def image(*args, **kwargs):
     html = """
 <div class="row-fluid">
 <div class="span12">
-    <div class="span2"></div>
-    <div class="span8">
-        <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block;"></img>
-    </div>
-    <div class="span2"></div>
+
+
+
+        <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-top: 10px; margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block; max-width: 800px; min-width=200px;"></img>
+        <center style="margin-top:-10px; margin-bottom: 10px; ">figure 1 is for ESXi is VMWares bare metal hypervisor.</center>
+
 </div>
 </div>
     """

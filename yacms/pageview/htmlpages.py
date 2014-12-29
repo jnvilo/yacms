@@ -11,9 +11,10 @@ import re
 
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
+from django.template.defaultfilters import slugify
 
 from django.core.cache import cache
-
+from yacms.models import Pages
 
 from .base import BaseView
 from .base import register
@@ -155,13 +156,11 @@ class PageView(BaseView):
                 page_obj.save()
                 self.page_obj = page_obj
                 
-                    
-                    
                 
                 return JsonResponse(data={"message": "Successfully Saved data."})
                 
-            
-                
+        #if action is not None:  
+        #    return JsonResponse(data={"error_msg": "action: {} not supported.".format(action)})    
             
         return super(PageView, self).exec_action(request, **kwargs)
 
@@ -197,3 +196,121 @@ class PageView(BaseView):
         
 
 register("HTMLVIEW", PageView)
+
+
+class MultiPagesHomeView(PageView):
+    
+    
+    def exec_action(self, request, **kwargs):
+        
+        return super(MultiPagesHomeView, self).exec_action(request, **kwargs)
+            
+    def iter_child_html_pages(self):
+        
+        path_obj = self.page_obj.path
+        children = Pages.objects.filter(path__parent=path_obj, page_type="MULTIPAGESCHILDVIEW").order_by("-date_created")
+           
+        for each in children:
+            yield each.view   
+               
+   
+            
+    
+            
+register("MULTIPAGESHOMEVIEW", MultiPagesHomeView)
+
+
+import re
+class MultiPagesChildView(PageView):
+    
+    
+    
+    def exec_action(self, request, **kwargs):
+        
+        return super(MultiPagesChildView, self).exec_action(request, **kwargs)
+    
+    
+    def bookmarks(self):
+    
+        lines = self.html().split("\n")
+        
+        url_list = []
+        for line in lines:
+            match_obj = re.match("""<a name=.*><h2>(?P<text>.*)</h2></a>""", line)
+                
+            if match_obj:
+                text = match_obj.group("text")
+                slug = slugify(text)
+                url_list.append({ "slug": slug, "text":text})
+                
+        return url_list
+        
+            
+            
+            
+    
+    def _update_h2_bookmarks(self, html):
+        
+        lines = html.split('\n')
+        
+        updated_lines = []
+        for line in lines:
+            match_obj = re.match("^<h2>(?P<text>.*)</h2>$", line)
+        
+            if match_obj:
+                text = match_obj.group("text")
+                slug = slugify(text)
+                line = """<a name="{}"><h2>{}</h2></a>""".format(slug, text) 
+                
+            else:
+                line
+            
+            updated_lines.append(line)
+            
+        return ("\n").join(updated_lines)
+            
+    def html(self):
+            """This parses the content using creole. It also updates the 
+            page to replace all of the h2 with bookmarks."""
+            
+            
+            #First step: Turn the content into HTML
+            content = self.page_obj.content
+            html_str = creole2html(content, debug=False, parser_kwargs={}, 
+                       emitter_kwargs={}, block_rules=None, 
+                        blog_line_breaks=True, macros={ "code": code, 
+                                                       "pre": pre,
+                                                       "html": html,
+                                                       "image": image}, 
+                       verbose=None,  stderr=None)
+            
+            #now parse for the "__DOCUMENT_URL_REGEX_REPLACED__
+            #to replace it with our url path. The image macro creates this.
+            
+            page_path = self.page_obj.path.path
+            
+            if page_path.startswith("/"):
+                page_path = page_path.lstrip("/")
+            
+            path = "/assets/{}".format(page_path)
+          
+            result =  re.sub("__DOCUMENT_URL_REGEX_REPLACED__", path, html_str)        
+            
+            #Now find all <h2></h2> and update them
+            
+            
+            return self._update_h2_bookmarks(result)
+        
+            
+            
+
+    def sections(self):
+        
+        pass
+        
+        
+    
+    
+register("MULTIPAGESCHILDVIEW", MultiPagesChildView)
+
+        

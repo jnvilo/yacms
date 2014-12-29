@@ -25,7 +25,6 @@ class Migration(migrations.Migration):
                 ('frontpage', models.BooleanField(default=False)),
                 ('published', models.BooleanField(default=False)),
                 ('meta_description', models.TextField(default='', max_length=20480)),
-                ('article_logo', models.TextField(max_length=1023, null=True, blank=True)),
             ],
             options={
             },

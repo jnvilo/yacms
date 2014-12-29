@@ -152,10 +152,12 @@ def fileupload(request, **kwargs):
                 im = Image.open(p_filename.as_posix())
                 im.thumbnail(size, Image.ANTIALIAS)
                 im.save(outfile.as_posix(), "JPEG")
-            except IOError:
-                return HttpResponse("cannot create thumbnail for {}".format(infile))        
+            except IOError as e:
+                return JsonResponse( { "error" : "cannot create thumbnail for {}".format(outfile)})        
             
-            
+            except Exception as e: 
+                return JsonResponse( { "error": "Unhandled exception: {}".format(outfile) })        
+                
             
             
          

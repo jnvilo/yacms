@@ -10,6 +10,7 @@ from django.shortcuts import HttpResponse
 from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaultfilters import slugify
+from django.db.models import Q
 
 import yacms
 from yacms.models import Paths
@@ -34,9 +35,9 @@ class PagesForm(ModelForm):
         fields = '__all__'
 
 def register(page_type, page_class):
-    if not  issubclass(page_class, BaseView):
-        msg = "{} is not subclass PageView".format(page_class)
-        raise IncompatiblePageClass(msg)
+    #if not  issubclass(page_class, BaseView):
+    #    msg = "{} is not subclass PageView".format(page_class)
+    #    raise IncompatiblePageClass(msg)
         
     _page_class_map[page_type] = page_class
     
@@ -229,7 +230,7 @@ class BaseView(object):
     def iter_child_html_pages(self):
         
         path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj, page_type="HTMLVIEW").order_by("-date_created")
+        children = Pages.objects.filter(path__parent=path_obj).filter(Q(page_type="HTMLVIEW") | Q(page_type="MULTIPAGESHOMEVIEW")).order_by("-date_created")
         
         for each in children:
             yield each.view
@@ -388,6 +389,21 @@ class BaseView(object):
     def article_logo(self):
         pass
     
-    
+    def parentview(self):
+        
+        path = self.page_obj.path.path
+        path = path.rstrip("/") #just to make sure no trailing / exists
+        
+        try:
+            parent_path = path[:path.rindex("/")]
+        except ValueError as e:
+            #if we get here it means path was "" [i.e empty]
+            parent_path = "/"
+            
+        
+        parent_obj =  Pages.objects.get(path__path=parent_path)
+        
+        return parent_obj.view
+        
     
     

@@ -6,6 +6,8 @@ from __future__ import absolute_import
 import logging
 import pathlib
 import os
+from PIL import Image
+import threading
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
@@ -31,88 +33,188 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt
+def filedelete(request, **kwargs):
+    
+    mylock = threading.Lock()
+    
+    with mylock:
+        from django.conf import settings
+        assets_dir = settings.ASSETS_DIR
+        path = kwargs.get("path", None).lstrip("/")
+        
+        fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
+        
+        if request.method == "DELETE":
+            
+            pass
+    
+    
+    
+            
+        """ 
+        We assume we have a GET
+        According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
+        we have to return a list of the images in the dir as follows:
+        
+    
+        
+        {"files": [
+          {
+            "name": "picture1.jpg",
+            "size": 902604,
+            "url": "http:\/\/example.org\/files\/picture1.jpg",
+            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+            "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
+            "deleteType": "DELETE"
+          },
+          {
+            "name": "picture2.jpg",
+            "size": 841946,
+            "url": "http:\/\/example.org\/files\/picture2.jpg",
+            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+            "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
+            "deleteType": "DELETE"
+          }
+        ]}        
+        """ 
+    
+        files = []
+        filenames = os.listdir(fullpath.as_posix())
+       
+        
+        for filename in filenames:
+            
+            p_filename = pathlib.Path(fullpath, filename)
+    
+            if not p_filename.is_dir():
+                
+                stat = os.stat(p_filename.as_posix())
+                image_url =  url = "/assets/{}/{}".format(path, filename)
+                thumbnail_url = "/assets/{}/thumbnails/{}".format(path, filename)
+                delete_url = "/cms/{}/mediadelete_endpoint/{}".format(path, filename)
+                
+        
+                file_dict = { "name": filename , 
+                              "size": stat.st_size,
+                              "url": image_url, 
+                              "thumbnailUrl": thumbnail_url, 
+                              "deleteUrl": delete_url,
+                              "deleteType": "DELETE" }
+                
+                files.append(file_dict)
+                
+        return JsonResponse({'files': files})
+            
+        
+    
+
+@csrf_exempt
 def fileupload(request, **kwargs):
     
-    from django.conf import settings
-    assets_dir = settings.ASSETS_DIR
-    path = kwargs.get("path", None).lstrip("/")
+    mylock = threading.Lock()
     
-    fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
+    with mylock:
+        from django.conf import settings
+        assets_dir = settings.ASSETS_DIR
+        path = kwargs.get("path", None).lstrip("/")
+        
+        fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
+        
+        if not fullpath.exists():
+            os.makedirs(fullpath.as_posix())
+        elif not fullpath.is_dir():
+            #Fix this to return a proper json response.
+            return HttpResponse("Error. Not full dir")
+        
+        thumbnailpath = pathlib.Path(fullpath, "thumbnails")
+        
+        if not thumbnailpath.exists():
+            os.makedirs(thumbnailpath.as_posix())
+        elif not thumbnailpath.is_dir():
+            #Fix this to return a proper json response.
+            return HttpResponse("Error. Not full dir")    
+        
+        if request.method == "POST":
+            uploaded_file = request.FILES.get("files[]")
+            
+            filename = uploaded_file.name
     
-    if not fullpath.exists():
-        os.makedirs(fullpath.as_posix())
-    elif not fullpath.is_dir():
-        #Fix this to return a proper json response.
-        return HttpResponse("Error. Not full dir")
-    
-    
-    if request.method == "POST":
-        uploaded_file = request.FILES.get("files[]")
-        
-        filename = uploaded_file.name
-
-        p_filename = pathlib.Path(fullpath, filename)
-  
-        with open(p_filename.as_posix(), 'wb+') as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)  
-        
-     
-   
-    """ 
-    We assume we have a GET
-    According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
-    we have to return a list of the images in the dir as follows:
-    
-
-    
-    {"files": [
-      {
-        "name": "picture1.jpg",
-        "size": 902604,
-        "url": "http:\/\/example.org\/files\/picture1.jpg",
-        "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
-        "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
-        "deleteType": "DELETE"
-      },
-      {
-        "name": "picture2.jpg",
-        "size": 841946,
-        "url": "http:\/\/example.org\/files\/picture2.jpg",
-        "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
-        "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
-        "deleteType": "DELETE"
-      }
-    ]}        
-    """
-
-    files = []
-    filenames = os.listdir(fullpath.as_posix())
-   
-    
-    for filename in filenames:
-        p_filename = pathlib.Path(fullpath, filename)
-
-        stat = os.stat(p_filename.as_posix())
-        url =  url = "/assets/{}/{}".format(path, filename)
-
-        
-
-        file_dict = { "name": filename , 
-                      "size": stat.st_size,
-                      "url": url, 
-                      "thumbnailUrl": url, 
-                      "deleteUrl": "/cms/{}/mediadelete_endpoint/{}".format(path, filename),
-                      "deleteType": "DELETE" }
-        
-        files.append(file_dict)
-        
-    return JsonResponse({'files': files})
-        
-        
-        
+            p_filename = pathlib.Path(fullpath, filename)
+      
+            with open(p_filename.as_posix(), 'wb+') as destination:
+                for chunk in uploaded_file.chunks():
+                    destination.write(chunk)  
+            
+            #Now do the thumbail.
+            try:
+                size = 256, 256
+                outfile =  pathlib.Path(thumbnailpath, filename)
+                im = Image.open(p_filename.as_posix())
+                im.thumbnail(size, Image.ANTIALIAS)
+                im.save(outfile.as_posix(), "JPEG")
+            except IOError as e:
+                return JsonResponse( { "error" : "cannot create thumbnail for {}".format(outfile)})        
+            
+            except Exception as e: 
+                return JsonResponse( { "error": "Unhandled exception: {}".format(outfile) })        
                 
             
+            
+         
+       
+        """ 
+        We assume we have a GET
+        According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
+        we have to return a list of the images in the dir as follows:
+        
+    
+        
+        {"files": [
+          {
+            "name": "picture1.jpg",
+            "size": 902604,
+            "url": "http:\/\/example.org\/files\/picture1.jpg",
+            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+            "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
+            "deleteType": "DELETE"
+          },
+          {
+            "name": "picture2.jpg",
+            "size": 841946,
+            "url": "http:\/\/example.org\/files\/picture2.jpg",
+            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+            "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
+            "deleteType": "DELETE"
+          }
+        ]}        
+        """ 
+    
+        files = []
+        filenames = os.listdir(fullpath.as_posix())
+       
+        
+        for filename in filenames:
+            
+            p_filename = pathlib.Path(fullpath, filename)
+    
+            if not p_filename.is_dir():
+                
+                stat = os.stat(p_filename.as_posix())
+                image_url =  url = "/assets/{}/{}".format(path, filename)
+                thumbnail_url = "/assets/{}/thumbnails/{}".format(path, filename)
+                delete_url = "/cms/{}/mediadelete_endpoint/{}".format(path, filename)
+                
+        
+                file_dict = { "name": filename , 
+                              "size": stat.st_size,
+                              "url": image_url, 
+                              "thumbnailUrl": thumbnail_url, 
+                              "deleteUrl": delete_url,
+                              "deleteType": "DELETE" }
+                
+                files.append(file_dict)
+                
+        return JsonResponse({'files': files})
             
         
         

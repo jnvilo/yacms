@@ -78,8 +78,8 @@ class Pages(models.Model):
     def view(self):
         from yacms import pageview
         PageViewClass =  pageview.get_page_class(self.page_type)     
-        return PageViewClass(self)
-
+        instance =  PageViewClass(self)
+        return instance
     def save(self, *args, **kwargs):    
 
         if self.slug is None or self.slug=="":

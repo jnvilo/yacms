@@ -13,9 +13,10 @@
 
 {%block BREADCRUMBS %}
     <li><a href="/">Home</a> <span class="divider">/</span></li>
-    {% for each in handler.breadcrumbs_as_list %}
+    {% for each in pageview.iter_parent_pages %}
         <li><a href={{each.get_absolute_url}}>{{ each }}</a><span class="divider">/</span></li>
     {% endfor %}
+	<li><a href={{pageview.get_absolute_url}}>{{ pageview.title }}</a><span class="divider">/</span></li>
     {% if allowed_edit %}
         <li><a href="{{each.get_absolute_url}}?action=edit">&nbsp;[edit]</a></li>
     {% endif %}
@@ -48,9 +49,11 @@
     <div><input type="text" id="CreateSlug" name="slug" placeholder="slug" class="input-xxlarge">	</div>
   
     <select id="PageType" name="page_type">	    
-	    <option value="CATEGORYVIEW">Category Page</option>    
-	    <option value="HTMLVIEW">HTML Page</option>    
-		<option value="MULTIPAGESHOMEVIEW">Multiple HTML Page</option> 
+		{% for option in pageview.pagetype_options %}
+		<option value="{{option.value}}">{{option.text}}</option>   
+		{%endfor%}
+		{%comment%}	    
+		{% endcomment%}    
     </select>
     <button id="CreateButton" class="btn btn-primary" type="button">Create</button>
 </form>

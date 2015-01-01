@@ -1,0 +1,9 @@
+
+
+<table>
+{% for attribute in model_attributes %}
+<tr>
+    <td> {{attribute.name}}</td><td>{{attribute.value}}</td>
+</tr>
+{% endfor %}
+</table>

@@ -5,12 +5,36 @@ from __future__ import absolute_import
 
 from django.shortcuts import render_to_response, redirect
 
+from django.db.models import Q
+
 from . base import BaseView
 from . base import register
-
+from  yacms.models import Pages
 
 class CategoryView(BaseView):
-    pass
-    
 
-register("CATEGORYVIEW", CategoryView)
+    def get_child_categories(self):
+
+        path_obj = self.page_obj.path
+        children = Pages.objects.filter(path__parent=path_obj, page_type="CATEGORYVIEW").order_by("path")       
+        return children
+
+
+    def iter_child_categories(self):
+
+        path_obj = self.page_obj.path
+        children = Pages.objects.filter(path__parent=path_obj, page_type="CATEGORYVIEW")
+
+        for each in children:
+            yield each.view
+
+    def iter_child_html_pages(self):
+
+        path_obj = self.page_obj.path
+        children = Pages.objects.filter(path__parent=path_obj).filter(Q(page_type="HTMLVIEW") | Q(page_type="MULTIPAGEINDEX")).order_by("-date_created")
+
+        for each in children:
+            yield each.view
+
+
+register("CATEGORYVIEW", CategoryView, "Category")

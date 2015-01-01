@@ -13,4 +13,4 @@ class AdminView(BaseView):
     pass
     
 
-register("ADMINVIEW", AdminView)
+register("ADMINVIEW", AdminView, None)

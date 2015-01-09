@@ -20,7 +20,7 @@ from .base import BaseView
 from .base import register
 from .creole_macros import code
 from .creole_macros import pre
-from .creole_macros import html
+from .creole_macros import HTML
 from .creole_macros import image
 
 class PageView(BaseView):
@@ -34,7 +34,7 @@ class PageView(BaseView):
                    emitter_kwargs={}, block_rules=None, 
                     blog_line_breaks=True, macros={ "code": code, 
                                                    "pre": pre,
-                                                   "html": html,
+                                                   "HTML": HTML,
                                                    "image": image}, 
                    verbose=None,  stderr=None)
         
@@ -122,7 +122,7 @@ class PageView(BaseView):
                 
                 
                 if page_header_title:
-                    self.page_obj.page_header_title = page_header_title
+                    self.page_obj.title = page_header_title
                     self.page_obj.meta_header = meta_header
                
                 if date_modified:
@@ -184,52 +184,42 @@ class PageView(BaseView):
             p = soup.find("p")
             
             value = str(p)
-            value = value.lstrip("<p>")
+            try:
+                value = value.lstrip("<p>")
+            except UnicodeDecodeError as e:
+                # Seems sometimes we get 
+                value = value.decode('utf-8')
+                value = value.lstrip("<p>")
+                
             value = value.rstrip("</p>")
             
             cache.set(key_name, value)
-            
+        
         return value
         
         
         
         
 
-register("HTMLVIEW", PageView)
+register("HTMLVIEW", PageView, "Single Page HTML")
 
 
-class MultiPagesHomeView(PageView):
+class MultiPageBaseView(PageView):
     
-    
-    def exec_action(self, request, **kwargs):
+    @property
+    def is_home_page(self):
+        if self.page_obj.page_type == "MULTIPAGEINDEX":
+            return True
+        else:
+            return False
         
-        return super(MultiPagesHomeView, self).exec_action(request, **kwargs)
-            
-    def iter_child_html_pages(self):
+    @property
+    def is_member_page(self):
+        if self.page_obj.page_type == "MULTIPAGEENTRY":
+            return True
+        else:
+            return False
         
-        path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj, page_type="MULTIPAGESCHILDVIEW").order_by("-date_created")
-           
-        for each in children:
-            yield each.view   
-               
-   
-            
-    
-            
-register("MULTIPAGESHOMEVIEW", MultiPagesHomeView)
-
-
-import re
-class MultiPagesChildView(PageView):
-    
-    
-    
-    def exec_action(self, request, **kwargs):
-        
-        return super(MultiPagesChildView, self).exec_action(request, **kwargs)
-    
-    
     def bookmarks(self):
     
         lines = self.html().split("\n")
@@ -245,10 +235,10 @@ class MultiPagesChildView(PageView):
                 
         return url_list
         
+                    
+                    
+                    
             
-            
-            
-    
     def _update_h2_bookmarks(self, html):
         
         lines = html.split('\n')
@@ -280,7 +270,7 @@ class MultiPagesChildView(PageView):
                        emitter_kwargs={}, block_rules=None, 
                         blog_line_breaks=True, macros={ "code": code, 
                                                        "pre": pre,
-                                                       "html": html,
+                                                       "HTML": HTML,
                                                        "image": image}, 
                        verbose=None,  stderr=None)
             
@@ -299,18 +289,132 @@ class MultiPagesChildView(PageView):
             #Now find all <h2></h2> and update them
             
             
-            return self._update_h2_bookmarks(result)
+            return self._update_h2_bookmarks(result)        
+  
+  
+    def navigation(self):
         
+        count = 0 
+        num_entries = self.member_objs.count()
+        
+        if self.is_home_page:
+            members_list = [self.page_obj]
+            home_pageview = self
+        else:
+            #get the parent then.
+            members_list = [self.parent_obj]
+            home_pageview = self.parent_obj.view
+        
+        #members_list = list(self.member_objs)
+        for each in self.member_objs:
+            members_list.append(each)
             
+        
+        
+        for each in members_list:
+            if each.pk == self.page_obj.pk:
+                index = count
+                break
+            count = count + 1
+            
+        if index==0:
+            #we are the first page
+            prev_pageview = None
+            
+            try:
+                next_pageview = (members_list[1]).view
+            except IndexError:
+                #we do not have members
+                next_pageview = None
+                
+        elif index==num_entries:
+            #we are at the end
+            prev_pageview = (members_list[index -1]).view
+            next_pageview = None
+            
+        else:
+            #We are somewhere in the middle
+            prev_pageview = (members_list[index - 1]).view
+            next_pageview = (members_list[index + 1]).view
+            
+        return { "previous": prev_pageview,"next": next_pageview,
+                 "home": home_pageview}
             
 
-    def sections(self):
+    def exec_action(self, request, **kwargs):
+        action = request.GET.get("action", None) 
+  
+        if action == "set_page_number": 
+            #We expect that the request also what page number 
+            page_number = request.POST.get("page_number", 0)
+            path = request.POST.get("path", None)
+            
+            self.page_number = page_number
+            
+            msg = "Succesfully updated {} page number to {}"
+            data = { "message":  msg.format(self.page_obj.title,
+                                            self.page_number)}
+            return JsonResponse(data)
+            
+        elif action == "page_to_top":
+            #swap this page number with the previous page number
+            pass
+            
+            
+        elif action == "page_to_bottom":
+            pass
+            
+        else:   
+            return super(MultiPageBaseView,self).exec_action(request, **kwargs)
+            
+            
+            
         
-        pass
-        
-        
-    
-    
-register("MULTIPAGESCHILDVIEW", MultiPagesChildView)
+    @property
+    def member_objs(self):
+        raise NotImplementedE("Inheriting class must implement me!")
 
+
+class MultiPageIndexView(MultiPageBaseView):
+    
+    @property
+    def member_objs(self):
         
+        return Pages.objects.filter(path__parent=self.path_obj, 
+                                    page_type="MULTIPAGEENTRY").order_by("-page_number").order_by("page_number")     
+        
+   
+    def iter_members_pageviews(self):
+        
+        yield self.view
+        for each in self.member_objs:
+            yield each.view  
+       
+    def iter_child_html_pages(self):
+   
+        yield self.view
+        for each in self.member_objs:
+            yield each.view  
+        
+
+register("MULTIPAGEINDEX", MultiPageIndexView, "Multiple Pages Article", template="multipage.html")
+
+class MultiPageEntryView(MultiPageBaseView):
+    
+    @property
+    def member_objs(self):
+        return Pages.objects.filter(path__parent=self.parentview.path_obj, 
+                                    page_type="MULTIPAGEENTRY").order_by("-page_number").order_by("page_number")        
+     
+    
+    def iter_members_pageviews(self): 
+        
+        yield self.parentview
+        for each in self.member_objs:
+            yield each.view   
+            
+
+
+register("MULTIPAGEENTRY", MultiPageEntryView, None, template="multipage.html")
+
+

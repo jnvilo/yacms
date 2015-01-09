@@ -14,11 +14,15 @@ except ImportError:
 
 
 
-def html(text):
+
+
+
+def HTML(*args,**kwargs):
     """
     Macro tag <<html>>...<</html>>
     Pass-trought for html code (or other stuff)
     """
+    text = kwargs.get("text", None)
     return text
 
 
@@ -29,11 +33,15 @@ def pre(text):
     """
     return '<pre>%s</pre>' % escape(text)
 
-def code(ext, text):
+def code(*args, **kwargs):
     """
     Macro tag <<code ext=".some_extension">>...<</code>>
     If pygments is present, highlight the text according to the extension.
     """
+    
+    text = kwargs.get("text", None)
+    ext = kwargs.get("ext", ".sh")
+    
     if not PYGMENTS:
         return pre(text)
 

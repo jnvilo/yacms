@@ -15,5 +15,5 @@ from . base import register
 from . base import get_page_class
 
 
-register("HTML", PageView)
-register("CATEGORY", CategoryView)
+#register("HTML", PageView)
+#register("CATEGORY", CategoryView)

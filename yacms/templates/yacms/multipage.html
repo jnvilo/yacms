@@ -2,6 +2,7 @@
 
 {% block HEADER_LINKS %}
 	<link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+	
 	<link href="/static/yacms/datepicker/css/jquery.datepick.css" rel="stylesheet">
 	
     <link rel="stylesheet" type="text/css" href="/static/yacms/timepicker/jquery.timeentry.css"> 
@@ -12,6 +13,8 @@
     <link rel="stylesheet" href="/static/yacms/mediauploader/css/jquery.fileupload-ui.css">
      <!-- End jQuery-File-Upload-9.8.0 -->
    
+   <script src="/static/yacms/datepicker/js/jquery.plugin.js"></script>
+   <script src="/static/js/jquery.cookie.js"></script>
 {% endblock HEADER_LINKS %}
 
 {% block META_DESCRIPTION %}
@@ -31,7 +34,7 @@
 {%block BREADCRUMBS %}
     <li><a href="/">Home</a> <span class="divider">/</span></li>
     {% for each in pageview.iter_parent_pages %}
-        <li><a href={{each.get_absolute_url}}>{{ each.title }}</a><span class="divider">/</span></li>
+        <li><a href="{{each.get_absolute_url}}">{{ each.title }}</a><span class="divider">/</span></li>
     {% endfor %}
     {% if allowed_edit %}
         <li><a href="{{each.get_absolute_url}}?action=edit">&nbsp;[edit]</a></li>
@@ -40,9 +43,42 @@
 
 
 {% block INNERBLOCK %}
-<div id="CONTENT">
-{{pageview.html | safe}}
-</div>
+
+	<div class="span3">
+		<!-- Nav List -->
+
+		<div class="widget" style="padding-top:5px;">
+		<ul class="nav nav-list">
+			
+			{% for member_pageview in pageview.iter_members_pageviews %}
+			<li class="nav-header">
+				<a  style="color:#555555;" href="{{member_pageview.get_absolute_url}}">{{member_pageview.title}}</a>
+			</li>
+			{% for bookmark in member_pageview.bookmarks %}
+			<li><a style="color: #444444;" href="{{member_pageview.get_absolute_url}}#{{bookmark.slug}}">{{bookmark.text}}</a></li>
+			{% endfor %}
+			
+			{% endfor %}
+		</ul>
+		</div>
+		<!-- Nav List End -->
+	</div>
+		
+	<div class="span9">
+		<div id="CONTENT">
+			{{pageview.html | safe}}
+			
+			{% if not is_home_page %}
+			<div class="span12" style="margin-left: 0px; margin-right:0px; border-top-style: solid; border-bottom-style: solid;">
+				<div class="span4"><a href="{{pageview.navigation.previous.get_absolute_url}}"><< {{pageview.navigation.previous.title}}</a></div>
+				<div class="span4"><center><a href="{{pageview.navigation.home.get_absolute_url}}">Home</a></center></div>
+				<div class="span4"><span style="float:right"><a href="{{pageview.navigation.next.get_absolute_url}}">{{pageview.navigation.next.title}} >></a></div></span></div>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+	
+	
 
 {% if request.user.is_staff %}
 
@@ -53,7 +89,6 @@
     </div>
 </div>
 
-<script src="/static/js/jquery.cookie.js"></script>
 <div class="row-fluid" id="EDITOR_DIV">
 
     <div class="span12">
@@ -84,12 +119,22 @@
         <!-- Tabs end -->				
 	</div><!-- End span12-->
 
+</div>
 
-</div> <!-- End row-fluid -->
+	<div class="span12" style="margin-top: 20px; margin-left: 0px; border-width: 1px; border-color: #EEEEEE; padding: 5px; border-style: solid;"><!-- span12 for Child Pages Editor-->
+		{% member_pages_admin_node %}
+	</div> <!-- End span12-->
+</div>
+
+<script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+    $("#EDITOR_DIV").hide();
+});
+</script>
 
 
-
-</div><!-- End of the very first div-->
+<!-- End row-fluid-->
 {% endif %}
 
 {% endblock INNERBLOCK %}
@@ -100,5 +145,15 @@
 
 <script src="/static/yacms/js/yacms.js"></script>
 
-</script>
 {% endblock SCRIPT %}
+
+{% block DEBUG %}
+
+	{% comment %}
+	<table>
+	{% for attribute in pageview.model_attributes %}
+		<tr><td>{{attribute.name}}</td><td>{{attribute.value}}</td></tr>
+	{%endfor%}
+	</table>
+	{% endcomment %}
+{% endblock DEBUG %}

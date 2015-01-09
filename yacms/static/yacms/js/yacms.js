@@ -17,30 +17,30 @@ $('input[name=title]').change(function() {
 
 });
 
-$('#CreateTable').find('tr').click( function(){
+//$('#CreateTable').find('tr').click( function(){
 
-if ( this.rowIndex != 0){    
-    var row = $(this).find('td:first').text();
-    var rows = document.getElementById("CreateTable").rows;
-    var next_row = rows[this.rowIndex + 1];
-    var next_row_text = 	$(next_row).find('td:first').text();
-    var next_row_text_startswith = next_row_text.substring(0,3)
+//if ( this.rowIndex != 0){    
+    //var row = $(this).find('td:first').text();
+    //var rows = document.getElementById("CreateTable").rows;
+    //var next_row = rows[this.rowIndex + 1];
+    //var next_row_text = 	$(next_row).find('td:first').text();
+    //var next_row_text_startswith = next_row_text.substring(0,3)
 
 
-if (next_row_text_startswith == " - "){
-    alert("Not going to do anything");		
-}
-else{
-    $(this).after("<tr><td> - This is a new entry</td><td>another</td><td></td></tr>");
-}
+//if (next_row_text_startswith == " - "){
+    //alert("Not going to do anything");		
+//}
+//else{
+    //$(this).after("<tr><td> - This is a new entry</td><td>another</td><td></td></tr>");
+//}
 
-alert('You clicked ' + row);
+//alert('You clicked ' + row);
 
-}else{
+//}else{
 
-console.log("Not going to do anything since you clicked the Headers.");
-}
-});
+//console.log("Not going to do anything since you clicked the Headers.");
+//}
+//});
 
 
 /** 
@@ -234,3 +234,8 @@ $("#PAGE_META_BUTTON").click(function() {
 	});
 });
 
+
+$("#TOGGLE_EDITOR").click(function(){
+ console.log("TOGGLE")
+  $("#EDITOR_DIV").toggle();
+});

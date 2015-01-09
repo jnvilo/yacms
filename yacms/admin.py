@@ -9,7 +9,7 @@ class PathsAdmin(admin.ModelAdmin):
 admin.site.register(Paths, PathsAdmin)
 
 class PagesAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('path__parent', 'date_created', "published", "frontpage", "page_number")
 
 admin.site.register(Pages, PagesAdmin)
 

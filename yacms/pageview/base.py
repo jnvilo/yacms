@@ -11,6 +11,7 @@ from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaultfilters import slugify
 from django.db.models import Q
+from django.forms import model_to_dict
 
 import yacms
 from yacms.models import Paths
@@ -27,20 +28,22 @@ from django.core.cache import cache
 from django.forms import ModelForm
 
 _page_class_map = {}
-
+_page_description_map = {}
+_page_template_map = {}
 
 class PagesForm(ModelForm):
     class Meta:
         model = Pages 
         fields = '__all__'
 
-def register(page_type, page_class):
+def register(page_type, page_class, page_description=None, template=None):
     #if not  issubclass(page_class, BaseView):
     #    msg = "{} is not subclass PageView".format(page_class)
     #    raise IncompatiblePageClass(msg)
         
     _page_class_map[page_type] = page_class
-    
+    _page_description_map[page_type] = page_description
+    _page_template_map[page_type] = template
     
 def get_page_class(page_type):  
     PageClass = _page_class_map.get(page_type, None)
@@ -52,7 +55,10 @@ def get_page_class(page_type):
         raise PageClassNotFound(msg.format(page_type))
     
     
+def get_registered_template(page_type):
     
+    return _page_template_map.get(page_type, None)
+
 def get_pageview(path):
     
     from yacms.models import Paths, Pages
@@ -81,6 +87,16 @@ class BaseView(object):
         self.update_response_dict("page", self.page_obj)
         self.update_response_dict("pageview", self)
             
+    @property    
+    def pagetype_options(self):
+        
+        r = []
+        for key in _page_description_map.keys():
+            description = _page_description_map.get(key)
+            if description:
+                r.append({"value": key , "text": description})
+        return r    
+    
     @property
     def page_obj(self):
         return self._page_obj
@@ -136,6 +152,12 @@ class BaseView(object):
         page.slug = slug
         page.path = page_path_obj
         page.page_type=page_type
+        
+        # Here we set the template to the registered template.
+        # If the answer is None then the model will be set to 
+        # none and the 
+        page.template = get_registered_template(page_type)
+    
         page.save()
         
         return page
@@ -155,6 +177,8 @@ class BaseView(object):
 
             if request.is_ajax():
                 try:
+                    template = get_registered_template(page_type)
+                    
                     new_page_obj =  self.make_page(title, slug, page_type)            
                     #Create a page_ajax response dict that contains just
                     #enough of the data needed.
@@ -207,37 +231,11 @@ class BaseView(object):
         
         else:
             raise AttributeError("Attribute {} Not Found.".format(value))
-        
-        
-        
-    def get_child_categories(self):
-        
-        path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj, page_type="CATEGORYVIEW").order_by("path")       
-        return children
-    
-
-    def iter_child_categories(self):
-        
-        path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj, page_type="CATEGORYVIEW")
-        
-        for each in children:
-            yield each.view
-
-
-
-    def iter_child_html_pages(self):
-        
-        path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj).filter(Q(page_type="HTMLVIEW") | Q(page_type="MULTIPAGESHOMEVIEW")).order_by("-date_created")
-        
-        for each in children:
-            yield each.view
-            
             
     def iter_frontpage_pages(self):
-        children = Pages.objects.filter(page_type="HTMLVIEW").filter(frontpage=True).order_by("-date_created")    
+        children = Pages.objects.filter(Q(page_type="HTMLVIEW") |
+                                        Q(page_type="MULTIPAGEINDEX"),
+                                        ).filter(frontpage=True).order_by("-date_created")    
         for each in children:
             yield each.view
         
@@ -389,7 +387,9 @@ class BaseView(object):
     def article_logo(self):
         pass
     
-    def parentview(self):
+    
+    @property
+    def parent_obj(self):
         
         path = self.page_obj.path.path
         path = path.rstrip("/") #just to make sure no trailing / exists
@@ -402,8 +402,35 @@ class BaseView(object):
             
         
         parent_obj =  Pages.objects.get(path__path=parent_path)
-        
-        return parent_obj.view
+        return parent_obj
+ 
+    @property
+    def parentview(self):       
+        return self.parent_obj.view
         
     
+    def model_attributes(self):
+        
+        attributes = []
+        model_dict = model_to_dict(self.page_obj)
+        for key in model_dict.keys():
+            attributes.append({"name": key, "value": model_dict.get(key)})
+                              
+        return attributes
     
+    @property
+    def path_obj(self):
+        return self.page_obj.path
+    
+    
+    @property
+    def page_number(self):
+        return self.page_obj.page_number
+    
+    @page_number.setter
+    def page_number(self,value):
+        
+        self.page_obj.page_number = int(value)
+        self.page_obj.save()
+        
+        

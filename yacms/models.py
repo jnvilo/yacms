@@ -52,10 +52,33 @@ class Pages(models.Model):
     frontpage = models.BooleanField(default=False)
     published = models.BooleanField(default=False)
     meta_description = models.TextField(max_length=20480, default="")
-    #article_logo = models.TextField(max_length=1023, null=True, blank=True)
+    article_logo = models.TextField(max_length=1023, null=True, blank=True)
+    article_logo = models.TextField(max_length=1023, null=True, blank=True)
+    page_number = models.IntegerField(default=1)
     
     
-    
+    @property
+    def parent_obj(self):
+        
+        path = self.page_obj.path.path
+        path = path.rstrip("/") #just to make sure no trailing / exists
+        
+        try:
+            parent_path = path[:path.rindex("/")]
+        except ValueError as e:
+            #if we get here it means path was "" [i.e empty]
+            parent_path = "/"
+            
+        
+        parent_obj =  Pages.objects.get(path__path=parent_path)
+        return parent_obj    
+
+    @property
+    def parent_path(self):
+        return self.parent_obj.path.path
+        
+        
+
 
 
     @classmethod

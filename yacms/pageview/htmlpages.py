@@ -122,7 +122,7 @@ class PageView(BaseView):
                 
                 
                 if page_header_title:
-                    self.page_obj.page_header_title = page_header_title
+                    self.page_obj.title = page_header_title
                     self.page_obj.meta_header = meta_header
                
                 if date_modified:
@@ -184,11 +184,17 @@ class PageView(BaseView):
             p = soup.find("p")
             
             value = str(p)
-            value = value.lstrip("<p>")
+            try:
+                value = value.lstrip("<p>")
+            except UnicodeDecodeError as e:
+                # Seems sometimes we get 
+                value = value.decode('utf-8')
+                value = value.lstrip("<p>")
+                
             value = value.rstrip("</p>")
             
             cache.set(key_name, value)
-            
+        
         return value
         
         
@@ -198,7 +204,7 @@ class PageView(BaseView):
 register("HTMLVIEW", PageView, "Single Page HTML")
 
 
-class MultiPageView(PageView):
+class MultiPageBaseView(PageView):
     
     @property
     def is_home_page(self):
@@ -334,6 +340,33 @@ class MultiPageView(PageView):
         return { "previous": prev_pageview,"next": next_pageview,
                  "home": home_pageview}
             
+
+    def exec_action(self, request, **kwargs):
+        action = request.GET.get("action", None) 
+  
+        if action == "set_page_number": 
+            #We expect that the request also what page number 
+            page_number = request.POST.get("page_number", 0)
+            path = request.POST.get("path", None)
+            
+            self.page_number = page_number
+            
+            msg = "Succesfully updated {} page number to {}"
+            data = { "message":  msg.format(self.page_obj.title,
+                                            self.page_number)}
+            return JsonResponse(data)
+            
+        elif action == "page_to_top":
+            #swap this page number with the previous page number
+            pass
+            
+            
+        elif action == "page_to_bottom":
+            pass
+            
+        else:   
+            return super(MultiPageBaseView,self).exec_action(request, **kwargs)
+            
             
             
         
@@ -342,12 +375,13 @@ class MultiPageView(PageView):
         raise NotImplementedE("Inheriting class must implement me!")
 
 
-class MultiPageIndexView(MultiPageView):
+class MultiPageIndexView(MultiPageBaseView):
     
     @property
     def member_objs(self):
+        
         return Pages.objects.filter(path__parent=self.path_obj, 
-                                    page_type="MULTIPAGEENTRY").order_by("date_created")        
+                                    page_type="MULTIPAGEENTRY").order_by("-page_number").order_by("page_number")     
         
    
     def iter_members_pageviews(self):
@@ -356,14 +390,21 @@ class MultiPageIndexView(MultiPageView):
         for each in self.member_objs:
             yield each.view  
        
+    def iter_child_html_pages(self):
+   
+        yield self.view
+        for each in self.member_objs:
+            yield each.view  
+        
+
 register("MULTIPAGEINDEX", MultiPageIndexView, "Multiple Pages Article", template="multipage.html")
 
-class MultiPageEntryView(MultiPageView):
+class MultiPageEntryView(MultiPageBaseView):
     
     @property
     def member_objs(self):
         return Pages.objects.filter(path__parent=self.parentview.path_obj, 
-                                    page_type="MULTIPAGEENTRY").order_by("date_created")        
+                                    page_type="MULTIPAGEENTRY").order_by("-page_number").order_by("page_number")        
      
     
     def iter_members_pageviews(self): 

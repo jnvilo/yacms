@@ -31,8 +31,9 @@ class CategoryView(BaseView):
     def iter_child_html_pages(self):
 
         path_obj = self.page_obj.path
-        children = Pages.objects.filter(path__parent=path_obj).filter(Q(page_type="HTMLVIEW") | Q(page_type="MULTIPAGEINDEX")).order_by("-date_created")
-
+        q_filter = Q(page_type="HTMLVIEW") | Q(page_type="MULTIPAGEINDEX")
+        children = Pages.objects.filter(path__parent=path_obj).filter(q_filter).order_by("-date_created")
+        
         for each in children:
             yield each.view
 

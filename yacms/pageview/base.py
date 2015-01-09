@@ -421,3 +421,16 @@ class BaseView(object):
     @property
     def path_obj(self):
         return self.page_obj.path
+    
+    
+    @property
+    def page_number(self):
+        return self.page_obj.page_number
+    
+    @page_number.setter
+    def page_number(self,value):
+        
+        self.page_obj.page_number = int(value)
+        self.page_obj.save()
+        
+        

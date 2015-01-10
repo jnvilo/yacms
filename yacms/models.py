@@ -53,7 +53,6 @@ class Pages(models.Model):
     published = models.BooleanField(default=False)
     meta_description = models.TextField(max_length=20480, default="")
     article_logo = models.TextField(max_length=1023, null=True, blank=True)
-    article_logo = models.TextField(max_length=1023, null=True, blank=True)
     page_number = models.IntegerField(default=1)
     
     

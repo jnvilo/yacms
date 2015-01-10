@@ -71,31 +71,27 @@ def image(*args, **kwargs):
     width=kwargs.get("width", None)
     height=kwargs.get("height", None)
     text = kwargs.get("text", None)
+    description = kwargs.get("description", None)
     
     if text is None:
         return ""
     
+    stle = "margin-top: 10px; margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block; max-width: 800px; min-width=200px;"
+    
+    if description:
+        footer = """<center style="margin-top:-10px; margin-bottom: 10px; ">{}</center>""".format(description)
+    else:
+        footer = ""
+
+    
+
     html = """
 <div class="row-fluid">
 <div class="span12">
-
-
-
-        <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-top: 10px; margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block; max-width: 800px; min-width=200px;"></img>
-        <center style="margin-top:-10px; margin-bottom: 10px; ">figure 1 is for ESXi is VMWares bare metal hypervisor.</center>
-
+    <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style=""></img>{}
 </div>
 </div>
     """
     
-    #html = """
-    #<div class="row-fluid">
-        #<div class="span8">
-            #<img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="margin-bottom: 15px;"></img>
-        #</div>
-    #</div>
-        #"""
-            
-    
-    return html.format(text)
+    return html.format(text,style,footer)
     

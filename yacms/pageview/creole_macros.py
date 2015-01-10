@@ -76,7 +76,7 @@ def image(*args, **kwargs):
     if text is None:
         return ""
     
-    stle = "margin-top: 10px; margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block; max-width: 800px; min-width=200px;"
+    style = "margin-top: 10px; margin-bottom: 15px; margin-right:auto; margin-left:auto; display:block; max-width: 800px; min-width=200px;"
     
     if description:
         footer = """<center style="margin-top:-10px; margin-bottom: 10px; ">{}</center>""".format(description)

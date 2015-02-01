@@ -88,7 +88,7 @@ def image(*args, **kwargs):
     html = """
 <div class="row-fluid">
 <div class="span12">
-    <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style=""></img>{}
+    <img src="__DOCUMENT_URL_REGEX_REPLACED__/{}" style="{}"></img>{}
 </div>
 </div>
     """

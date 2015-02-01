@@ -1,4 +1,4 @@
-{% extends "cmsbase.html" %}
+{% extends "yacms/cmsbase.html" %}
 
 
 {% block TITLE %}
@@ -40,7 +40,6 @@
 {% endfor %}
 
 
-{% if request.user.is_staff %}
 
 <div id="notification" class="span12"></div>
 
@@ -82,7 +81,6 @@
   </tbody>
 </table>
 
-{% endif %}
 {% endblock INNERBLOCK %}
 
 

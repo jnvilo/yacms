@@ -42,7 +42,7 @@ setup(
     url='http://bitbucket.org/jnvilo/yacms.git',
     packages=find_packages(),
     include_package_data=True, # include package data under svn source control
-   install_requires=["beautifulsoup4","sh", "pathlib", "loremipsum"],
+   install_requires=["djangorestframework", "django-filter", "beautifulsoup4","sh", "pathlib", "loremipsum"],
     data_files=[("", ["README.txt"])], # README used in unittest test_setup_utils.py
     #entry_points={
     #    "console_scripts": [

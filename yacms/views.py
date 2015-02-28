@@ -13,272 +13,286 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.contrib.sitemaps import Sitemap
 from django.http import JsonResponse
-
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 # Create your views here.
 
-from . models import Pages
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-
-logger = logging.getLogger(name="yacms.views")
-
-
-def sitemap(request):
-    
-    pass
+from rest_framework import authentication, permissions
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from rest_framework import status
 
 from django.views.decorators.csrf import csrf_exempt
 
+from . serializers import CMSPageTypesSerializer
+from . serializers import CMSContentsSerializer
+from . serializers import CMSEntrySerializer
+from . serializers import CMSMarkUpSerializer
+from . serializers import CMSTemplatesSerializer
 
-@csrf_exempt
-def filedelete(request, **kwargs):
-    
-    mylock = threading.Lock()
-    
-    with mylock:
-        from django.conf import settings
-        assets_dir = settings.ASSETS_DIR
-        path = kwargs.get("path", None).lstrip("/")
-        
-        fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
-        
-        if request.method == "DELETE":
-            
-            pass
-    
-    
-    
-            
-        """ 
-        We assume we have a GET
-        According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
-        we have to return a list of the images in the dir as follows:
-        
-    
-        
-        {"files": [
-          {
-            "name": "picture1.jpg",
-            "size": 902604,
-            "url": "http:\/\/example.org\/files\/picture1.jpg",
-            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
-            "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
-            "deleteType": "DELETE"
-          },
-          {
-            "name": "picture2.jpg",
-            "size": 841946,
-            "url": "http:\/\/example.org\/files\/picture2.jpg",
-            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
-            "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
-            "deleteType": "DELETE"
-          }
-        ]}        
-        """ 
-    
-        files = []
-        filenames = os.listdir(fullpath.as_posix())
-       
-        
-        for filename in filenames:
-            
-            p_filename = pathlib.Path(fullpath, filename)
-    
-            if not p_filename.is_dir():
-                
-                stat = os.stat(p_filename.as_posix())
-                image_url =  url = "/assets/{}/{}".format(path, filename)
-                thumbnail_url = "/assets/{}/thumbnails/{}".format(path, filename)
-                delete_url = "/cms/{}/mediadelete_endpoint/{}".format(path, filename)
-                
-        
-                file_dict = { "name": filename , 
-                              "size": stat.st_size,
-                              "url": image_url, 
-                              "thumbnailUrl": thumbnail_url, 
-                              "deleteUrl": delete_url,
-                              "deleteType": "DELETE" }
-                
-                files.append(file_dict)
-                
-        return JsonResponse({'files': files})
-            
-        
-    
 
-@csrf_exempt
-def fileupload(request, **kwargs):
-    
-    mylock = threading.Lock()
-    
-    with mylock:
-        from django.conf import settings
-        assets_dir = settings.ASSETS_DIR
-        path = kwargs.get("path", None).lstrip("/")
-        
-        fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
-        
-        if not fullpath.exists():
-            os.makedirs(fullpath.as_posix())
-        elif not fullpath.is_dir():
-            #Fix this to return a proper json response.
-            return HttpResponse("Error. Not full dir")
-        
-        thumbnailpath = pathlib.Path(fullpath, "thumbnails")
-        
-        if not thumbnailpath.exists():
-            os.makedirs(thumbnailpath.as_posix())
-        elif not thumbnailpath.is_dir():
-            #Fix this to return a proper json response.
-            return HttpResponse("Error. Not full dir")    
-        
-        if request.method == "POST":
-            uploaded_file = request.FILES.get("files[]")
-            
-            filename = uploaded_file.name
-    
-            p_filename = pathlib.Path(fullpath, filename)
-      
-            with open(p_filename.as_posix(), 'wb+') as destination:
-                for chunk in uploaded_file.chunks():
-                    destination.write(chunk)  
-            
-            #Now do the thumbail.
-            try:
-                size = 256, 256
-                outfile =  pathlib.Path(thumbnailpath, filename)
-                im = Image.open(p_filename.as_posix())
-                im.thumbnail(size, Image.ANTIALIAS)
-                im.save(outfile.as_posix(), "JPEG")
-            except IOError as e:
-                return JsonResponse( { "error" : "cannot create thumbnail for {}".format(outfile)})        
-            
-            except Exception as e: 
-                return JsonResponse( { "error": "Unhandled exception: {}".format(outfile) })        
-                
-            
-            
-         
-       
-        """ 
-        We assume we have a GET
-        According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
-        we have to return a list of the images in the dir as follows:
-        
-    
-        
-        {"files": [
-          {
-            "name": "picture1.jpg",
-            "size": 902604,
-            "url": "http:\/\/example.org\/files\/picture1.jpg",
-            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
-            "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
-            "deleteType": "DELETE"
-          },
-          {
-            "name": "picture2.jpg",
-            "size": 841946,
-            "url": "http:\/\/example.org\/files\/picture2.jpg",
-            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
-            "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
-            "deleteType": "DELETE"
-          }
-        ]}        
-        """ 
-    
-        files = []
-        filenames = os.listdir(fullpath.as_posix())
-       
-        
-        for filename in filenames:
-            
-            p_filename = pathlib.Path(fullpath, filename)
-    
-            if not p_filename.is_dir():
-                
-                stat = os.stat(p_filename.as_posix())
-                image_url =  url = "/assets/{}/{}".format(path, filename)
-                thumbnail_url = "/assets/{}/thumbnails/{}".format(path, filename)
-                delete_url = "/cms/{}/mediadelete_endpoint/{}".format(path, filename)
-                
-        
-                file_dict = { "name": filename , 
-                              "size": stat.st_size,
-                              "url": image_url, 
-                              "thumbnailUrl": thumbnail_url, 
-                              "deleteUrl": delete_url,
-                              "deleteType": "DELETE" }
-                
-                files.append(file_dict)
-                
-        return JsonResponse({'files': files})
-            
-        
-        
-def page(request, **kwargs):
-    
-    """The main entry view into the CMS. It will try to load
-    the path and let it do the rest of the work."""
-    
-    
-    
-    path = kwargs.get("path", "/cms")
-    if not path.startswith("/"):
-        path = "/" + path    
-    try:
-        logger.debug("Recieved request for: {}".format(path))        
-        
-        """
-        
-        TODO:
-        
-        Optimize this by creating  a CachedPageView class. 
-        
-        The CachedPageView class simply implements a wrapper 
-        around the yacmls.pageview.* classes so that if the request 
-        is just a simple get. Then we return a cached page instead.
-        
-       
-        """
-        #import cProfile, pstats, StringIO
-        #pr = cProfile.Profile()
-        #pr.enable()        
-      
-        page = Pages.objects.get(path__path=path)
-        
-        r =  page.response(request, **kwargs)
-        #pr.disable()
-        #s = StringIO.StringIO()
-        #sortby = 'cumulative'
-        #ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        #ps.print_stats()
-        #print(s.getvalue())        
+from .models import CMSPageTypes
+from .models import CMSContents
+from .models import CMSEntries
+from .models import CMSMarkUps
+from .models import CMSTemplates
 
-        return r
-    except ObjectDoesNotExist as e:
-        """
-        Initially the /admin path is not created. We create it here.
-        """
-        if path == "/admin":
-            p = Pages.get_or_create_from_request(request, 
-                                            path="/admin",
-                                            title="CMS Administration",
-                                            page_type="ADMINVIEW")
-        
-        #also create the root path if it does not yet exist
-        if path == "/":            
-            p = Pages.get_or_create_from_request(request, 
-                                                path="/",
-                                                title="cms",
-                                                page_type="CATEGORYVIEW")
-            
-            return p.response(request, **kwargs)
-        return HttpResponseNotFound("Page does not exist")
+logger = logging.getLogger(name="yacms.views")
         
 
-def index(request, **kwargs):
-    
+def index(request, **kwargs):    
     return HttpResponse("Index page")
+
+
+class CMSPageTypesAPIView(APIView):
+    """
+    View to list PageTypes handled by the system
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        """
+        Get a list of all available PageTypes
+        """
+        
+        format = kwargs.get("format", None)
+        pagetypes = CMSPageTypes.objects.all()
+        serializer = CMSPageTypesSerializer(pagetypes, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = CMSPageTypesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class CMSMarkUpsAPIView(APIView):
+    """
+    View to list PageTypes handled by the system
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        """
+        Get a list of all available PageTypes
+        """
+
+        format = kwargs.get("format", None)
+        pagetypes = CMSMarkUps.objects.all()
+        serializer = CMSMarkUpSerializer(pagetypes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CMSMarkUpSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CMSTemplatesAPIView(APIView):
+    """
+    View to list PageTypes handled by the system
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        """
+        Get a list of all available PageTypes
+        """
+
+        format = kwargs.get("format", None)
+        pagetypes = CMSTemplates.objects.all()
+        serializer = CMSTemplatesSerializer(pagetypes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CMSTemplatesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CMSEntriesAPIView(APIView):
+    """
+    View to list PageTypes handled by the system
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        """
+        Get a list of all available PageTypes
+        """
+
+        format = kwargs.get("format", None)
+        pagetypes = CMSEntries.objects.all()
+        serializer = CMSEntrySerializer(pagetypes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CMSEntrySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CMSContentsAPIView(APIView):
+    """
+    View to list PageTypes handled by the system
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+
+    #authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        """
+        Get a list of all available PageTypes
+        """
+
+        format = kwargs.get("format", None)
+        pagetypes = CMSContents.objects.all()
+        serializer = CMSContentsSerializer(pagetypes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CMSContentsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class YACMSViewObject(object):
+    
+    """
+    A YACMSViewObject represents a full page object. It takes care of 
+    coupling together the different pieces of a page such that it can 
+    be serialized.  The YACMSViewObject handles the management of the 
+    attributes of the CMSEntry model. 
+    """
+    def __init__(self, path=None, page_id=None):
+        
+        pass
+
+
+    @property
+    def title(self):
+        """The page title"""
+        pass
+    
+    @property
+    def content(self):
+        """The html content of the page"""
+        pass
+    
+    @property
+    def meta_keywords(self):
+        """Returns a string list of keywords."""
+        pass
+    
+    @property
+    def meta_author(self):
+        """Returns the author of the page."""
+        pass
+    
+    @property
+    def date_created(self):
+        """Date the page was created"""
+        pass
+    
+    @property
+    def date_modified(self):
+        """Date the page was modified"""
+        pass
+    
+
+    @property
+    def breadcrumbs(self):
+        """ A breadcrumb. This would serialize as an ordered dict. 
+        
+        [ { "path": "/", "text": "/"}, 
+          { "path":"/linux","text": "Linux"},
+          { "path":"/linux/sysadmin", "text": "SysAdmin"}
+          ]
+        """
+    
+        pass
+    
+class CMSIndexView(APIView):
+    """
+    The index view of a YACMS website.
+    """
+    
+    def get(self, request, **kwargs):
+        pass
+    
+    
+class CMSPageView(APIView):
+    """
+    The main interface to the website.  
+    """
+    
+    permission_classes = (IsAuthenticated,)
+    
+    
+    def get_object(self, **kwargs):
+        path = kwargs.get("path", None)
+        page_id = kwargs.get("page_id", None)
+        
+        if path:
+            obj = YACMSViewObject(path=path)
+        else:
+            obj = YACMSViewObject(page_id = page_id)
+        return obj
+        
+    
+    def get(self,request, **kwargs):
+        
+        obj = self.get_object(**kwargs)
+        
+    
+    
+    def post(self, request, **kwargs):
+        pass
+        
+    def put(self, request, **kwargs):
+        pass
+    

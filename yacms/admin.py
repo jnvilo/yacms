@@ -1,17 +1,30 @@
 from django.contrib import admin
-from yacms.models import Paths
-from yacms.models import Pages
+from .models import CMSPageTypes
+from .models import CMSContents
+from .models import CMSEntries
+from .models import CMSMarkUps
+from .models import CMSTemplates
 
-
-class PathsAdmin(admin.ModelAdmin):
+@admin.register(CMSContents)
+class CMSContents(admin.ModelAdmin):
     pass
 
-admin.site.register(Paths, PathsAdmin)
+@admin.register(CMSEntries)
+class CMSEntries(admin.ModelAdmin):
+    pass
 
-class PagesAdmin(admin.ModelAdmin):
-    list_filter = ('path__parent', 'date_created', "published", "frontpage", "page_number")
+@admin.register(CMSMarkUps)
+class CMSMarkUps(admin.ModelAdmin):
+    pass
 
-admin.site.register(Pages, PagesAdmin)
+@admin.register(CMSTemplates)
+class CMSTemplates(admin.ModelAdmin):
+    pass
+
+@admin.register(CMSPageTypes)
+class CMSPageTypesAdmin(admin.ModelAdmin):
+    list_filter = ("page_type", "text", "view_class")
+    
 
 
     

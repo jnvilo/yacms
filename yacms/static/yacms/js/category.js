@@ -63,7 +63,7 @@ function create_child_cmsentries_table(data){
     
         t = t + "<tr>";
         t = t + "<td>"+ data[x].title +"</td>";
-        t = t + "<td>"+ to_url(page_data.path_str,data[x].slug) +"</td>";
+        t = t + "<td>"+ to_url(cmsentry_object.path_str,data[x].slug) +"</td>";
         t = t + "<td></td></tr>";
         
         console.log(data[x]) ;          
@@ -102,7 +102,7 @@ function update_cmsentries_list(parent_id){
 }
 
 $(function() {
-    update_cmsentries_list(page_data.path_id);
+    update_cmsentries_list(cmsentry_object.id);
 });
 
 function create_cmsentry(title, slug, page_type, path){
@@ -117,7 +117,7 @@ function create_cmsentry(title, slug, page_type, path){
               success: function(data)
               {
                    console.log("created cmsentries: " +  data);
-                   update_cmsentries_list(page_data.path_id);    
+                   update_cmsentries_list(cmsentry_object.id);    
               }
         });
 }
@@ -140,13 +140,13 @@ $("#createpage_button").click(function() {
      
     var path = ""
     
-    if (page_data.path_str == "/"){
+    if (cmsentry_object.path_str == "/"){
         path = "/" + slug;        
     } else{
-        path = page_data.path_str + "/" + slug;    
+        path = cmsentry_object.path_str + "/" + slug;    
     }
     
-    data = { path : path , parent : page_data.path_id , csrf:csrf};
+    data = { path : path , parent : cmsentry_object.id , csrf:csrf};
     console.log(data);
     
     var url = "/cms/api/v1/cmspaths/"; // the script where you handle the form input.
@@ -187,10 +187,10 @@ $("#createpage_button").click(function() {
 $(function() {
     /** Initialize the state when the page is loaded. **/   
    
-       
-    $.get( "/cms/api/v1/cmspagetypes", function(data) {
+    var url = "/cms/api/v1/cmspagetypes";
+    
+    $.get(url, function(data) {
         /** Code here gets executed when success. **/
-
         
         var option_array = [];
         
@@ -205,17 +205,19 @@ $(function() {
         
     })
     
-   .done(function() {
-    /** Code here gets executed also on success**/
-     console.log( "second success" );
-   })
-   .fail(function() {
-   /** Code here gets executed on fail **/
-     alert( "error" );
-   })
-   .always(function() {
-   /** This code will always execute after a request **/
-     console.log( "finished" );
-   });
+        .done(function() {
+         /** Code here gets executed also on success**/
+          console.log( "second success" );
+        })
+        
+        .fail(function() {
+        /** Code here gets executed on fail **/
+          alert( "error" );
+        })
+        
+        .always(function() {
+        /** This code will always execute after a request **/
+          console.log( "finished" );
+        })
    
 });

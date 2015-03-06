@@ -8,7 +8,8 @@ from . views import  ( CMSPageTypesAPIView,
                        CMSMarkUpsAPIView,
                        CMSTemplatesAPIView,
                        CMSPageView,
-                       CMSPathsAPIView)
+                       CMSPathsAPIView,
+                       CMSEntriesROAPIView)
 
 
 #info_dict = { 
@@ -30,8 +31,12 @@ urlpatterns = [
     
    #url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
    #     name='django.contrib.sitemaps.views.sitemap'),
+   
+   #Read Only List Views
+   url(r'^api/v1/cmsentriesro', CMSEntriesROAPIView.as_view(), name="cmsentriesro_apiview"),
+   
 
-    #Basic API Views
+    #Read Write API Views
     url(r'^api/v1/cmspagetypes', CMSPageTypesAPIView.as_view(), name="cmspagetypes_apiview"),
     url(r'^api/v1/cmscontents', CMSContentsAPIView.as_view(), name="cmscontents_apiview"),
     url(r'^api/v1/cmsentries', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),

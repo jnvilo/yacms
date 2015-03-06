@@ -18,6 +18,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django.forms.models import model_to_dict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
@@ -187,15 +188,20 @@ class CMSTemplatesAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+import django_filters
+class CMSEntriesFilter(django_filters.FilterSet):
+    
+    class Meta:
+        model = CMSEntries
+        fields = ['id','page_type', 'slug', 'date_created','published', 'frontpage', 'date_created']
+                  
 
-#class CMSEntriesAPIListView(generics.ListAPIView):
+class CMSEntriesROAPIView(generics.ListAPIView):
     
-    #queryset = CMSEntries.objects.all()
-    #serializer_class = CMSEntriesSerializer
-    #filter_backends = (filters.OrderingFilter,)
-    ##ordering_fields = ('', 'email')   
-    #search_fields = ('page_type', 'slug', 'date_created','published', 'frontpage', 'date_created')
-    
+    queryset = CMSEntries.objects.all()
+    serializer_class = CMSEntrySerializer
+    filter_class = CMSEntriesFilter
+    permission_classes = (IsAuthenticated,)
 
 class CMSEntriesAPIView(APIView):
     """
@@ -215,10 +221,16 @@ class CMSEntriesAPIView(APIView):
         """
         format = kwargs.get("format", None)
         parent_id = self.request.QUERY_PARAMS.get('parent_id', None)
+        page_id = self.request.QUERY_PARAMS.get('id', None)
+        
+        cmsentries = CMSEntries.objects.all()
+        
         if parent_id is not None:
-            cmsentries = CMSEntries.objects.filter(path__parent__id=parent_id)        
-        else:
-            cmsentries = CMSEntries.objects.all()
+            cmsentries = cmsentries.filter(path__parent__id=parent_id)        
+        
+        if page_id is not None:
+            cmsentries = cmsentries.filter(id=page_id)
+    
         serializer = CMSEntrySerializer(cmsentries, many=True)
         return Response(serializer.data)
 

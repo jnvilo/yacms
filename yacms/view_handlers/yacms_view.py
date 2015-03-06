@@ -5,9 +5,10 @@ from __future__ import absolute_import
 
 from yacms.models import CMSEntries
 from django.conf import settings
+from django.forms.models import model_to_dict
 from loremipsum import generate_paragraphs
 from creole import creole2html
-
+import simplejson as json
 class YACMSViewObject(object):
     
     """
@@ -176,4 +177,13 @@ class YACMSViewObject(object):
         return tmpl
 
     
+    @property
+    def data(self):
+        d =  model_to_dict(self.page_object)
+        path_str = self.page_object.path.path
+        d["path_str"] = path_str
     
+    @property
+    def json_data(self):
+        return json.dumps(self.data)
+        

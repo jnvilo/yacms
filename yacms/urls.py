@@ -2,11 +2,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.sitemaps import FlatPageSitemap, GenericSitemap
 from django.contrib.sitemaps.views import sitemap
-from . views import CMSPageTypesAPIView
-from . views import CMSContentsAPIView
-from . views import CMSEntriesAPIView
-from . views import CMSMarkUpsAPIView
-from . views import CMSTemplatesAPIView
+from . views import  ( CMSPageTypesAPIView, 
+                       CMSContentsAPIView, 
+                       CMSEntriesAPIView,
+                       CMSMarkUpsAPIView,
+                       CMSTemplatesAPIView,
+                       CMSPageView,
+                       CMSPathsAPIView)
+
 
 #info_dict = { 
     
@@ -34,11 +37,18 @@ urlpatterns = [
     url(r'^api/v1/cmsentries', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),
     url(r'^api/v1/cmsmarkups', CMSMarkUpsAPIView.as_view(), name="cmscmsmarkups_apiview"),
     url(r'^api/v1/cmstemplates', CMSTemplatesAPIView.as_view(), name="cmstemplates_apiview"),
+    url(r'^api/v1/cmspaths', CMSPathsAPIView.as_view(), name="cmspaths_apiview"),
     
     
     #CMS API Custom Views
     url(r'^api/v1/cmsentries/(?P<id>[\d]*)/', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),
     url(r'^api/v1/cmsentries/(?P<slug>[-/\.a-z\d_]*)/', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),
+    
+    
+    #CMS View - Returns website pages
+    url(r'^(?P<path>[-/\.a-z\d_]*)/$', CMSPageView.as_view(), name="cms_page"),
+    url(r'^$', CMSPageView.as_view(), name="cms_page")
+   
     
     
     

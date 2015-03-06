@@ -4,6 +4,11 @@ from .models import CMSContents
 from .models import CMSEntries
 from .models import CMSMarkUps
 from .models import CMSTemplates
+from .models import CMSPaths
+
+@admin.register(CMSPaths)
+class CMSPathsAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(CMSContents)
 class CMSContents(admin.ModelAdmin):

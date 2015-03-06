@@ -12,13 +12,18 @@ from yacms.models import CMSMarkUps
 from yacms.models import CMSTemplates
 from yacms.models import CMSPageTypes
 from yacms.models import CMSEntries
+from yacms.models import CMSPaths
 
 
-
+class CMSPathsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CMSPaths
+        fields = ('id','path','parent')
+        
 class CMSPageTypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CMSPageTypes
-        fields = ('id','page_type','text','view_class')
+        fields = ('id','page_type','text','view_class','view_template')
         
 class CMSContentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,8 +41,10 @@ class CMSTemplatesSerializer(serializers.ModelSerializer):
         fields = ('id','name', 'template')
         
 class CMSEntrySerializer(serializers.ModelSerializer):
+    
+    #path = serializers.StringRelatedField()
     class Meta:
         model = CMSEntries
         fields = ('id','title','path','slug','content','date_created',
                   'page_type','template','frontpage','published',
-                  'meta_description','page_number')
+                   'page_number')

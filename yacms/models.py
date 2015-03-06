@@ -140,6 +140,13 @@ from django.conf import settings
         
         #else:
             #return None
+            
+class CMSPaths(models.Model):
+    path = models.CharField(max_length=2000, null=True)
+    parent = models.ForeignKey("CMSPaths", null=True, blank=True)
+    
+    def __str__(self):
+        return self.path
           
 class CMSTags(models.Model):
     name = models.CharField(max_length=256, default="NotSet")
@@ -157,8 +164,11 @@ class CMSContents(models.Model):
     content = models.TextField(max_length=20480, default="Empty")
     timestamp = models.DateTimeField(auto_now=True)
     markup = models.ForeignKey(CMSMarkUps, null=True)
-    meta_description = models.TextField(max_length=20480, default="")
-    tags = models.ManyToManyField(CMSTags)
+    meta_description = models.TextField(max_length=20480, default="", blank=True)
+    tags = models.ManyToManyField(CMSTags, blank=True )
+    
+    def __str__(self):
+        return self.content
 
 class CMSTemplates(models.Model):
     name = models.CharField(max_length=1024, default="page.html")
@@ -171,13 +181,27 @@ class CMSPageTypes(models.Model):
     page_type = models.CharField(max_length=64, default="DefaultType")
     text = models.CharField(max_length=128, default="default class")
     view_class = models.CharField(max_length=256, default="DefaultView")
+    view_template = models.CharField(max_length=32, default=None)
+    
+    
+    def save(self, *args, **kwargs):
+        #if (self.pk is None) and (self.view_template is None):
+        if (self.view_template is None):
+            #We only care to put the view template as the name of the view_class
+            #during the creation.
+            self.view_template = "{}.html".format(self.view_class)
+        
+        super(CMSPageTypes, self).save(*args, **kwargs)
+    
+
+    
     
     def __str__(self):
         return self.text
     
 class CMSEntries(models.Model):
     title = models.CharField(max_length=1024, default=None)
-    path = models.CharField(max_length=2000, default="/")
+    path = models.ForeignKey(CMSPaths, null=True)
     slug = models.SlugField(max_length=1024)
     
     #We make the content a many to many to be able to handle multiple
@@ -186,12 +210,15 @@ class CMSEntries(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     
     page_type = models.ForeignKey(CMSPageTypes, null=True)
-    template = models.ForeignKey(CMSTemplates, null=True)
+    template = models.ForeignKey(CMSTemplates, null=True, blank=True)
     
     frontpage = models.BooleanField(default=False)
     published = models.BooleanField(default=False)
 
     page_number = models.IntegerField(default=1)
+    
+    def __str__(self):
+        return self.title
     
 
   

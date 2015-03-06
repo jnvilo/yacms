@@ -1,3 +1,6 @@
+class PageDoesNotExist(Exception):
+    pass
+    
 class PageClassNotFound(Exception):
     pass
 

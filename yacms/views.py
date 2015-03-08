@@ -10,6 +10,7 @@ from PIL import Image
 import threading
 
 from bs4 import BeautifulSoup
+import simplejson as json
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
@@ -50,6 +51,7 @@ from . serializers import CMSEntrySerializer
 from . serializers import CMSMarkUpSerializer
 from . serializers import CMSTemplatesSerializer
 from . serializers import CMSPathsSerializer
+from . serializers import CMSEntryExpandedSerializer
 
 
 from .models import CMSPageTypes
@@ -202,6 +204,9 @@ class CMSEntriesROAPIView(generics.ListAPIView):
     serializer_class = CMSEntrySerializer
     filter_class = CMSEntriesFilter
     permission_classes = (IsAuthenticated,)
+    
+    
+    
 
 class CMSEntriesAPIView(APIView):
     """
@@ -220,18 +225,26 @@ class CMSEntriesAPIView(APIView):
         Get a list of all available PageTypes
         """
         format = kwargs.get("format", None)
-        parent_id = self.request.QUERY_PARAMS.get('parent_id', None)
+        parent_id  = self.request.QUERY_PARAMS.get('parent', None)
         page_id = self.request.QUERY_PARAMS.get('id', None)
+        page_type_id = self.request.QUERY_PARAMS.get('page_type', None)
+        expand=self.request.QUERY_PARAMS.get('expand', None)
         
         cmsentries = CMSEntries.objects.all()
         
         if parent_id is not None:
-            cmsentries = cmsentries.filter(path__parent__id=parent_id)        
+            cmsentries = cmsentries.filter(path__parent__id=parent_id) 
+            
+        if page_type_id:
+            cmsentries = cmsentries.filter(page_type=page_type_id)
         
         if page_id is not None:
             cmsentries = cmsentries.filter(id=page_id)
     
-        serializer = CMSEntrySerializer(cmsentries, many=True)
+        if expand:
+            serializer = CMSEntryExpandedSerializer(cmsentries, many=True)
+        else:
+            serializer = CMSEntrySerializer(cmsentries, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -265,7 +278,17 @@ class CMSContentsAPIView(APIView):
 
         format = kwargs.get("format", None)
         pagetypes = CMSContents.objects.all()
+        
+        
+        
+        page_id = self.request.QUERY_PARAMS.get('id', None)
+        
+        if page_id is not None:
+            pagetypes = pagetypes.filter(id=page_id);
+            
+        
         serializer = CMSContentsSerializer(pagetypes, many=True)
+        
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -275,6 +298,35 @@ class CMSContentsAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, format=None):
+        
+       
+        serializer = CMSContentsSerializer(data=request.data)
+        
+        id = request.data.get("id", None)
+        
+        if not id:
+            res = {"code": 400, "message": "PUT request requires an id parameter"}
+            return Response(data=json.dumps(res), status=status.HTTP_200_OK)            
+         
+        if serializer.is_valid():
+            cmscontent_object = CMSContents.objects.get(id=id)
+            cmscontent_object.content = request.data.get("content")
+            cmscontent_object.save()
+            
+            include_html = request.GET.get("include_html", None)
+            if include_html:
+                #Custom pack results:
+                cmscontent_dict = model_to_dict(cmscontent_object)
+                cmscontent_dict["html"] = cmscontent_object.html
+                
+                return Response(cmscontent_dict, status=status.HTTP_202_ACCEPTED)
+            else:
+                serializer = CMSContentsSerializer(cmscontent_object)
+                return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

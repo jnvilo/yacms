@@ -48,3 +48,13 @@ class CMSEntrySerializer(serializers.ModelSerializer):
         fields = ('id','title','path','slug','content','date_created',
                   'page_type','template','frontpage','published',
                    'page_number')
+        
+class CMSEntryExpandedSerializer(serializers.ModelSerializer):
+    
+    path = serializers.StringRelatedField()
+    
+    class Meta:
+        model = CMSEntries
+        fields = ('id','title','path','slug','content','date_created',
+                  'page_type','template','frontpage','published',
+                   'page_number')

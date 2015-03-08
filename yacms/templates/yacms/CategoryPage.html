@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block TITLE%} {{view_object.title}}{% endblock TITLE %}
+{% block BODY_TITLE%} {{view_object.title}}{% endblock BODY_TITLE %}
+{
+
+{% block MAIN_CONTAINER_BLOCK %}
+<div class="row-fluid">
+
+<div class="cmsentries">   
+  {% for article in view_object.articles %}
+    <div class="cmsentry">
+        <h2 class="cmsentry title"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
+        <p>{{article.created_timestamp}}</p>  
+        <p>{{ article.content|safe|truncatewords_html:100 }}</p>
+    </div>
+    {% endfor %}
+
+</div>  
+  
+    
+  <div class="row-fluid">
+        <form class="form" id="createpage_form">
+            <div class="row-fluid">
+                <div class="control-group span4">
+                    <input id="createpage_title" type="text" placeholder="title" class="input-block-level">
+                        </div>
+                            <div class="control-group span4">
+                                <input id="createpage_slug" type="text" placeholder="slug" class="input-block-level" >
+                            </select>
+                            </div>
+                        <div class="control-group span2">
+                            <select id="createpage_pagetype_select" type="text" class="input-block-level"   style="height: 40px;">
+                               
+                            </select>
+                        </div>
+                        <div class="control-group span2"><button class="btn btn-primary" type="button" style="height: 40px;" id="createpage_button">Create Page</button></div>
+            </div>
+        </form>
+    </div>
+  <div id="notifications"></div>
+  <div id="category_table"></div>
+  
+</div>
+{% endblock MAIN_CONTAINER_BLOCK %}
+
+{% block SCRIPTS_BLOCK %}
+    <script src="{% static "ejs/ejs.js" %}"></script>
+   
+    <script src="{% static "yacms/js/category.js" %}"></script>
+    
+  
+{% endblock SCRIPTS_BLOCK %}
+    

@@ -182,8 +182,10 @@ class YACMSViewObject(object):
         d =  model_to_dict(self.page_object)
         path_str = self.page_object.path.path
         d["path_str"] = path_str
+        
+        return d
     
     @property
     def json_data(self):
-        return json.dumps(self.data)
-        
+        value =  json.dumps(self.data)
+        return value

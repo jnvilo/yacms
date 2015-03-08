@@ -26,6 +26,58 @@ function convertToSlug(Text)
 }
 
 
+/** DISPLAY CHILD PAGES FUNCITONS **/
+
+function update_childpages_table_state(){
+
+    var page_id  = cmsentry_object.id //Get the id from the global cmsentry_object
+    url = "/cms/api/v1/cmsentries?id="+page_id;
+    
+}
+
+
+function get_child_categories(){
+    /**  Get the list of child categories via AJAX. **/
+    var parent_id = cmsentry_object.id;
+    var page_type_id = cmsentry_object.page_type;
+
+    url = "/cms/api/v1/cmsentries?parent=" + parent_id + "&expand=True&page_type=" + page_type_id; 
+    
+     $.get(url, function(data) {
+        /** Code here gets executed when success. **/
+        console.log(data);
+        html = new EJS({url: '/static/yacms/js/templates/category_table.ejs'}).render({ cmsentry_objects : data });
+        console.log(html);
+        $("#category_table").html(html);
+    })
+    .done(function() {
+        /** Code here gets executed also on success**/
+        console.log( "second success" );
+        })
+        
+    .fail(function() {
+        /** Code here gets executed on fail **/
+        alert( "error" );
+        })
+        
+    .always(function() {
+        /** This code will always execute after a request **/
+        console.log( "finished" );
+        })
+
+    
+
+}
+
+
+$(function() {
+    /** Update the category table list on document load.**/
+    get_child_categories();    
+});
+
+
+
+/** CREATE PAGE FUNCTIONS **/
 $('#createpage_title').blur(function() {
     /**
     When the user leaves the input we update the slug input with 
@@ -40,73 +92,14 @@ $('#createpage_title').blur(function() {
 });
 
 
-function to_url(parent_path, slug){
-
-    var path;
-    
-    if (parent_path != "/"){
-        path = parent_path + "/" + slug;
-    }else{
-        path = "/" + slug;
-    }    
-    var url = "<a href=\"/cms"+ path  + " \">" + path + "</a>" ;
-    console.log(url);
-    return url
-}
-
-function create_child_cmsentries_table(data){
-
-    var t = "<table  class=\"table table-hover\">";
-    t = t + "<thead><tr><th>Title</th><th>Path</th><th>Published</th></tr></thead><tbody>";
-    
-    for (var x = 0; x < data.length; x++){
-    
-        t = t + "<tr>";
-        t = t + "<td>"+ data[x].title +"</td>";
-        t = t + "<td>"+ to_url(cmsentry_object.path_str,data[x].slug) +"</td>";
-        t = t + "<td></td></tr>";
-        
-        console.log(data[x]) ;          
-    }
-    
-    t = t + "</tbody></table>";
-    $("#cmsentries_table").html(t);
-
-}
-
-function update_cmsentries_list(parent_id){
-    // This gets the list of cmsentries and updates the table.
-  
-    url = "/cms/api/v1/cmsentries/?parent_id=" + parent_id;      
-    $.get( url, function(data) {
-        /** Code here gets executed when success. 
-        We get a list of cmsentries.        
-        **/
-                    
-        create_child_cmsentries_table(data);
-            
-    })
-    
-   .done(function() {
-    /** Code here gets executed also on success**/
-     console.log( "second success" );
-   })
-   .fail(function() {
-   /** Code here gets executed on fail **/
-     alert( "error" );
-   })
-   .always(function() {
-   /** This code will always execute after a request **/
-     console.log( "finished" );
-   });
-}
-
-$(function() {
-    update_cmsentries_list(cmsentry_object.id);
-});
-
 function create_cmsentry(title, slug, page_type, path){
+    /** 
+    Creates a page given a title, slug, page_type and the path of the 
+    current page.
+    **/
+    
     console.log(title);
+    
     var data = { title: title, slug: slug, page_type: page_type, path: path};
     console.log("Going to send: " + data);
     url = "/cms/api/v1/cmsentries";
@@ -117,19 +110,32 @@ function create_cmsentry(title, slug, page_type, path){
               success: function(data)
               {
                    console.log("created cmsentries: " +  data);
-                   update_cmsentries_list(cmsentry_object.id);    
+                   get_child_categories();
+                   
+                   //set notification that we have created succesfully.
+                   //var template = 
+                   //html = html = new EJS({text: template}).render(data) 
+                    var message = "Succesfully created : " + title;
+                    alertsuccess(message, "notifications");
+                    asdfd
+                   
+                   
               }
         });
+          
 }
-
 
 
 $("#createpage_button").click(function() {
     /**
-    The createplage form button click handler.
-    When the user clicks the button , we want to post the 
-    contents of the form to  the api backend.
+    The createpage form button click handler. When the user clicks the button,
+    we want to post the  contents of the form to  the api backend.
+    
+    This also calls create_cmsentry after it has created the new     
     **/
+    
+    
+    console.log("#createpage_button clicked.");
     var csrf = $.cookie()
     var data = $("#createpage_form").serialize();
     
@@ -140,6 +146,7 @@ $("#createpage_button").click(function() {
      
     var path = ""
     
+    console.log("CMSENTRY: ", cmsentry_object);
     if (cmsentry_object.path_str == "/"){
         path = "/" + slug;        
     } else{
@@ -204,20 +211,6 @@ $(function() {
         $('#createpage_pagetype_select').replaceOptions(option_array);
         
     })
-    
-        .done(function() {
-         /** Code here gets executed also on success**/
-          console.log( "second success" );
-        })
-        
-        .fail(function() {
-        /** Code here gets executed on fail **/
-          alert( "error" );
-        })
-        
-        .always(function() {
-        /** This code will always execute after a request **/
-          console.log( "finished" );
-        })
+   
    
 });

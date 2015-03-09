@@ -20,59 +20,56 @@ function save_content(page_id){
     console.log("");
 }
       
-function load_content(content_id){
-    var url = "/cms/api/v1/cmscontents?id=" + content_id;
-    var result; 
-    console.log("content_id is ", content_id);
-   
-    $.get(url, function(data) {
-        /** Code here gets executed when success. data contains the response. **/
-        console.log("AJAX: " , data[0]);
-
-        result = data[0]["content"];
-        
-        //Save this data into the global cmsentry_object as content_text
-        cmsentry_object["content_object"] = data[0];  
-        console.log("Retrieved content: " , cmsentry_object["content_object"]);
-        
-        $("#page_editor_textarea").val(result);
-        //With this we update the editor        
-    });
-    console.log("load_content returning: ", result );
-}
-
-function load_cmsentries_content(page_id){
-
-    console.log("Entering : load_cmsentries_content");
-    /**
-    Does an ajax call to /cms/api/v1/cmsentries?id=page_id to retrieve
-    the list of contents of the current page. 
-    **/
-
-    var url = "/cms/api/v1/cmsentries?id="+page_id; // the url to fetch.
-    $.get(url, function(cmsentries) {
-        /** Code here gets executed when success. data contains the response. **/
-        var data = cmsentries[0];
-        var content_ids = cmsentries[0].content;
-        
-        if (content_ids.length !=0){
-            load_content(content_ids[0]);
-            /* cmsentry_object to contain the content_id */  
-            cmsentry_object["content_id"] = content_ids[0];
-            console.log("Content ID: ", cmsentry_object["content_id"]);
-            
-        } 
-        else{
-            $("#page_editor_textarea").val("No page content");         
-        }
-    });
-}
 
 $(function(){
-    /* Gets executed when the page loads */
-    //Create the static HTML
-    load_cmsentries_content(cmsentry_object.id);    
-    console.log("Done");
+    /* On Document load, initialize the page_editor. Editing this in the web page. */ 
+    var page_id = cmsentry_object.id;
+    var cmsentries_url = "/cms/api/v1/cmsentries?id="+page_id; // the url to fetch.
+
+
+    //Update the Content Editor
+    if (cmsentry_object.content.length != 0 ){
+        
+        /* The model id of the content object we want can be obtained
+        from the global cmsentry_object. This cmsentry_object is ensured
+        to be present in the html header injected by a script.*/
+    
+        var content_id = cmsentry_object.content[0];
+        var content_url = "/cms/api/v1/cmscontents?id=" + content_id;
+        
+        $.get(content_url, function(data) {
+        /** Code here gets executed when success. data contains the response. **/
+            result = data[0]["content"];
+            cmsentry_object["content_object"] = data[0]; //tuck it away into cmsentry_object.
+            cmsentry_object["context_text"] = result
+        })
+         .done(function() {
+            $("#page_editor_textarea").val(cmsentry_object.context_text);
+        
+        })
+        
+    } else{
+        $("#page_editor_textarea").val("Article has no content.");    
+    }
+    
+    
+    //Set the frontpage and publish values
+    if (cmsentry_object.frontpage == true){
+         $("#icon_frontpage").attr("class","icon-check");          
+    }else{
+        $("#icon_frontpage").attr("class","icon-check-empty");           
+        
+    }
+    
+    
+    //Set the publish button value
+    if (cmsentry_object.published == true){
+        $("#icon_published").attr("class","icon-check");          
+    }else{
+        $("#icon_published").attr("class","icon-check-empty");           
+    }
+    
+    
 });
 
 
@@ -81,16 +78,66 @@ $('#button_frontpage').click(function(){
     
     var icon = $("#icon_frontpage").attr("class");
     console.log(icon);
-     
-    if (icon == "icon-check-empty"){
-        //Make ajax call 
-        $("#icon_frontpage").attr("class","icon-check");          
     
+    if (cmsentry_object.frontpage == true){
+        cmsentry_object.frontpage = false;
     }else{
-        $("#icon_frontpage").attr("class","icon-check-empty");           
+        cmsentry_object.frontpage = true;    
     }
+        
+    //Now make an ajax call to save the state.
+    $.ajax({
+       type: "PUT",
+       url: "/cms/api/v1/cmsentries/",
+       data:  { frontpage : cmsentry_object.frontpage, id: cmsentry_object.id }, // serializes the form's elements.
+       success: function(data)
+       {
+            cmsentry_object["frontpage"] = data["frontpage"];
+            console.log("Frontpage : ", cmsentry_object["frontpage"]);
+            //Set the frontpage and publish values
+            if (cmsentry_object.frontpage == true){
+                console.log("Its True so setting icon to check");
+                $("#icon_frontpage").attr("class","icon-check");   
+            
+            }else{
+                console.log("setting icon to check-empty", cmsentry_object["frontpage"]);
+                $("#icon_frontpage").attr("class","icon-check-empty");           
+            }    
+       }
+    });
+   
 });
 
+
+$('#button_published').click(function(){
+    
+    var icon = $("#icon_published").attr("class");
+    if (cmsentry_object.published == true){
+        cmsentry_object.published = false;
+    }else{
+        cmsentry_object.published = true;    
+    }
+        
+    //Now make an ajax call to save the state.
+    $.ajax({
+       type: "PUT",
+       url: "/cms/api/v1/cmsentries/",
+       data:  { published : cmsentry_object.published, id: cmsentry_object.id }, // serializes the form's elements.
+       success: function(data)
+       {
+            cmsentry_object["published"] = data["published"];
+            console.log("published : ", cmsentry_object["published"]);
+            //Set the published and publish values
+            if (cmsentry_object.published == true){
+                $("#icon_published").attr("class","icon-check");   
+            
+            }else{
+                $("#icon_published").attr("class","icon-check-empty");           
+            }    
+       }
+    });
+   
+});
 
 $('#button_save').click(function(){
     console.log("clicked the save button");
@@ -113,17 +160,3 @@ $('#button_save').click(function(){
 });
 
 
-$('#button_publish').click(function(){
-    console.log("clicked the button_publish");  
-    
-    var icon = $("#icon_publish").attr("class");
-    console.log(icon);
-     
-    if (icon == "icon-check-empty"){
-        //Make ajax call 
-        $("#icon_publish").attr("class","icon-check");          
-    
-    }else{
-        $("#icon_publish").attr("class","icon-check-empty");           
-    }
-});

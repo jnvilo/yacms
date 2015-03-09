@@ -207,7 +207,7 @@ class CMSPageTypes(models.Model):
 class CMSEntries(models.Model):
     title = models.CharField(max_length=1024, default=None)
     path = models.ForeignKey(CMSPaths, null=True)
-    slug = models.SlugField(max_length=1024)
+    slug = models.SlugField(max_length=1024, null=True)
     
     #We make the content a many to many to be able to handle multiple
     #so we can version by published.
@@ -225,7 +225,10 @@ class CMSEntries(models.Model):
     def __str__(self):
         return self.title
     
-
+    @property
+    def view(self):
+        from yacms.view_handlers import YACMSViewObject
+        return YACMSViewObject(page_object=self)
   
 
     

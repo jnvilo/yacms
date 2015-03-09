@@ -15,7 +15,7 @@
 {% block MAIN_CONTAINER_BLOCK %}
 <div class="row-fluid ">
   <div id="page_body">
-    {{view_object.content | safe }}
+    {{view_object.html_content | safe }}
   </div>
   <hr/> 
 </div>
@@ -41,7 +41,7 @@
                           <div id="button_frontpage" class="editor_button"><i id="icon_frontpage" class="icon-check"></i><span>Frontpage</span></div>
                       </td>
                       <td>
-                          <div id="button_publish" class="editor_button"><i id="icon_publish" class="icon-check"></i><span>Publish</span></div>
+                          <div id="button_published" class="editor_button"><i id="icon_published" class="icon-check"></i><span>Publish</span></div>
                       </td>	
                       <td>
                           <div id="IPSUMBUTTON" class="editor_button"><i id="icon_paste" class="icon-paste"></i><span>Paste</span></div>

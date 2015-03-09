@@ -20,6 +20,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.forms.models import model_to_dict
+from django.http import Http404
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
@@ -258,7 +259,56 @@ class CMSEntriesAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, **kwargs):
+        serializer = CMSEntrySerializer(data=request.data)
+        
+      
+        
+        format = kwargs.get("format", None)
+        expand = self.request.QUERY_PARAMS.get('expand', None)
+        
+        id = request.data.get("id", None)
+        
+        
+        if not id:
+            res = {"code": 400, "message": "PUT request requires an id parameter"}
+            return Response(data=json.dumps(res), status=status.HTTP_400_BAD_REQUEST)            
+        
+        if serializer.is_valid():
+            cmsentry_object = CMSEntries.objects.get(id=id)
+            
+            frontpage = cmsentry_object.frontpage
+            published = cmsentry_object.published
+            
+            #Now update the cmsentry_object with the attributes from 
+            #the request.data
+            
+            for key in request.data:
+                if hasattr(cmsentry_object, key) and (key != "id"):
+                    
+                    value = request.data.get(key)
+                    if value == "true":
+                        value = True
+                    if value == "false":
+                        value = False
+                    setattr(cmsentry_object, key, value)
+            
+            cmsentry_object.save()
+            
+            #if expand:
+                
+            #We return only the values that we have set. 
 
+            return_dict = {}
+            for key in request.data:
+                value = getattr(cmsentry_object, key)
+                return_dict[key] = value
+                
+            return Response(return_dict, status=status.HTTP_200_OK) 
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+        
+        
 
 class CMSContentsAPIView(APIView):
     """
@@ -302,7 +352,7 @@ class CMSContentsAPIView(APIView):
         
        
         serializer = CMSContentsSerializer(data=request.data)
-        
+       
         id = request.data.get("id", None)
         
         if not id:
@@ -367,15 +417,20 @@ class CMSPageView(View):
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
         
-        if path:
-            obj = YACMSViewObject(path=path)
-        elif page_id:
-            obj = YACMSViewObject(page_id=page_id)
-        else:
-            #Lets make path = "/" as default.
-            obj = YACMSViewObject(path=u"/")
-        return obj
+        try:
+            if path:
+                obj = YACMSViewObject(path=path)
+            elif page_id:
+                obj = YACMSViewObject(page_id=page_id)
+            else:
+                #Lets make path = "/" as default.
+                obj = YACMSViewObject(path=u"/")
+            return obj
+        except ObjectDoesNotExist as e:
+            raise Http404("Page Does Not Exist.")
         
+      
+            
     
             
     def get(self,request, **kwargs):

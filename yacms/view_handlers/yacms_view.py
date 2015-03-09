@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 
-from yacms.models import CMSEntries
+
 from django.conf import settings
 from django.forms.models import model_to_dict
 from loremipsum import generate_paragraphs
 from creole import creole2html
 import simplejson as json
+from bs4 import BeautifulSoup
 class YACMSViewObject(object):
     
     """
@@ -54,11 +55,13 @@ class YACMSViewObject(object):
         """
         Loads the database entry object. Raises PageDoesNotExist
         """
+       
         if (self._obj is None) or (reload):
-        
+            from yacms.models import CMSEntries
             if self.path:
                 if not self.path.startswith("/"):
                     self.path =   "/" + self.path
+                
                 obj = CMSEntries.objects.get(path__path=self.path)
             elif self.page_id:
                 obj = CMSEntries.objects.get(pk=self.page_id)
@@ -98,8 +101,9 @@ class YACMSViewObject(object):
     def path_str(self):
         p = self.page_object.path.path
         return p
+    
     @property
-    def content(self):
+    def html_content(self):
         """The html content of the page"""
         
         #TODO: Fix me: This loads only the first content entry. 
@@ -120,10 +124,10 @@ class YACMSViewObject(object):
                 return "Error: There is no content for this page."
         
         #TODO: Fix me: right now hardcoded to creole.        
-        html_content =  creole2html(content_obj.content)
+        _html_content =  creole2html(content_obj.content)
     
         
-        return html_content
+        return _html_content
     
     @property
     def meta_keywords(self):
@@ -140,19 +144,20 @@ class YACMSViewObject(object):
     def date_modified(self):
         """Date the page was modified"""
         pass
-    
 
     @property
-    def breadcrumbs(self):
-        """ A breadcrumb. This would serialize as an ordered dict. 
+    def introduction(self):
+        #We use beautifulsoup to extract the first paragraph
+        html_content = self.html_content
+       
+        soup = BeautifulSoup(html_content)
+        intro = soup.find("p")
+        return str(intro)
+            
         
-        [ { "path": "/", "text": "/"}, 
-          { "path":"/linux","text": "Linux"},
-          { "path":"/linux/sysadmin", "text": "SysAdmin"}
-          ]
-        """
+        
     
-        pass
+
     
     @property
     def template(self):

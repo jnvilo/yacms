@@ -3,138 +3,163 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template import Template, Context
 from django.template.loader import get_template
 
-from yacms.models import Paths, Pages
+from yacms.models import CMSEntries
 register = template.Library()
 
-
-class FrontPageNode(template.Node):
-
-    def __init__(self,values):
-
-        self.empty = False
-        self.template = get_template("yacms/tags/frontpage_pages.html")
-        try:
-
-            path_obj = Paths.objects.get(path="/")
-            page_obj = Pages.objects.get(path=path_obj)
-            
-            self.pageview = page_obj.view
-            
-        except ObjectDoesNotExist as e:
-            self.pageview = None
-
-
+class FrontPageArticles(template.Node):
+    
     def render(self, context):
-        request = context.get("request")
-        self.c = Context({"request":request,
-                          "pageview": self.pageview,
-                        })
-        return self.template.render(self.c)
+        cmsentry_objs = CMSEntries.objects.filter(frontpage = True, published=True)
         
-def frontpage_pages(parser, token):
+        #package each of the content into a YACMSViewObject
+        
+        view_list = []
+        for each in cmsentry_objs:
+            view_list.append(each.view)
+        
+        context["frontpage_entries"] = view_list
+        return ''
+        
+def get_frontpage_entries(parser, token):
+    
+    #values = token.split_contents()
+    return FrontPageArticles()
+
+register.tag("get_frontpage_entries", get_frontpage_entries)
+        
+        
+        
+class VerticalCategoryMenuNodes(template.Node):
+    
+    def __init__(self, path):
+        self.path = path
+    
+    def render(self, context):
+        
+        
+
+
+class CategoryMenuBar(template.Node):
+    
+    def __init__(self, params):
+        self.params = params
+    
+    def render(self, contenxt):
+        
+        if len(self.params) == 0:
+            return "category_menu_bar requires a string containt space separated slugs of category names."
+        else:
+            return self.html(self.params)
+    
+    def get_dropdown_menu(self, cmsentry_object):
+        
+        path_obj = cmsentry_object.path
+        obj_list = CMSEntries.objects.filter(path__parent = path_obj, page_type__page_type="CATEGORY")
+        result = """<ul class="dropdown-menu">"""
+        if len(obj_list) == 0:
+            return None
+        
+        else:
+            
+            for obj in obj_list:
+                result += """<li><a href="/cms{}" title>{}</a></li>""".format(obj.path.path, obj.title)
+                second_level_result = self.get_second_level_children(obj)
+                
+                if second_level_result:
+                    result += second_level_result
+                
+            result += "</ul>"
+                
+            return result
+                
+    def get_second_level_children(self, cmsentry_object):
+        
+        path_obj = cmsentry_object.path
+        obj_list = CMSEntries.objects.filter(path__parent = path_obj, page_type__page_type="CATEGORY")
+        result = ""
+        if len(obj_list) == 0:
+            return None
+        else:
+            for obj in obj_list:
+                result += """<li ><a href="/cms{}" title>&nbsp;&nbsp;{}</a></li>""".format(obj.path.path, obj.title)    
+            return result        
+        
+    def html(self, params):
+
+        #Build a datastructure that holds our menua
+        menu_dict = { }
+        
+        result = ""
+        for each in params:
+            if not each.startswith("/"):
+                each = "/" + each
+               
+            try: 
+                cmsentry_obj = CMSEntries.objects.get(path__path=each)
+                result += """<li class="dropdown">"""
+                #Do we have children? 
+                result += """ <a href="/cms{}">{}</a> """.format(cmsentry_obj.path.path, cmsentry_obj.title)
+                child_menu = self.get_dropdown_menu(cmsentry_obj)
+                
+                if child_menu:
+                    result += child_menu
+                
+                result += "</li>"
+            
+            except ObjectDoesNotExist as e:
+                result += """<li>{} does not exist</li>""".format(each)
+            
+        return result
+        
+    
+    
+    
+def category_menu_bar(parser, token):
+    
     values = token.split_contents()
-    return FrontPageNode(values[1:])
-
-register.tag("frontpage_pages", frontpage_pages)
-
-
-class ContentEditorNode(template.Node):
+    params = values[1:]
+    return CategoryMenuBar(params)
     
-    def __init__(self):
-        template_name = "yacms/tags/content_editor_node.html"
-        self.template = get_template(template_name)
-  
+register.tag("category_menu_bar", category_menu_bar)
+
+
+
+
+class BreadCrumbs(template.Node):
+   
         
-    
-    def render(self, context):  
-        request = context.get("request")
-        pageview = context.get("pageview")
-        self.c = Context({"request":request,
-                          "pageview":pageview,
-                          })        
-        return self.template.render(self.c)
-    
-def content_editor_node(parser,token):
-    return ContentEditorNode()
+    def render(self, context):
 
-register.tag("content_editor_node", content_editor_node)
-
-
-class MetaEditorNode(template.Node):
+        try:
+            view_object = context["view_object"]
+        except KeyError as e:
+            return ''
+        path = view_object.page_object.path.path
+        entries_list = []
     
-    def __init__(self):
-        template_name = "yacms/tags/meta_editor_node.html"
-        self.template = get_template(template_name)
+        while 1:
+            path = path[:path.rfind("/")]
+            if path == '':
+                break
+            cmsentry_obj = CMSEntries.objects.get(path__path = path)
+            entries_list.append(cmsentry_obj)
+        
+        entries_list.reverse()
+        
+        result_list = []
+        
+        for entry in entries_list:
+            r = { "path": "/cms" + entry.path.path, "text": entry.title }
+            result_list.append(r)
+        
+        context['breadcrumbs'] = result_list
+        
+        
+        return ''
+    
+def get_breadcrumbs(parser, token):
+        
+    values = token.split_contents()
   
-    def render(self, context):  
-        request = context.get("request")
-        pageview = context.get("pageview")
-        self.c = Context({"request":request,
-                          "pageview":pageview,
-                          })        
-        return self.template.render(self.c)
-    
-def meta_editor_node(parser,token):
-    return MetaEditorNode()
-
-register.tag("meta_editor_node", meta_editor_node)
-
-class ImageUploaderNode(template.Node):
-    
-    def __init__(self):
-        template_name = "yacms/tags/image_uploader_node.html"
-        self.template = get_template(template_name)
-  
-    def render(self, context):  
-        request = context.get("request")
-        pageview = context.get("pageview")
-        self.c = Context({"request":request,
-                          "pageview":pageview,
-                          })        
-        return self.template.render(self.c)
-    
-def image_uploader_node(parser,token):
-    return ImageUploaderNode()
-
-register.tag("image_uploader_node", image_uploader_node)
-
-
-
-class MemberPagesAdminNode(template.Node):
-    
-    def __init__(self):
-        template_name = "yacms/tags/member_pages_admin.html"
-        self.template = get_template(template_name)
-  
-    def render(self, context):  
-        request = context.get("request")
-        pageview = context.get("pageview")
-        self.c = Context({"request":request,
-                          "pageview":pageview,
-                          })        
-        return self.template.render(self.c)
-    
-def member_pages_admin_node(parser,token):
-    return MemberPagesAdminNode()
-
-register.tag("member_pages_admin_node", member_pages_admin_node)
-
-
-class PageTagEditorNode(template.Node):
-    
-    def __init__(self):
-        template_name = "yacms/tags/member_pages_admin.html"
-        self.template = get_template(template_name)
-  
-    def render(self, context):  
-        request = context.get("request")
-        pageview = context.get("pageview")
-        self.c = Context({"request":request,
-                          "pageview":pageview,
-                          })        
-        return self.template.render(self.c)
-    
-def page_tag_editor_node(parser,token):
-    return MemberPagesAdminNode()
-
-register.tag("member_pages_admin_node", member_pages_admin_node)
+    return BreadCrumbs()
+register.tag("get_breadcrumbs", get_breadcrumbs)

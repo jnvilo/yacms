@@ -9,7 +9,9 @@ from . views import  ( CMSPageTypesAPIView,
                        CMSTemplatesAPIView,
                        CMSPageView,
                        CMSPathsAPIView,
-                       CMSEntriesROAPIView)
+                       CMSEntriesROAPIView,
+                       LoremIpsumAPIView,
+                       )
 
 
 #info_dict = { 
@@ -43,6 +45,7 @@ urlpatterns = [
     url(r'^api/v1/cmsmarkups', CMSMarkUpsAPIView.as_view(), name="cmscmsmarkups_apiview"),
     url(r'^api/v1/cmstemplates', CMSTemplatesAPIView.as_view(), name="cmstemplates_apiview"),
     url(r'^api/v1/cmspaths', CMSPathsAPIView.as_view(), name="cmspaths_apiview"),
+    url(r'^api/v1/loremipsum', LoremIpsumAPIView.as_view(), name="loremipsum"),
     
     
     #CMS API Custom Views

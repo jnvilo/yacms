@@ -155,10 +155,6 @@ class YACMSViewObject(object):
         return str(intro)
             
         
-        
-    
-
-    
     @property
     def template(self):
         
@@ -194,3 +190,19 @@ class YACMSViewObject(object):
     def json_data(self):
         value =  json.dumps(self.data)
         return value
+    
+    
+    def get_absolute_url(self):
+        cms_base_path = getattr(settings, "YACMS_BASEPATH", None)
+    
+        if not cms_base_path:
+            cms_base_path = "/cms"
+    
+        if not cms_base_path.ends_with("/"):
+            cms_base_path = cms_base_path.rstrip("/")
+    
+        #we assume here that self.path.path will always start with a /
+        return "{}{}".format(cms_base_path, self.page_object.path.path)
+
+    
+    

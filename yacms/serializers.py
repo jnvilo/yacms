@@ -15,6 +15,14 @@ from yacms.models import CMSEntries
 from yacms.models import CMSPaths
 
 
+class LoremIpsumSerializer(serializers.Serializer):
+    
+    num_paragraphs = serializers.IntegerField()
+    
+    class Meta:
+        fields = ['num_paragraphs']
+    
+
 class CMSPathsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CMSPaths

@@ -43,7 +43,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 
-from loremipsum import generate_paragraphs
+from loremipsum import get_paragraphs
 from creole import creole2html
 
 from . serializers import CMSPageTypesSerializer
@@ -53,6 +53,7 @@ from . serializers import CMSMarkUpSerializer
 from . serializers import CMSTemplatesSerializer
 from . serializers import CMSPathsSerializer
 from . serializers import CMSEntryExpandedSerializer
+from . serializers import LoremIpsumSerializer
 
 
 from .models import CMSPageTypes
@@ -61,7 +62,6 @@ from .models import CMSEntries
 from .models import CMSMarkUps
 from .models import CMSTemplates
 from .models import CMSPaths
-
 
 from . view_handlers import YACMSViewObject
 
@@ -76,6 +76,38 @@ except:
 def index(request, **kwargs):    
     return HttpResponse("Index page")
 
+
+class LoremIpsumAPIView(APIView):
+    
+    """Returns loremipsum paragraphs"""
+    authentication_classes = (authentication.SessionAuthentication, 
+                      authentication.TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+   
+    def get(self, request, **kwargs):
+        
+        data = { "message": "You need to send a post."}
+        return Response(data, status=status.HTTP_200_OK)
+        
+   
+    def post(self, request, **kwargs):
+        """Get X number of paragraphs"""
+        serializer = LoremIpsumSerializer(data=request.data)
+        if serializer.is_valid():
+            num_paragraphs = request.data.get("num_paragraphs")
+            
+            paragraphs_list  = get_paragraphs(int(num_paragraphs))
+            
+            html = ""
+            for paragraph in paragraphs_list:
+                html += "{}\n\n".format(paragraph)
+          
+            data = {"content" : html }
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+           
+        
+        
 
 class CMSPathsAPIView(APIView):
     """
@@ -246,6 +278,9 @@ class CMSEntriesAPIView(APIView):
             serializer = CMSEntryExpandedSerializer(cmsentries, many=True)
         else:
             serializer = CMSEntrySerializer(cmsentries, many=True)
+        
+        
+        
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -256,6 +291,15 @@ class CMSEntriesAPIView(APIView):
         
         if serializer.is_valid():
             serializer.save()
+            
+            cms_obj = CMSEntries.objects.get(id = serializer.data.get("id"))
+            
+            content = CMSContents()
+            content.content = "No content. Edit me."
+            content.save()
+            
+            cms_obj.content.add(content)
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -345,6 +389,9 @@ class CMSContentsAPIView(APIView):
         serializer = CMSContentsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            
+            print(serializer.data)
+             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

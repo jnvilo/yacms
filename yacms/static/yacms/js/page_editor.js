@@ -160,3 +160,20 @@ $('#button_save').click(function(){
 });
 
 
+$('#button_lorem_ipsum').click(function(){
+
+    var url = "/cms/api/v1/loremipsum";
+    $.ajax({
+           type: "POST",
+           url: url,
+           data:  { "num_paragraphs" : 5 }, // serializes the form's elements.
+           success: function(data)
+           {
+                console.log(data);
+                $("#page_editor_textarea").val(data.content);
+           }
+          
+         });
+         
+});
+    

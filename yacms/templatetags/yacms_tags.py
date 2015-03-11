@@ -27,16 +27,77 @@ def get_frontpage_entries(parser, token):
 
 register.tag("get_frontpage_entries", get_frontpage_entries)
         
+
+class VerticalCollapsedCategoryMenuNodes(template.Node):
+    
+    def __init__(self):
+        self.path = "/"
+        
+    def render(self, context):
+        obj = CMSEntries.objects.get(path__path = self.path)
+        obj_list = CMSEntries.objects.filter(path__parent__path=self.path, page_type__page_type="CATEGORY")
+        
+        html = """<select id="menu" name="menu">"""
+        html += """ <option value="/">Home</option>""".format(obj.path,obj.title)
+        
+        for obj in obj_list:
+            html += """ <option value="/cms{}">{}</option>""".format(obj.path.path, obj.title)
+            
+            #Get the children as well
+            child_obj_list = CMSEntries.objects.filter(path__parent=obj.path, page_type__page_type="CATEGORY")
+            for child_obj in child_obj_list:
+                html += """ <option value="/cms{}">&nbsp; - &nbsp;{}</option>""".format(child_obj.path.path, child_obj.title)      
+            
+            
+            
+        html += "</select><!--generated -->"
+        return html
+        
+ 
+def vertical_collapsed_menu_bar(parser, token):
+   
+    return VerticalCollapsedCategoryMenuNodes()
+            
+register.tag("vertical_collapsed_menu_bar", vertical_collapsed_menu_bar)
+
+       
+
         
         
 class VerticalCategoryMenuNodes(template.Node):
     
     def __init__(self, path):
         self.path = path
-    
+        
     def render(self, context):
+        obj = CMSEntries.objects.get(path__path = self.path)
+        obj_list = CMSEntries.objects.filter(path__parent__path=self.path, page_type__page_type="CATEGORY")
         
+        html = """<!--generated --><ul class="nav nav-list">"""
+        html += """<li class="nav-header"><a href="/cms/{}">{}</a></li>""".format(obj.path,obj.title)
         
+        for obj in obj_list:
+            html += """<li><a href="/cms{}" title>{}</a></li>""".format(obj.path.path, obj.title)
+            
+            #Get the children as well
+            child_obj_list = CMSEntries.objects.filter(path__parent=obj.path, page_type__page_type="CATEGORY")
+            for child_obj in child_obj_list:
+                html += """<li><a href="/cms{}" title>&nbsp; - &nbsp;{}</a></li>""".format(child_obj.path.path, child_obj.title)            
+            
+            
+            
+        html += "</ul><!--generated -->"
+        return html
+        
+ 
+def vertical_menu_bar(parser, token):
+    values = token.split_contents()
+    params = values[1:]
+    return VerticalCategoryMenuNodes(params[0])
+            
+register.tag("vertical_menu_bar", vertical_menu_bar)
+
+       
 
 
 class CategoryMenuBar(template.Node):

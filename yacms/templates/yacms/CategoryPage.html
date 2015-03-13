@@ -8,6 +8,11 @@
 {% block MAIN_CONTAINER_BLOCK %}
 <div class="row-fluid">
 
+
+{% comment %} 
+Here starts the main view for the article. non logged in
+{% endcomment%}
+
 <div class="cmsentries">   
   {% for article in view_object.articles %}
     <div class="cmsentry">
@@ -16,10 +21,9 @@
         <p>{{ article.html_content|safe|truncatewords_html:100 }}</p>
     </div>
     {% endfor %}
-
 </div>  
   
-    
+{% if view_object.request.user.username == "admin" %}
   <div class="row-fluid">
         <form class="form" id="createpage_form">
             <div class="row-fluid">
@@ -41,15 +45,18 @@
     </div>
   <div id="notifications"></div>
   <div id="category_table"></div>
-  
-</div>
+  {% endif %}
+ </div>
+
 {% endblock MAIN_CONTAINER_BLOCK %}
 
 {% block SCRIPTS_BLOCK %}
-    <script src="{% static "ejs/ejs.js" %}"></script>
-   
+
+  
+{% if view_object.request.user.username == "admin" %}
+    <script src="{% static "ejs/ejs.js" %}"></script>   
     <script src="{% static "yacms/js/category.js" %}"></script>
-    
+{% endif %}    
   
 {% endblock SCRIPTS_BLOCK %}
     

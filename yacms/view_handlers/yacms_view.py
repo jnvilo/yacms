@@ -198,11 +198,20 @@ class YACMSViewObject(object):
         if not cms_base_path:
             cms_base_path = "/cms"
     
-        if not cms_base_path.ends_with("/"):
+        if not cms_base_path.endswith("/"):
             cms_base_path = cms_base_path.rstrip("/")
     
         #we assume here that self.path.path will always start with a /
-        return "{}{}".format(cms_base_path, self.page_object.path.path)
-
+        abs_url =  "{}{}".format(cms_base_path, self.page_object.path.path)
+        return abs_url
     
+   
+    
+    @property
+    def request(self):
+        return self._request
+    
+    @request.setter
+    def request(self, value):
+        self._request = value
     

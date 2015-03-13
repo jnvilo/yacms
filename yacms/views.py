@@ -457,7 +457,7 @@ class CMSPageView(View):
     The main interface to the website.  
     """
     
-    def get_object(self, **kwargs):
+    def get_object(self,**kwargs):
         """
         returns a YACMSViewObject
         """
@@ -485,6 +485,7 @@ class CMSPageView(View):
         Just get the page and return it.
         """
         obj = self.get_object(**kwargs)
+        obj.request = request
         
         template = obj.template
         

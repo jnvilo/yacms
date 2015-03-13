@@ -15,12 +15,17 @@
 {% block MAIN_CONTAINER_BLOCK %}
 <div class="row-fluid ">
   <div id="page_body">
+  <a href="/login/facebook?next={{ view_object.request.get_full_path }}"> | Login with Facebook</a>
     {{view_object.html_content | safe }}
   </div>
   <hr/> 
 </div>
 
+
+{% if view_object.request.user.username == "admin" %}
 <div class="row-fluid">
+
+
 
 <div class="tabbable"> <!-- Only required for left/right tabs -->
     <ul class="nav nav-tabs">
@@ -70,6 +75,8 @@
     
   </div>
 </div>
+
+{% endif %}
 {% endblock MAIN_CONTAINER_BLOCK %}
 
 {% block SCRIPTS_BLOCK %}

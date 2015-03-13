@@ -172,9 +172,7 @@ class CategoryMenuBar(template.Node):
             
         return result
         
-    
-    
-    
+
 def category_menu_bar(parser, token):
     
     values = token.split_contents()
@@ -182,8 +180,6 @@ def category_menu_bar(parser, token):
     return CategoryMenuBar(params)
     
 register.tag("category_menu_bar", category_menu_bar)
-
-
 
 
 class BreadCrumbs(template.Node):

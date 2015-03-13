@@ -17,3 +17,8 @@ from django.conf import settings
 YACMS_BASE_URL = "cms/"
 YACMS_ARTICLE_LOGOS_URL ="/static_assets/yacms/logos"
 
+
+from django.conf import settings
+
+
+print(settings.AUTHENTICATION_BACKENDS )

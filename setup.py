@@ -31,6 +31,7 @@ def get_authors():
         authors = "[Error: %s]" % evalue
     return authors
 
+#installvia brew: brew install libtiff lbjpeg webp littlecms
 
 setup(
     name='yacms',
@@ -42,12 +43,12 @@ setup(
     url='http://bitbucket.org/jnvilo/yacms.git',
     packages=find_packages(),
     include_package_data=True, # include package data under svn source control
-   install_requires=["simplejson","python-creole", "djangorestframework", "django-filter", "beautifulsoup4","sh", "pathlib", "loremipsum"],
+   install_requires=["Pillow","psycopg2","python-social-auth","django",",simplejson","python-creole", "djangorestframework", "django-filter", "beautifulsoup4","sh", "pathlib", "loremipsum"],
     data_files=[("", ["README.txt"])], # README used in unittest test_setup_utils.py
     #entry_points={
     #    "console_scripts": [
     #        "creole2html = creole.cmdline:cli_creole2html",
-    #        "html2creole = creole.cmdline:cli_html2creole",
+    #        "html2creole = creole.cmdline:cli_html2creole
     #        "html2rest = creole.cmdline:cli_html2rest",
     #        "html2textile = creole.cmdline:cli_html2textile",
     #    ],

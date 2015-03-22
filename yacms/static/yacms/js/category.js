@@ -131,7 +131,7 @@ $("#createpage_button").click(function() {
     The createpage form button click handler. When the user clicks the button,
     we want to post the  contents of the form to  the api backend.
     
-    This also calls create_cmsentry after it has created the new     
+    This also calls create_cmsentry after it has created the new path    
     **/
     
     
@@ -153,7 +153,7 @@ $("#createpage_button").click(function() {
         path = cmsentry_object.path_str + "/" + slug;    
     }
     
-    data = { path : path , parent : cmsentry_object.id , csrf:csrf};
+    data = { path : path , parent : cmsentry_object.path , csrf:csrf};
     console.log(data);
     
     var url = "/cms/api/v1/cmspaths/"; // the script where you handle the form input.
@@ -167,7 +167,7 @@ $("#createpage_button").click(function() {
                 console.log("created path: " +  data.path);
                 create_cmsentry(title, slug, page_type, data.id);                
            }
-          
+         
          });
 
     return false; // avoid to execute the actual submit of the form.
@@ -192,7 +192,14 @@ $("#createpage_button").click(function() {
 
 
 $(function() {
-    /** Initialize the state when the page is loaded. **/   
+    /** Initialize the state when the page is loaded.
+    
+    This loads these category editor form and these required information 
+    to create new pages.
+    
+    In these future, we should be able to choose what kind of page_type's 
+    to also list form this particular page.
+    **/   
    
     var url = "/cms/api/v1/cmspagetypes";
     
@@ -214,3 +221,119 @@ $(function() {
    
    
 });
+
+
+function timestamp2date(timestamp){
+
+    /* This converts a unix timestamp to javascript date format. 
+    This should be common to both page_editor and category.js    
+    */ 
+
+   console.log("timestamp2date got: ", parseInt(timestamp));
+    var date = new Date(parseInt(timestamp));
+    console.log("date: ",date);
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    
+    //We want: 19/03/2015 14:45:19
+    
+    var date_string = day + "/" + month + "/" + year + " " + hours + ":" + minutes + ":"  + seconds;
+    console.log( "19/03/2015 14:45:19   " , date_string );
+    
+    return date_string;
+
+}
+
+
+function datetime_editor_save_click_handler(params){
+
+    /** 
+    Gets the new date and updates the cmsentry. We do this by getting these slug
+    from these params provided.
+    
+    See below datetime_editor_click_handler which dumps these slug into these Save 
+    span  as an attribute. 
+    
+    We then fetch these new date using these slug value since these datetime editor
+    gives it these id of "created_datetime_field_" + slug.
+    
+    We also fetch these article id from these main span
+    **/
+
+
+    var slug = params.getAttribute("slug");
+    var article_id = $("#"+slug).attr("article_id");
+    var input_field_id = "created_datetime_field_" + slug;
+    var dateString = $("#"+input_field_id).val();
+    
+    dateParts = dateString.split(' '),
+    timeParts = dateParts[1].split(':'),
+    dateParts = dateParts[0].split('/');
+
+    var date = new Date(dateParts[2], parseInt(dateParts[1], 10), dateParts[0], timeParts[0], timeParts[1]);
+    console.log("Got new date ",date.getTime());   
+    
+    /** We now have the article_id and then date_str. We do a PUT request
+    to these /cms/api/v1/cmsentries endpoint to update these date_created 
+    of the article. **/
+    
+    //Now make an ajax call to save the state.
+    $.ajax({
+       type: "PUT",
+       url: "/cms/api/v1/cmsentries/",
+       data:  { date_created_epoch : date.getTime(), id: article_id}, // serializes the form's elements.
+       success: function(data)
+       {
+            console.log("New Epoch: ", data.date_created_epoch);
+            /** Now we update these page with the new date**/
+            
+            $("#span_"+slug).html(timestamp2date(data.date_created_epoch));
+            
+       }
+    });
+   
+        
+}
+
+function datetime_editor_click_handler(params){
+
+    /** 
+    Invoked when these <span> for these date under these article title is clicked.
+    It replaces these date with these date edit form.
+    **/
+
+    console.log("clicked the datetime_editor_button");
+    console.log(params);
+    console.log(params.getAttribute("class"));
+    var slug = params.getAttribute("slug");
+    
+    
+    var jq_slug = "#span_" + slug;
+    var span_slug = "span_"+ slug;
+    var d = "#"+slug;
+    var datetime_str = $(d);
+    console.log("SPAN", d)
+    
+    console.log("DATE: " , $("#"+span_slug).html());
+
+    var span_slug_datetime = span_slug + "datetime";
+    var created_datetime_field_slug = "created_datetime_field_" + slug;   
+        
+    h = "<div id=\"" + span_slug_datetime + "\" class=\"input-append date\">";
+    //h = "<div id=\"created_datetime\" class=\"input-append date\">";
+    h += "<input data-format=\"dd/MM/yyyy hh:mm:ss\" id=\"" + created_datetime_field_slug  + "\" type=\"text\" value=\""+  $("#"+span_slug).html() +"\"></input>";
+    h += "<span class=\"add-on\"><i data-time-icon=\"icon-time\" data-date-icon=\"icon-calendar\"></i></span>";
+    h += "</div>";
+    h += "<div id=\"created_datetime_save_button\" class=\"input-append date_button\">";
+    h += "<span class=\"add-on\"><i id=\"icon_save\" class=\"icon-save\"></i><span slug=\""+ slug + "\"onclick=\"datetime_editor_save_click_handler(this)\">Save</span></span>";
+    h += "</div>";
+            
+            
+    $("#"+span_slug).html(h);
+    $("#"+span_slug_datetime).datetimepicker({ language: 'pt-BR' });   
+
+}

@@ -2,45 +2,49 @@ from yacms.models import CMSEntries
 from yacms.models import CMSPageTypes
 from .yacms_view import YACMSViewObject
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 import logging
 logger = logging.getLogger("yacms.page_handlers")
 
 
 try:
-    singlepageview_pagetype_obj = CMSPageTypes.objects.get(page_type="SINGLEPAGE")
+    singlepageview_pagetype_obj, c = obj = CMSPageTypes.objects.get_or_create( page_type = "SINGLEPAGE")
+   
 except ObjectDoesNotExist as e:
+    singlepageview_pagetype_obj = CMSPageTypes( page_type = "SINGLEPAGE", 
+                                                 text = "Single Page HTML",
+                                                 view_class = "SinglePage",
+                                                 view_template = "SinglePage.html")
+    singlepageview_pagetype_obj.save()
+   
+except MultipleObjectsReturned as e:
+    msg = "Got more than 1 CMSPageTypes : SINGLEPAGE. Database is inconsistent, Will return the first one. "
+    logger.warn(msg)
     
-    msg = "Could not load SINGLEPAGE view object. Going to create it."
-    logger.debug(msg)
-    
-    obj = CMSPageTypes()
-    obj.page_type = "SINGLEPAGE"
-    obj.text = "Single Page HTML"
-    obj.view_class = "SinglePage"
-    obj.view_template = "SinglePage.html"
-    obj.save()
-    
-    singlepageview_pagetype_obj = obj
-
-
+    singlepageview_pagetype_obj = CMSPageTypes.objects.filter(page_type="SINGLEPAGE")[0]
+   
+   
 try:
-    categorypageview_pagetype_obj = CMSPageTypes.objects.get(page_type="CATEGORYPAGE")
+    categorypageview_pagetype_obj = CMSPageTypes.objects.get(page_type="CATEGORY")
+
 except ObjectDoesNotExist as e:
     
     msg = "Could not load CATEGORY view object. Going to create it."
     logger.debug(msg)
+    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="CATEGORY",
+                                                     text = "Category Page",
+                                                     view_class = "CategoryPage",
+                                                     view_template = "CategoryPage.html"
+                                                     )
     
-    obj = CMSPageTypes()
-    obj.page_type = "CATEGORY"
-    obj.text = "Category Page"
-    obj.view_class = "CategoryPage"
-    obj.view_template = "CategoryPage.html"
-    obj.save()
-    categorypageview_pagetype_obj = obj
+except MultipleObjectsReturned as e:
+    msg = "Got more than 1 CMSPageType: CATEGORY. Database is inconsistent. Will return the first one."
+    logger.info(msg)
+    
+    categorypageview_pagetype_obj = CMSPageTypes.objects.filter(page_type="CATEGORY")[0]
 
-
+    
 
 
 
@@ -53,9 +57,11 @@ class CategoryPage(object):
         
     def articles(self):
         #SINGLEPAGEVIEW
-        obj_list = CMSEntries.objects.filter(path__parent_id = self.page_object.id,
-                                  page_type = singlepageview_pagetype_obj)
+        #obj_list = CMSEntries.objects.filter(path__parent_id = self.page_object.id,
+        #                                     page_type = singlepageview_pagetype_obj)
         
+        obj_list = CMSEntries.objects.filter(page_type = singlepageview_pagetype_obj,
+                                             path__parent__id = self.page_object.path.id)
         #wrap the entries of the obj_list into their view_handler representations
         view_list = []
         for obj in obj_list:

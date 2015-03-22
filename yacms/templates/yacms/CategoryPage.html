@@ -17,8 +17,10 @@ Here starts the main view for the article. non logged in
   {% for article in view_object.articles %}
     <div class="cmsentry">
         <h2 class="cmsentry title"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
-        <p>{{article.created_timestamp}}</p>  
-        <p>{{ article.html_content|safe|truncatewords_html:100 }}</p>
+        <span id="span_{{article.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{article.slug}}" article_id={{article.page_object.id}}>{{article.created_timestamp_str}}</span>  
+        <span id="{{article.slug}}" article_id={{article.id}}></span>
+       
+        <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
     </div>
     {% endfor %}
 </div>  
@@ -56,6 +58,8 @@ Here starts the main view for the article. non logged in
 {% if view_object.request.user.username == "admin" %}
     <script src="{% static "ejs/ejs.js" %}"></script>   
     <script src="{% static "yacms/js/category.js" %}"></script>
+    <script src="{% static "yacms/bootstrap-datetimepicker-0/js/bootstrap-datetimepicker.min.js" %}">
+    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js"></script>
 {% endif %}    
   
 {% endblock SCRIPTS_BLOCK %}

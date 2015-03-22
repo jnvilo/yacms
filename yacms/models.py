@@ -48,7 +48,8 @@ class CMSContents(models.Model):
     
     @property
     def html(self):
-        return creole2html(self.content)
+        from yacms.view_handlers.formatters import CreoleFormatter
+        return CreoleFormatter(self.content).html()   
 
 class CMSTemplates(models.Model):
     name = models.CharField(max_length=1024, default="page.html")
@@ -99,6 +100,12 @@ class CMSEntries(models.Model):
     
     def __str__(self):
         return self.title
+    
+    
+    #----------------------------------------------------------------------
+    def  date_created_str(self):
+        """"""
+        return self.date_created.strftime("%d/%m/%Y %H:%M:%S")
     
     @property
     def view(self):

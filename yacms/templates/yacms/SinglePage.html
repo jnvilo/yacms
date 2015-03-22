@@ -2,7 +2,8 @@
 {% load staticfiles %}
 
 {%block HEAD %} 
-<!-- link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" -->
+<link rel="stylesheet" href="/static/yacms/css/pygments-colorful.css" >
+<link rel="stylesheet" href="/static/yacms/bootstrap-datetimepicker-0/css/bootstrap-datetimepicker.min.css" >
 
 {%endblock HEAD %}
 
@@ -15,7 +16,6 @@
 {% block MAIN_CONTAINER_BLOCK %}
 <div class="row-fluid ">
   <div id="page_body">
-  <a href="/login/facebook?next={{ view_object.request.get_full_path }}"> | Login with Facebook</a>
     {{view_object.html_content | safe }}
   </div>
   <hr/> 
@@ -63,7 +63,32 @@
         </div>
       </div>
       <div class="tab-pane" id="tab2">
-        <p> Duis cursus nulla sit amet mi mattis iaculis. Duis dictum ultrices lacus vel sollicitudin. Mauris mattis facilisis ipsum sed venenatis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+        
+      <div class="wellsdfsf">
+        <div id="created_datetime" class="input-append date">
+          <input data-format="dd/MM/yyyy hh:mm:ss" id="created_datetime_field" type="text"></input>
+          <span class="add-on">
+            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+          </span>
+        </div>
+        <div id="created_datetime_save_button" class="input-append date_button">
+        <span class="add-on"><i id="icon_save" class="icon-save"></i><span>Save</span></span></div>
+
+      </div>
+      
+       <div class="well">
+        <div id="modified_datetime" class="input-append date">
+          <input data-format="dd/MM/yyyy hh:mm:ss" type="text"></input>
+          <span class="add-on">
+            <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+            </i>
+          </span>
+        </div>
+      </div>
+         
+        
+        
+        
       </div>
     </div>
   </div>
@@ -87,8 +112,15 @@
 
 <script src="{% static "ejs/ejs.js" %}"></script>
 <script src="{% static "yacms/js/page_editor.js" %}"></script>
+<script src="{% static "yacms/bootstrap-datetimepicker-0/js/bootstrap-datetimepicker.min.js" %}">
+<script type="text/javascript"
+     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+    </script>
 
-
+<script type="text/javascript">
+  $(function(){$('#created_datetime').datetimepicker({ language: 'pt-BR' }); });
+  $(function(){$('#modified_datetime').datetimepicker({ language: 'pt-BR' }); });
+</script>     
   <!--<script>-->
   <!--$(function() {-->
     <!--$( "#tabs" ).tabs();-->

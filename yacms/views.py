@@ -8,6 +8,7 @@ import pathlib
 import os
 from PIL import Image
 import threading
+import datetime
 
 from bs4 import BeautifulSoup
 import simplejson as json
@@ -23,6 +24,8 @@ from django.forms.models import model_to_dict
 from django.http import Http404
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import MultipleObjectsReturned
+
 from django.http import HttpResponseNotFound
 # Create your views here.
 
@@ -328,7 +331,16 @@ class CMSEntriesAPIView(APIView):
             #the request.data
             
             for key in request.data:
-                if hasattr(cmsentry_object, key) and (key != "id"):
+                
+                if key == "date_created_epoch":
+                    print("Recieved a date_created_epoch")
+                    value = request.data.get("date_created_epoch")
+                    created_datetime = datetime.datetime.utcfromtimestamp(int(value)/1000)
+                    
+                    cmsentry_object.date_created = created_datetime
+                    
+                    
+                elif hasattr(cmsentry_object, key) and (key != "id"):
                     
                     value = request.data.get(key)
                     if value == "true":
@@ -345,7 +357,9 @@ class CMSEntriesAPIView(APIView):
 
             return_dict = {}
             for key in request.data:
-                value = getattr(cmsentry_object, key)
+                if hasattr(cmsentry_object, key):
+                    value = getattr(cmsentry_object, key)
+            
                 return_dict[key] = value
                 
             return Response(return_dict, status=status.HTTP_200_OK) 
@@ -473,8 +487,43 @@ class CMSPageView(View):
                 #Lets make path = "/" as default.
                 obj = YACMSViewObject(path=u"/")
             return obj
+        
         except ObjectDoesNotExist as e:
-            raise Http404("Page Does Not Exist.")
+            
+            if (path is None) or (path == u"/"): 
+                #we are in /cms and it does not exist. We create it!!
+                
+                
+                path_obj,_ = CMSPaths.objects.get_or_create(path="/")
+               
+                try:
+                    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="CATEGORY",
+                                                                      text = "Category Page",
+                                                                      view_class = "CategoryPage",
+                                                                      view_template = "CategoryPage.html"
+                                                                      )
+                except MultipleObjectsReturned as e:
+                    
+                    logger.warn("Multiple PageType: CATEGORY found. Database is inconsistent. Returning the first one found.")
+                    pagetype_obj = CMSPageTypes.objects.filter(page_type="CATEGORY")[0]
+                    
+                    
+                try:
+                    entry_obj, c= CMSEntries.objects.get_or_create(page_type=pagetype_obj,
+                                                                 path=path_obj,
+                                                                 title="Yet Another CMS.")
+                except MultipleObjectsReturned as e:
+                    msg = "Multiple CMSEntries for /cms found. Database is inconsistent. Using the first one found. "
+                    logger.warn(msg)
+                    
+                    entry_obj = CMSEntries.objects.filter(path=path_obj)[0]
+                    
+                  
+                
+                obj = YACMSViewObject(path=u"/")
+                return obj
+            else:                                                     
+                raise Http404("Page Does Not Exist.")
         
       
             

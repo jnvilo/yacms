@@ -12,7 +12,7 @@ class FrontPageArticles(template.Node):
     
     def render(self, context):
         
-        cmsentry_objs = CMSEntries.objects.filter(frontpage = True, published=True)
+        cmsentry_objs = CMSEntries.objects.filter(frontpage = True, published=True).order_by("-date_created")
         #package each of the content into a YACMSViewObject
         
         if cmsentry_objs.count() == 0:

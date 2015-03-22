@@ -3,13 +3,15 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 
+import time
 
 from django.conf import settings
 from django.forms.models import model_to_dict
-from loremipsum import generate_paragraphs
-from creole import creole2html
+
 import simplejson as json
 from bs4 import BeautifulSoup
+
+from . formatters import CreoleFormatter
 class YACMSViewObject(object):
     
     """
@@ -104,7 +106,8 @@ class YACMSViewObject(object):
     
     @property
     def html_content(self):
-        """The html content of the page"""
+        """The html content of the page. This formats the page
+        using the CreoleFormatter"""
         
         #TODO: Fix me: This loads only the first content entry. 
         #      This should be updated to load by date.
@@ -114,19 +117,12 @@ class YACMSViewObject(object):
         except IndexError as e:
             
             if settings.DEBUG:
-                paragraphs = generate_paragraphs(5, start_with_lorem=False)
-                p = ""
-                for paragraph in paragraphs:
-                    p =  unicode(paragraph[2]) + "\n\n" + p
-                return creole2html(p)
-               
+                return CreoleFormatter().html(fake_content=True)
             else:
                 return "Error: There is no content for this page."
         
         #TODO: Fix me: right now hardcoded to creole.        
-        _html_content =  creole2html(content_obj.content)
-    
-        
+        _html_content =  CreoleFormatter(content_obj.content).html()   
         return _html_content
     
     @property
@@ -148,13 +144,11 @@ class YACMSViewObject(object):
     @property
     def introduction(self):
         #We use beautifulsoup to extract the first paragraph
-        html_content = self.html_content
-       
+        html_content = self.html_content      
         soup = BeautifulSoup(html_content)
         intro = soup.find("p")
         return str(intro)
-            
-        
+                
     @property
     def template(self):
         
@@ -183,6 +177,12 @@ class YACMSViewObject(object):
         d =  model_to_dict(self.page_object)
         path_str = self.page_object.path.path
         d["path_str"] = path_str
+        
+        #django model_to_dict ignores the datetime field. 
+        mydate = self.page_object.date_created
+        epoch = int(time.mktime(mydate.timetuple())*1000)
+        
+        d["date_created_epoch"] = epoch
         
         return d
     
@@ -214,4 +214,29 @@ class YACMSViewObject(object):
     @request.setter
     def request(self, value):
         self._request = value
+        
+    @property
+    #----------------------------------------------------------------------
+    def  slug(self):
+        """"""
+        return self.page_object.slug
+        
     
+    #----------------------------------------------------------------------
+    def  timestamp(self):
+        """"""
+        pass
+    
+         
+    #----------------------------------------------------------------------
+    def created_timestamp_str(self):
+        """"""
+        
+        return self.page_object.date_created.strftime("%d/%m/%Y %H:%M:%S")
+    
+    
+    #----------------------------------------------------------------------
+    def  id(self):
+        """"""
+        _id = self.page_object.id
+        return _id

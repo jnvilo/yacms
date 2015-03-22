@@ -20,6 +20,33 @@ function save_content(page_id){
     console.log("");
 }
       
+      
+function timestamp2date(timestamp){
+
+   console.log(timestamp);
+    var date = new Date(timestamp);
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    
+    //We want: 19/03/2015 14:45:19
+    
+    var date_string = day + "/" + month + "/" + year + " " + hours + ":" + minutes + ":"  + seconds;
+    console.log( "19/03/2015 14:45:19   " , date_string );
+    
+    return date_string;
+
+}
+
+$(function(){
+
+    $("#created_datetime_field").val(timestamp2date(cmsentry_object.date_created_epoch));
+    
+})
+
 
 $(function(){
     /* On Document load, initialize the page_editor. Editing this in the web page. */ 
@@ -177,3 +204,41 @@ $('#button_lorem_ipsum').click(function(){
          
 });
     
+    
+    
+$("#created_datetime_save_button").click(function(){
+
+    /** 
+    This function is used to get these date from these created_datetime_field , 
+    convert it to a unix timestamp and do a PUT request to override these current
+    created datetime of these CMSENtry.
+    **/
+
+    console.log("clicked date_save_button");
+    var dateString = $("#created_datetime_field").val();
+
+   
+    dateParts = dateString.split(' '),
+    timeParts = dateParts[1].split(':'),
+   
+    console.log(dateParts);
+    console.log(timeParts);
+    dateParts = dateParts[0].split('/');
+
+    var date = new Date(dateParts[2], parseInt(dateParts[1], 10), dateParts[0], timeParts[0], timeParts[1]);
+    console.log(date.getTime());   
+    console.log(timestamp2date(date.getTime()));
+    
+    //Now make an ajax call to save the state.
+    $.ajax({
+       type: "PUT",
+       url: "/cms/api/v1/cmsentries/",
+       data:  { date_created_epoch : date.getTime(), id: cmsentry_object.id }, // serializes the form's elements.
+       success: function(data)
+       {
+            console.log("Updated: ", data);  
+       }
+    });
+   
+   
+});

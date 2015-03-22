@@ -29,8 +29,9 @@
 
 <div class="tabbable"> <!-- Only required for left/right tabs -->
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
-      <li><a href="#tab2" data-toggle="tab">Section 2</a></li>
+      <li class="active"><a href="#tab1" data-toggle="tab">Page Editor</a></li>
+      <li><a href="#tab2" data-toggle="tab">Meta Editor</a></li>
+      <li><a href="#tab3" data-toggle="tab">Image Tools</a></li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="tab1">
@@ -64,32 +65,24 @@
       </div>
       <div class="tab-pane" id="tab2">
         
-      <div class="wellsdfsf">
-        <div id="created_datetime" class="input-append date">
-          <input data-format="dd/MM/yyyy hh:mm:ss" id="created_datetime_field" type="text"></input>
-          <span class="add-on">
-            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-          </span>
+        <div class="page_tools_row">
+          <div id="created_datetime" class="input-append date">
+            <input data-format="dd/MM/yyyy hh:mm:ss" id="created_datetime_field" type="text"></input>
+            <span class="add-on">
+              <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+            </span>
+          </div>
+          <div id="created_datetime_save_button" class="input-append date_button">
+          <span class="add-on"><i id="icon_save" class="icon-save"></i><span>Save</span></span></div>
         </div>
-        <div id="created_datetime_save_button" class="input-append date_button">
-        <span class="add-on"><i id="icon_save" class="icon-save"></i><span>Save</span></span></div>
-
       </div>
       
-       <div class="well">
-        <div id="modified_datetime" class="input-append date">
-          <input data-format="dd/MM/yyyy hh:mm:ss" type="text"></input>
-          <span class="add-on">
-            <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-            </i>
-          </span>
-        </div>
+      <div class="tab-pane" id="tab3">
+        
+        <div> Image Tools</div>
+      
       </div>
-         
-        
-        
-        
-      </div>
+      
     </div>
   </div>
 </div>

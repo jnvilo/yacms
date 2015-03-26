@@ -11,6 +11,8 @@ from . views import  ( CMSPageTypesAPIView,
                        CMSPathsAPIView,
                        CMSEntriesROAPIView,
                        LoremIpsumAPIView,
+                       AssetsUploaderView,
+                       
                        )
 
 
@@ -47,13 +49,12 @@ urlpatterns = [
     url(r'^api/v1/cmspaths', CMSPathsAPIView.as_view(), name="cmspaths_apiview"),
     url(r'^api/v1/loremipsum', LoremIpsumAPIView.as_view(), name="loremipsum"),
     
-    
     #CMS API Custom Views
     url(r'^api/v1/cmsentries/(?P<id>[\d]*)/', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),
     url(r'^api/v1/cmsentries/(?P<slug>[-/\.a-z\d_]*)/', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),
     
-    
     #CMS View - Returns website pages
+    url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/(?P<filename>[-/\.a-z\d_]*)$', AssetsUploaderView.as_view(), name="assets_manager"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/$', CMSPageView.as_view(), name="cms_page"),
     url(r'^$', CMSPageView.as_view(), name="cms_page")
    

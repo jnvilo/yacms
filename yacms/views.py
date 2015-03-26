@@ -12,16 +12,19 @@ import datetime
 
 from bs4 import BeautifulSoup
 import simplejson as json
+import threading
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.contrib.sitemaps import Sitemap
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.http import HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.forms.models import model_to_dict
 from django.http import Http404
+from django.core.files.uploadedfile import UploadedFile
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
@@ -47,7 +50,7 @@ from django.conf import settings
 
 
 from loremipsum import get_paragraphs
-from creole import creole2html
+from yacms.creole import creole2html
 
 from . serializers import CMSPageTypesSerializer
 from . serializers import CMSContentsSerializer
@@ -75,7 +78,24 @@ try:
 except:
     pass
         
+        
+        
+def  get_static_files_dir():
+    """
+    Gets the static files directory.
+    """
+     
+    for each in settings.STATICFILES_DIRS:
+        if each.endswith("static"):
+            return each
+    else:
+        return None
+    
+ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
 
+if not ASSETS_DIR.is_dir:
+    ASSETS_DIR.mkdir()
+    
 def index(request, **kwargs):    
     return HttpResponse("Index page")
 
@@ -530,21 +550,222 @@ class CMSPageView(View):
     
             
     def get(self,request, **kwargs):
-        """
-        Just get the page and return it.
-        """
+        """Just get the page and return it."""
+        
         obj = self.get_object(**kwargs)
         obj.request = request
-        
         template = obj.template
-        
         return render_to_response(template, {"view_object": obj})
         
-        
-    
     def post(self, request, **kwargs):
-        pass
+        print(request, kwargs)
+        return HttpResponse("Not implemented")
         
     def put(self, request, **kwargs):
-        pass
+        print(request, kwargs)
+        return HttpResponse("Not Implemented")
     
+    
+    
+    
+########################################################################
+class  AssetsUploaderView(View):
+    """Handles the uploading and deleting of images. Uses multiuploader AJAX plugin.
+    made from api on: https://github.com/blueimp/jQuery-File-Upload
+    """
+        
+    def _mkdir(self,newdir):
+        """Copied from http://code.activestate.com/recipes/82465-a-friendly-mkdir/ """
+        """works the way a good mkdir should :)
+            - already exists, silently complete
+            - regular file in the way, raise an exception
+            - parent directory(ies) does not exist, make them as well
+        """
+        if os.path.isdir(newdir):
+            pass
+        elif os.path.isfile(newdir):
+            raise OSError("a file with the same name as the desired " \
+                          "dir, '%s', already exists." % newdir)
+        else:
+            head, tail = os.path.split(newdir)
+            if head and not os.path.isdir(head):
+                self._mkdir(head)
+            #print "_mkdir %s" % repr(newdir)
+            if tail:
+                os.mkdir(newdir)
+
+    #----------------------------------------------------------------------
+    def  get(self, request, **kwargs):
+       
+        """ 
+        We assume we have a GET
+        According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
+        we have to return a list of the images in the dir as follows:
+
+
+
+        {"files": [
+          {
+            "name": "picture1.jpg",
+            "size": 902604,
+            "url": "http:\/\/example.org\/files\/picture1.jpg",
+            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+            "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
+            "deleteType": "DELETE"
+          },
+          {
+            "name": "picture2.jpg",
+            "size": 841946,
+            "url": "http:\/\/example.org\/files\/picture2.jpg",
+            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+            "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
+            "deleteType": "DELETE"
+          }
+        ]}        
+        """ 
+        
+        
+        assets_dir = ASSETS_DIR
+        path = kwargs.get("path", None).lstrip("/")
+        fullpath = pathlib.Path(pathlib.Path(assets_dir), path)        
+
+        files = []
+        
+        try:
+            filenames = os.listdir(fullpath.as_posix())
+        except OSError as e:
+            return  JsonResponse({'files': []}) 
+
+        for filename in filenames:
+
+            p_filename = pathlib.Path(fullpath, filename)
+
+            if not p_filename.is_dir():
+
+                stat = os.stat(p_filename.as_posix())
+                image_url =  url = "/static/assets/{}/{}".format(path, filename)
+                thumbnail_url = "/static/assets/{}/thumbnails/{}".format(path, filename)
+                delete_url = "/cms/{}/assets_manager/{}".format(path, filename)
+
+
+                file_dict = { "name": filename , 
+                              "size": stat.st_size,
+                              "url": image_url, 
+                              "thumbnailUrl": thumbnail_url, 
+                              "deleteUrl": delete_url,
+                              "deleteType": "DELETE" }
+
+                files.append(file_dict)
+
+        return JsonResponse({'files': files})    
+    
+    
+    #----------------------------------------------------------------------
+    def  post(self, request, **kwargs):
+        """"""
+        return self.fileupload(request, **kwargs)
+         
+    
+    def fileupload(self,request, **kwargs):
+        
+        mylock = threading.Lock()
+        
+        with mylock:
+            from django.conf import settings
+            assets_dir = ASSETS_DIR
+            path = kwargs.get("path", None).lstrip("/")
+            
+            fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
+            
+            if not fullpath.exists():
+                self._mkdir(fullpath.as_posix())
+            elif not fullpath.is_dir():
+                #Fix this to return a proper json response.
+                return HttpResponse("Error. Not full dir")
+            
+            thumbnailpath = pathlib.Path(fullpath, "thumbnails")
+            
+            if not thumbnailpath.exists():
+                os.makedirs(thumbnailpath.as_posix())
+            elif not thumbnailpath.is_dir():
+                #Fix this to return a proper json response.
+                return HttpResponse("Error. Not full dir")    
+            
+            if request.method == "POST":
+                uploaded_file = request.FILES.get("files[]")
+                
+                filename = uploaded_file.name
+        
+                p_filename = pathlib.Path(fullpath, filename)
+          
+                with open(p_filename.as_posix(), 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)  
+                
+                #Now do the thumbail.
+                try:
+                    size = 256, 256
+                    outfile =  pathlib.Path(thumbnailpath, filename)
+                    im = Image.open(p_filename.as_posix())
+                    im.thumbnail(size, Image.ANTIALIAS)
+                    im.save(outfile.as_posix(), "JPEG")
+                except IOError as e:
+                    return JsonResponse( { "error" : "cannot create thumbnail for {}".format(outfile)})        
+                
+                except Exception as e: 
+                    return JsonResponse( { "error": "Unhandled exception: {}".format(outfile) })        
+                    
+                
+                    
+                stat = os.stat(p_filename.as_posix())
+                image_url =  url = "/static/assets/{}/{}".format(path, filename)
+                thumbnail_url = "/static/assets/{}/thumbnails/{}".format(path, filename)
+                delete_url = "/cms/{}/assets_manager/{}".format(path, filename)
+                
+                files = []
+                file_dict = { "name": filename , 
+                                  "size": stat.st_size,
+                                  "url": image_url, 
+                                  "thumbnailUrl": thumbnail_url, 
+                                  "deleteUrl": delete_url,
+                                  "deleteType": "DELETE" }
+                    
+                files.append(file_dict)
+                    
+                return JsonResponse({'files': files}) 
+            
+    #----------------------------------------------------------------------
+    def  delete(self,request, **kwargs):
+        """"""
+        path = kwargs.get("path", None).lstrip("/")
+        filename=kwargs.get("filename",None).lstrip("/")
+        fullpath = pathlib.Path(pathlib.Path(ASSETS_DIR), path)               
+        
+        
+        p_filename = pathlib.Path(fullpath, filename)
+        
+        logger.debug("Going to delete, {}".format(p_filename.as_posix()))
+        
+        """We need to return a format as below:
+            {"files": [
+              {
+                "picture1.jpg": true
+              },
+              {
+                "picture2.jpg": true
+              }
+            ]}        
+            """
+        
+        try:
+            
+            os.remove(p_filename.as_posix())
+
+            files = [ { filename: True }]
+            
+            return JsonResponse({ 'files': files} )
+            
+        except Exception as e:
+            
+            
+            return HttpResponse("Deleted")

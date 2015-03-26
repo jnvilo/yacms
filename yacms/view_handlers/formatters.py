@@ -1,11 +1,13 @@
 from __future__ import division, absolute_import, print_function, unicode_literals
 from loremipsum import generate_paragraphs
-from creole import creole2html
-
+from yacms.creole import creole2html
+from pprint import pformat
+import simplejson as json
 
 from django.conf import settings
 import shlex
-
+import ConfigParser
+import StringIO
 
 from xml.sax.saxutils import escape
 
@@ -16,7 +18,7 @@ try:
 except ImportError:
     PYGMENTS = False
 
-from creole.shared.utils import get_pygments_lexer, get_pygments_formatter
+from yacms.creole.shared.utils import get_pygments_lexer, get_pygments_formatter
 
 def html(text):
     """
@@ -109,6 +111,7 @@ def  infoblock(*args, **kwargs):
     image = kwargs.get("image", None)
     author = kwargs.get("author", None)
     
+    
     if image:
         image = """<div class="quote-photo"><img src="img/temp/user.jpg" alt=""></div>"""
     else:
@@ -127,6 +130,51 @@ def  infoblock(*args, **kwargs):
     return template
 
     
+#----------------------------------------------------------------------
+def  image(*args, **kwargs):
+    """
+    We parse the content of the text to get the information about the image.
+    
+    """
+    
+    text = kwargs.get("text", None)
+    image = kwargs.get("image", None)
+    request = kwargs.get("request", None)
+    
+    
+    if image is none:
+        return "Image Not Provided!"
+    
+    
+    return request.path
+
+    #s_config = """
+    #[example]
+    #is_real: False
+    #"""
+    #buf = StringIO.StringIO(text)
+    #config = ConfigParser.ConfigParser()
+    #config.readfp(buf)
+    #print config.getboolean('style', 'width')   
+    
+  
+    
+    
+#----------------------------------------------------------------------
+def  debug(*args, **kwargs):
+        
+    """"""
+    
+    print("Recieved args: {}".format(args))
+    print("REcieved kwargs: {}".format(kwargs))
+    for each in args:
+        print(args)
+        
+    for each in kwargs:
+        print(each)
+        
+    result =  "Recieved kwargs: {}".format(kwargs)
+    return result
     
     
 ########################################################################
@@ -134,14 +182,16 @@ class  CreoleFormatter(object):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, raw_content=None):
+    def __init__(self, raw_content=None, request=None):
         """Constructor"""
         self.raw_content = raw_content
-    
+        self.request = request
     #----------------------------------------------------------------------
-    def  html(self, fake_content=False):
+    def  html(self, fake_content=False, request=None):
         """Returns the html"""
         
+        if request is None:
+            request = self.request
         if fake_content:
             paragraphs = generate_paragraphs(5, start_with_lorem=False)
             p = ""
@@ -158,8 +208,12 @@ class  CreoleFormatter(object):
                                                    "alertinfo":alertinfo,
                                                    "alerterror":alerterror,
                                                    "infoblock":infoblock,
+                                                   "image": image,
+                                                   "debug":debug,
                                                   }, 
-                                           verbose=None,  stderr=None)
+                                           verbose=None,  
+                                           stderr=None,
+                                           request=request)
         
         
    

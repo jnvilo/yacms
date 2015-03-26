@@ -12,7 +12,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from django.conf import settings
-from creole import creole2html
+from yacms.creole import creole2html
 
 
 from loremipsum import generate_paragraphs

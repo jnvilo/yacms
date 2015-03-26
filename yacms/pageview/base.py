@@ -270,7 +270,7 @@ class BaseView(object):
 
         if not value:
 
-            from creole import creole2html
+            from yacms.creole import creole2html
             from bs4 import BeautifulSoup
             html = creole2html(self.page_obj.content)
 

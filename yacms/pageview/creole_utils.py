@@ -13,7 +13,7 @@ from __future__ import division, absolute_import, print_function, unicode_litera
 
 import shlex
 
-from creole.py3compat import TEXT_TYPE, PY3, repr2
+from yacms.creole.py3compat import TEXT_TYPE, PY3, repr2
 
 try:
     from pygments import lexers

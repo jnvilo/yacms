@@ -122,7 +122,7 @@ class YACMSViewObject(object):
                 return "Error: There is no content for this page."
         
         #TODO: Fix me: right now hardcoded to creole.        
-        _html_content =  CreoleFormatter(content_obj.content).html()   
+        _html_content =  CreoleFormatter(content_obj.content,request=self.request).html()   
         return _html_content
     
     @property

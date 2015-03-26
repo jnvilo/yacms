@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 
-from creole import creole2html
+from yacms.creole import creole2html
 from random import randrange
 import loremipsum
 import arrow

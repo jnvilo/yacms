@@ -111,9 +111,9 @@ class HtmlEmitter(object):
     Generate HTML output for the document
     tree consisting of DocNodes.
     """
-    def __init__(self, root, macros=None, verbose=None, stderr=None,request=None):
+    def __init__(self, root, macros=None, verbose=None, stderr=None,view=None):
         self.root = root
-        self.request = request
+        self.view = view
 
         if callable(macros) == True:
             # was a DeprecationWarning in the past
@@ -306,7 +306,7 @@ class HtmlEmitter(object):
         
         #Inject the Django request object so it can be used inside the macro
         #processor
-        macro_kwargs["request"]  = self.request
+        macro_kwargs["view"]  = self.view
 
         exc_info = None
         if isinstance(self.macros, dict):

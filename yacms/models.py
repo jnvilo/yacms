@@ -48,6 +48,10 @@ class CMSContents(models.Model):
     
     @property
     def html(self):
+    
+        
+        
+        
         from yacms.view_handlers.formatters import CreoleFormatter
         return CreoleFormatter(self.content).html()   
 

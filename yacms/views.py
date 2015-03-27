@@ -405,18 +405,13 @@ class CMSContentsAPIView(APIView):
         """
 
         format = kwargs.get("format", None)
-        pagetypes = CMSContents.objects.all()
-        
-        
-        
+        pagetypes = CMSContents.objects.all()        
         page_id = self.request.QUERY_PARAMS.get('id', None)
         
         if page_id is not None:
             pagetypes = pagetypes.filter(id=page_id);
-            
-        
+                    
         serializer = CMSContentsSerializer(pagetypes, many=True)
-        
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -449,6 +444,12 @@ class CMSContentsAPIView(APIView):
             if include_html:
                 #Custom pack results:
                 cmscontent_dict = model_to_dict(cmscontent_object)
+                
+                
+                #We need to get the html. So We need the freaking YACMSViewObject.
+                
+                
+                
                 cmscontent_dict["html"] = cmscontent_object.html
                 
                 return Response(cmscontent_dict, status=status.HTTP_202_ACCEPTED)

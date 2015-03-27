@@ -134,46 +134,34 @@ def  infoblock(*args, **kwargs):
 def  image(*args, **kwargs):
     """
     We parse the content of the text to get the information about the image.
-    
     """
     
     text = kwargs.get("text", None)
-    image = kwargs.get("image", None)
-    request = kwargs.get("request", None)
+    name = kwargs.get("name", None)
+    view = kwargs.get("view", None)
+    path_str = view.path_str
     
-    
-    if image is none:
-        return "Image Not Provided!"
-    
-    
-    return request.path
+    img_url = "/static/assets/{}/{}".format(view.path_str, name)    
+    img = """<img src="{}" />""".format(img_url)
 
-    #s_config = """
-    #[example]
-    #is_real: False
-    #"""
-    #buf = StringIO.StringIO(text)
-    #config = ConfigParser.ConfigParser()
-    #config.readfp(buf)
-    #print config.getboolean('style', 'width')   
-    
-  
+    return img
     
     
 #----------------------------------------------------------------------
 def  debug(*args, **kwargs):
         
-    """"""
+    """
+    Just a simple example which shows the view's json_data.
     
-    print("Recieved args: {}".format(args))
-    print("REcieved kwargs: {}".format(kwargs))
-    for each in args:
-        print(args)
+    """
+    
+    view = kwargs.get("view", None)
+    
+    if view is None:
+        return "MACRO: Debug did not get a view"
         
-    for each in kwargs:
-        print(each)
-        
-    result =  "Recieved kwargs: {}".format(kwargs)
+    result =  "Object dictionary: {} ".format(view.json_data)
+
     return result
     
     
@@ -182,16 +170,18 @@ class  CreoleFormatter(object):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, raw_content=None, request=None):
+    def __init__(self, raw_content=None, view=None):
         """Constructor"""
         self.raw_content = raw_content
-        self.request = request
+        self.view = view
+
     #----------------------------------------------------------------------
-    def  html(self, fake_content=False, request=None):
+    def  html(self, fake_content=False, view=None):
         """Returns the html"""
-        
-        if request is None:
-            request = self.request
+    
+        if view is None:
+            view = self.view
+    
         if fake_content:
             paragraphs = generate_paragraphs(5, start_with_lorem=False)
             p = ""
@@ -213,7 +203,7 @@ class  CreoleFormatter(object):
                                                   }, 
                                            verbose=None,  
                                            stderr=None,
-                                           request=request)
+                                           view=view)
         
         
    

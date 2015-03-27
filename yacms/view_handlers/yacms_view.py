@@ -121,8 +121,11 @@ class YACMSViewObject(object):
             else:
                 return "Error: There is no content for this page."
         
-        #TODO: Fix me: right now hardcoded to creole.        
-        _html_content =  CreoleFormatter(content_obj.content,request=self.request).html()   
+        #TODO: Fix me: right now hardcoded to creole. 
+        
+        #We pass the view into our custom CreoleFormatter so that the 
+        #custom creole markup can have access.
+        _html_content =  CreoleFormatter(content_obj.content,view=self).html()
         return _html_content
     
     @property

@@ -44,6 +44,9 @@
 {{pageview.html | safe}}
 </div>
 
+{% if  request.user.username  == "admin" %}
+
+
 
 <div class="row-fluid">
 
@@ -86,7 +89,7 @@
 
 </div> <!-- End row-fluid -->
 
-
+{% endif %}
 
 </div><!-- End of the very first div-->
 

@@ -37,6 +37,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from rest_framework.views import exception_handler
+from rest_framework.exceptions import APIException
+from rest_framework.exceptions import NotFound
+
+
 from rest_framework import authentication, permissions
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
@@ -143,15 +148,44 @@ class CMSPathsAPIView(APIView):
 
     def get(self, request, **kwargs):
         """
-        Get a list of all available PageTypes
+        Get a list of all paths or info about a path
         """
         
         format = kwargs.get("format", None)
+        resource_id = kwargs.get("resource_id", None)
+        
+        if resource_id:
+        #We are asking for a single entry
+            try:
+                cmspath = CMSPaths.objects.get(pk=resource_id)
+            except ObjectDoesNotExist as e:
+                msg_dict = { "error": "Resource with id {} does not exist".format(resource_id) }
+                return Response(data=msg_dict, exception=True, status=200)
+            
+            serializer = CMSPathsSerializer(cmspath, many=False)
+            return Response(serializer.data)            
+        
         paths = CMSPaths.objects.all()
         serializer = CMSPathsSerializer(paths, many=True)
         return Response(serializer.data)
     
-    def post(self, request, format=None):
+    def post(self, request, format=None, **kwargs):
+        
+        #Fix the path if it does not start with a / by appending 
+        #it to the parent path. 
+        
+        
+        path_str = request.data.get("path")
+        parent_id = request.data.get("parent")
+        
+        if path_str and (not path_str.startswith("/")):
+            
+            if parent_id != 1: #1 is always / so we need to get only what is not 1
+                parent_cmspath = CMSPaths.objects.get(pk=parent_id)
+                request.data["path"] = "{}/{}".format(parent_cmspath.path, path_str)
+            else:
+                request.data["path"] = "/{}".format(path_str)
+        
         serializer = CMSPathsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -176,6 +210,7 @@ class CMSPageTypesAPIView(APIView):
         """
         
         format = kwargs.get("format", None)
+        
         pagetypes = CMSPageTypes.objects.all()
         serializer = CMSPageTypesSerializer(pagetypes, many=True)
         return Response(serializer.data)
@@ -281,10 +316,24 @@ class CMSEntriesAPIView(APIView):
         Get a list of all available PageTypes
         """
         format = kwargs.get("format", None)
-        parent_id  = self.request.QUERY_PARAMS.get('parent', None)
-        page_id = self.request.QUERY_PARAMS.get('id', None)
-        page_type_id = self.request.QUERY_PARAMS.get('page_type', None)
-        expand=self.request.QUERY_PARAMS.get('expand', None)
+        resource_id = kwargs.get("resource_id")
+
+        parent_id  = self.request.query_params.get('parent', None)
+        page_id = self.request.query_params.get('id', None)
+        page_type_id = self.request.query_params.get('page_type', None)
+        expand=self.request.query_params.get('expand', None)
+       
+        if resource_id:
+            #We are asking for a single entry
+            
+            try:
+                cmsentry = CMSEntries.objects.get(pk=resource_id)
+            except ObjectDoesNotExist as e:
+                msg_dict = { "error": "Resource with id {} does not exist".format(resource_id) }
+                return Response(data=msg_dict, exception=True, status=200)
+
+            serializer = CMSEntrySerializer(cmsentry, many=False)
+            return Response(serializer.data)
         
         cmsentries = CMSEntries.objects.all()
         
@@ -301,9 +350,7 @@ class CMSEntriesAPIView(APIView):
             serializer = CMSEntryExpandedSerializer(cmsentries, many=True)
         else:
             serializer = CMSEntrySerializer(cmsentries, many=True)
-        
-        
-        
+ 
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -332,7 +379,7 @@ class CMSEntriesAPIView(APIView):
       
         
         format = kwargs.get("format", None)
-        expand = self.request.QUERY_PARAMS.get('expand', None)
+        expand = self.request.query_params.get('expand', None)
         
         id = request.data.get("id", None)
         
@@ -406,7 +453,7 @@ class CMSContentsAPIView(APIView):
 
         format = kwargs.get("format", None)
         pagetypes = CMSContents.objects.all()        
-        page_id = self.request.QUERY_PARAMS.get('id', None)
+        page_id = self.request.query_params.get('id', None)
         
         if page_id is not None:
             pagetypes = pagetypes.filter(id=page_id);

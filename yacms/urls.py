@@ -43,9 +43,11 @@ urlpatterns = [
     #Read Write API Views
     url(r'^api/v1/cmspagetypes', CMSPageTypesAPIView.as_view(), name="cmspagetypes_apiview"),
     url(r'^api/v1/cmscontents', CMSContentsAPIView.as_view(), name="cmscontents_apiview"),
+    url(r'^api/v1/cmsentries/(?P<resource_id>[\d]+)/$', CMSEntriesAPIView.as_view(), name="cmsentries_apiview_detail"),
     url(r'^api/v1/cmsentries', CMSEntriesAPIView.as_view(), name="cmsentries_apiview"),
     url(r'^api/v1/cmsmarkups', CMSMarkUpsAPIView.as_view(), name="cmscmsmarkups_apiview"),
     url(r'^api/v1/cmstemplates', CMSTemplatesAPIView.as_view(), name="cmstemplates_apiview"),
+    url(r'^api/v1/cmspaths/(?P<resource_id>[\d]+)/$', CMSPathsAPIView.as_view(), name="cmspaths_apiview_detail"),
     url(r'^api/v1/cmspaths', CMSPathsAPIView.as_view(), name="cmspaths_apiview"),
     url(r'^api/v1/loremipsum', LoremIpsumAPIView.as_view(), name="loremipsum"),
     

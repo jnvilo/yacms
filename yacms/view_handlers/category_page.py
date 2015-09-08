@@ -56,9 +56,8 @@ class CategoryPage(object):
         
         
     def articles(self):
-        #SINGLEPAGEVIEW
-        #obj_list = CMSEntries.objects.filter(path__parent_id = self.page_object.id,
-        #                                     page_type = singlepageview_pagetype_obj)
+        
+        """Here we load all pages that says we are their parent."""
         
         obj_list = CMSEntries.objects.filter(page_type = singlepageview_pagetype_obj,
                                              path__parent__id = self.page_object.path.id)
@@ -81,4 +80,14 @@ class CategoryPage(object):
 
     
     
-    
+    def page_types(self):
+        
+        """
+        Refactor me into a parent class. 
+        returns a list fo page_types 
+        """
+        
+        
+        pagetype_objs = CMSPageTypes.objects.all()
+        
+        return pagetype_objs

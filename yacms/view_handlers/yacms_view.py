@@ -5,11 +5,14 @@ from __future__ import absolute_import
 
 import time
 
+import logging
 from django.conf import settings
 from django.forms.models import model_to_dict
 
 import simplejson as json
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger("yacms.view_handlers.YACMSViewObject")
 
 from . formatters import CreoleFormatter
 class YACMSViewObject(object):
@@ -26,6 +29,8 @@ class YACMSViewObject(object):
             self.path = page_object.path.path
             self._page_id = page_object.id
             self._obj = page_object
+            
+            
         
         else:            
             self.path = path
@@ -109,6 +114,8 @@ class YACMSViewObject(object):
         """The html content of the page. This formats the page
         using the CreoleFormatter"""
         
+        logger.debug("html_content entered")
+        
         #TODO: Fix me: This loads only the first content entry. 
         #      This should be updated to load by date.
     
@@ -117,6 +124,8 @@ class YACMSViewObject(object):
         except IndexError as e:
             
             if settings.DEBUG:
+                msg = """We did not find a content_obj so returning a fake content since DEBUG is swithed on."""
+                logger.debug(msg)
                 return CreoleFormatter().html(fake_content=True)
             else:
                 return "Error: There is no content for this page."
@@ -126,6 +135,8 @@ class YACMSViewObject(object):
         #We pass the view into our custom CreoleFormatter so that the 
         #custom creole markup can have access.
         _html_content =  CreoleFormatter(content_obj.content,view=self).html()
+        
+        logger.debug("Call to YACMSObject.html_content returns: \n {}".format(_html_content))
         return _html_content
     
     @property
@@ -240,6 +251,11 @@ class YACMSViewObject(object):
     
     #----------------------------------------------------------------------
     def  id(self):
-        """"""
+        """
+        Returns the id of the curren cms_entry
+        """
         _id = self.page_object.id
         return _id
+    
+  
+    

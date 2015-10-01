@@ -25,6 +25,8 @@ from django.views.generic import View
 from django.forms.models import model_to_dict
 from django.http import Http404
 from django.core.files.uploadedfile import UploadedFile
+from django.forms.models import model_to_dict
+from django.utils.text import slugify
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
@@ -180,7 +182,7 @@ class CMSPathsAPIView(APIView):
         
         if path_str and (not path_str.startswith("/")):
             
-            if parent_id != 1: #1 is always / so we need to get only what is not 1
+            if int(parent_id) != 1: #1 is always / so we need to get only what is not 1
                 parent_cmspath = CMSPaths.objects.get(pk=parent_id)
                 request.data["path"] = "{}/{}".format(parent_cmspath.path, path_str)
             else:
@@ -354,25 +356,58 @@ class CMSEntriesAPIView(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = CMSEntrySerializer(data=request.data)
         
-        #TODO: Update this piece of code so that it will create a proper 
-        #      entry
         
-        if serializer.is_valid():
-            serializer.save()
+        #Because the serializer is so fucking picky, we don't use it 
+        #to serialize the form
+        
+        
+        
+        title = request.data.get("title", None)
+        path_id = request.data.get("path", None)
+        slug = request.data.get("slug", None)
+        page_type_id = request.data.get("page_type", None)
+        
+        if slug is None:
+            slug = slugify(title)
             
-            cms_obj = CMSEntries.objects.get(id = serializer.data.get("id"))
+        
+        if None in (title, path_id, slug, page_type_id):
+            return Response({"error": "title,path, slug and page_type are not optional"},
+                            status=status.HTTP_400_BAD_REQUEST)
             
-            content = CMSContents()
-            content.content = "No content. Edit me."
-            content.save()
+        try:
+            cmspath_obj = CMSPaths.objects.get(id=path_id)
+        except ObjectDoesNotExist as e:
+            return Response({"error": "CMSPath: {} does not exist".format(path_id)},
+                            status=status.HTTP_400_BAD_REQUEST)            
+        
+        try:
+            cmspagetype_obj  = CMSPageTypes.objects.get(id=page_type_id)
+        except ObjectDoesNotExist as e:
+            return Response({"error": "CMSPageType: {} does not exist".format(page_type_id)},
+                            status=status.HTTP_400_BAD_REQUEST)            
+        
+        
+        #Now create the cms_obj.
+        new_cmsentry = CMSEntries()
+        new_cmsentry.title = title
+        new_cmsentry.path = cmspath_obj 
+        new_cmsentry.slug = slug
+        new_cmsentry.page_type = cmspagetype_obj
+        new_cmsentry.save()
+        
+        content = CMSContents()
+        content.content = "No content. Edit me."
+        content.save()
             
-            cms_obj.content.add(content)
+        new_cmsentry.content.add(content)
+        
+        
+        return Response(model_to_dict(new_cmsentry), status=status.HTTP_200_OK)         
             
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
+         
     def put(self, request, **kwargs):
         serializer = CMSEntrySerializer(data=request.data)
         
@@ -382,56 +417,57 @@ class CMSEntriesAPIView(APIView):
         expand = self.request.query_params.get('expand', None)
         
         id = request.data.get("id", None)
-        
+        if id:
+            id = int(id)
         
         if not id:
             res = {"code": 400, "message": "PUT request requires an id parameter"}
             return Response(data=json.dumps(res), status=status.HTTP_400_BAD_REQUEST)            
         
-        if serializer.is_valid():
-            cmsentry_object = CMSEntries.objects.get(id=id)
+        cmsentry_object = CMSEntries.objects.get(id=id)
             
-            frontpage = cmsentry_object.frontpage
-            published = cmsentry_object.published
             
-            #Now update the cmsentry_object with the attributes from 
-            #the request.data
+        #Now update the cmsentry_object with the attributes from 
+        #the request.data
             
-            for key in request.data:
+        for key in request.data:
                 
-                if key == "date_created_epoch":
-                    print("Recieved a date_created_epoch")
-                    value = request.data.get("date_created_epoch")
-                    created_datetime = datetime.datetime.utcfromtimestamp(int(value)/1000)
+            if key == "date_created_epoch":
+                print("Recieved a date_created_epoch")
+                value = request.data.get("date_created_epoch")
+                created_datetime = datetime.datetime.utcfromtimestamp(int(value)/1000)
                     
-                    cmsentry_object.date_created = created_datetime
+                cmsentry_object.date_created = created_datetime
                     
                     
-                elif hasattr(cmsentry_object, key) and (key != "id"):
+            elif hasattr(cmsentry_object, key) and (key != "id"):
                     
-                    value = request.data.get(key)
-                    if value == "true":
-                        value = True
-                    if value == "false":
-                        value = False
-                    setattr(cmsentry_object, key, value)
+                value = request.data.get(key)
+                if value == "true":
+                    value = True
+                if value == "false":
+                    value = False
+                setattr(cmsentry_object, key, value)
             
-            cmsentry_object.save()
+        cmsentry_object.save()
+        
+        print(cmsentry_object.frontpage)
             
             #if expand:
                 
             #We return only the values that we have set. 
 
-            return_dict = {}
-            for key in request.data:
-                if hasattr(cmsentry_object, key):
-                    value = getattr(cmsentry_object, key)
+        return_dict = {}
+        for key in request.data:
+            if hasattr(cmsentry_object, key):
+                value = getattr(cmsentry_object, key)
             
-                return_dict[key] = value
+            return_dict[key] = value
                 
-            return Response(return_dict, status=status.HTTP_200_OK) 
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(return_dict, status=status.HTTP_200_OK) 
+        
+        #else:
+        #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
         
         
 

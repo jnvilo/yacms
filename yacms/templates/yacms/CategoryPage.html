@@ -39,7 +39,7 @@ Here starts the main view for the article. non logged in
     <div class="col-sm-4"><input id="createpage_slug" type="text" placeholder="slug"  class="form-control" ></div>
     <div class="col-sm-2"><select id="createpage_pagetype_select" type="text" class="form-control">
     {% for page_type in view_object.page_types %}
-    <option value={{page_type.page_type}}>{{page_type}}</option>
+    <option value={{page_type.id}}>{{page_type}}</option>
     {%endfor%}
     </select></div>
     <div class="col-sm-2"><button class="btn btn-primary" type="button" style="height: 40px;" id="createpage_button">Create Page</button></div>       
@@ -51,9 +51,50 @@ Here starts the main view for the article. non logged in
   <div id="category_table"></div>
   {% endif %}
  </div>
+{% verbatim %}
+
+<script id="category_table_tmpl">
+<table id="CreateTable" class="table table-hover">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Path</th>
+              <th>Published</th>
+              <th>FrontPage</th>
+              <th>Date Published</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {#values}
+            <tr>
+              <td child_cmsentry_id="{id}"><a href="{slug}">{title}</a></td>
+              <td>{slug}</td>
+              <td child_cmsentry_id="{id}" onclick="handle_published_clicked(this)">{?published}Yes{:else}No{/published}</td>
+              <td child_cmsentry_id="{id}" onclick="handle_frontpage_clicked(this)">{?frontpage}Yes{:else}No{/frontpage}</td>
+              <td>{date_created}</td>
+            </tr>
+            {/values}
+
+  </tbody>
+</table>
+
+</script>
+
+
+<div id="category_table_output"></div>
+<div id="output"></div>
+
+
+{% endverbatim %}
+
+
  
 <p>CategoryPage.html</p>
 <p>{{view_object.request.user.username}}
+
+
+
 {% endblock INNERBLOCK %} 
 
 {% block SCRIPTS %}
@@ -61,11 +102,13 @@ Here starts the main view for the article. non logged in
 <!-- SCRIPTS -->
 {% if view_object.request.user.username == "admin" %}
 
-    <script src="{% static "ejs/ejs.js" %}"></script>   
-    <script src="{% static "yacms/js/yacms.js" %}"></script>
-    <script src="{% static "yacms/bootstrap-datetimepicker-0/js/bootstrap-datetimepicker.min.js" %}">
-    <script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js"></script>
+<script src="{% static "yacms/js/yacms.js" %}"></script>
 {% endif %}  
+ 
+ 
+
+ 
+
   
 <!-- End of SCRIPTS-->
 {% endblock SCRIPTS %}

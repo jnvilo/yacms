@@ -23,6 +23,9 @@ class CMSPaths(models.Model):
     
     def __str__(self):
         return self.path
+    
+  
+    
           
 class CMSTags(models.Model):
     name = models.CharField(max_length=256, default="NotSet")
@@ -91,7 +94,7 @@ class CMSEntries(models.Model):
     
     #We make the content a many to many to be able to handle multiple
     #so we can version by published.
-    content = models.ManyToManyField(CMSContents)
+    content = models.ManyToManyField(CMSContents, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
     page_type = models.ForeignKey(CMSPageTypes, null=True)

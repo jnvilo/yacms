@@ -50,7 +50,7 @@ class CMSTemplatesSerializer(serializers.ModelSerializer):
         
 class CMSEntrySerializer(serializers.ModelSerializer):
     
-    #path = serializers.StringRelatedField()
+    path = serializers.StringRelatedField()
     class Meta:
         model = CMSEntries
         fields = ('id','title','path','slug','content','date_created',

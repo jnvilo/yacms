@@ -77,7 +77,7 @@ class CMSPageTypes(models.Model):
         if (self.view_template is None):
             #We only care to put the view template as the name of the view_class
             #during the creation.
-            self.view_template = "{}.html".format(self.view_class)
+            self.view_template = "DefaultView.html"
         
         super(CMSPageTypes, self).save(*args, **kwargs)
     
@@ -90,14 +90,14 @@ class CMSPageTypes(models.Model):
 class CMSEntries(models.Model):
     title = models.CharField(max_length=1024, default=None)
     path = models.ForeignKey(CMSPaths, null=True)
-    slug = models.SlugField(max_length=1024, null=True)
+    slug = models.SlugField(max_length=1024, unique=True)
     
     #We make the content a many to many to be able to handle multiple
     #so we can version by published.
-    content = models.ManyToManyField(CMSContents, null=True)
+    content = models.ManyToManyField(CMSContents, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
-    page_type = models.ForeignKey(CMSPageTypes, null=True)
+    page_type = models.ForeignKey("CMSPageTypes", null=True)
     template = models.ForeignKey(CMSTemplates, null=True, blank=True)
     
     frontpage = models.BooleanField(default=False)
@@ -142,7 +142,7 @@ class CMSEntries(models.Model):
     #def save(self, *args, **kwargs):
        
         #if self.pk is None:  
-            ##tell parent to save ourselves so we get a pk.
+            #tell parent to save ourselves so we get a pk.
             #super(CMSEntries, self).save(*args, **kwargs)
             
             #print("WE HAVE A PK: {} ".format(self.pk))
@@ -161,7 +161,7 @@ class CMSEntries(models.Model):
             #cms_obj = CMSEntries.objects.get(id=self.pk)
             #cms_obj.content.add(obj)
         
-            
+          
         #else:   
             #super(CMSEntries, self).save(*args, **kwargs)
         
@@ -180,3 +180,4 @@ class CMSEntries(models.Model):
         
 ## register the signal
 #post_save.connect(create_default_content, sender=CMSEntries, dispatch_uid="CREATE_CONTENT")
+

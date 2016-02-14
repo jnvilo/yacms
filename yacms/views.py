@@ -27,6 +27,12 @@ from django.http import Http404
 from django.core.files.uploadedfile import UploadedFile
 from django.forms.models import model_to_dict
 from django.utils.text import slugify
+from django.views.generic.base import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from rest_framework import permissions
+
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
@@ -55,28 +61,30 @@ from rest_framework import generics
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
+from django.http import HttpResponse
+from django.views.generic import CreateView, DeleteView, ListView
 
 from loremipsum import get_paragraphs
 from yacms.creole import creole2html
 
-from . serializers import CMSPageTypesSerializer
-from . serializers import CMSContentsSerializer
-from . serializers import CMSEntrySerializer
-from . serializers import CMSMarkUpSerializer
-from . serializers import CMSTemplatesSerializer
-from . serializers import CMSPathsSerializer
-from . serializers import CMSEntryExpandedSerializer
-from . serializers import LoremIpsumSerializer
+from yacms.serializers import CMSPageTypesSerializer
+from yacms.serializers import CMSContentsSerializer
+from yacms.serializers import CMSEntrySerializer
+from yacms.serializers import CMSMarkUpSerializer
+from yacms.serializers import CMSTemplatesSerializer
+from yacms.serializers import CMSPathsSerializer
+from yacms.serializers import CMSEntryExpandedSerializer
+from yacms.serializers import LoremIpsumSerializer
 
 
-from .models import CMSPageTypes
-from .models import CMSContents
-from .models import CMSEntries
-from .models import CMSMarkUps
-from .models import CMSTemplates
-from .models import CMSPaths
+from yacms.models import CMSPageTypes
+from yacms.models import CMSContents
+from yacms.models import CMSEntries
+from yacms.models import CMSMarkUps
+from yacms.models import CMSTemplates
+from yacms.models import CMSPaths
 
-from . view_handlers import YACMSViewObject
+from yacms.view_handlers import YACMSViewObject
 
 logger = logging.getLogger(name="yacms.views")
 
@@ -105,6 +113,22 @@ if not ASSETS_DIR.is_dir:
     
 def index(request, **kwargs):    
     return HttpResponse("Index page")
+
+
+
+def fileupload(request, **kwargs):
+  
+    template = "yacms/fileupload.html"
+    return render_to_response(template, {})    
+    
+    
+class CMSFrontPage(View):
+    
+    def get(self, request, **kwargs):
+        
+        template_name = "base_fedora.html"
+        return render_to_response(template_name)
+
 
 
 class LoremIpsumAPIView(APIView):
@@ -178,17 +202,28 @@ class CMSPathsAPIView(APIView):
         
         
         path_str = request.data.get("path")
-        parent_id = request.data.get("parent")
+        parent_str = request.data.get("parent")
         
-        if path_str and (not path_str.startswith("/")):
+        #parent_obj = CMSPaths.objects.get(parent__path=parent_str)
+        
+        data_dict = request.data.dict()
+        
+        #if path_str and (not path_str.startswith("/")):
             
-            if int(parent_id) != 1: #1 is always / so we need to get only what is not 1
-                parent_cmspath = CMSPaths.objects.get(pk=parent_id)
-                request.data["path"] = "{}/{}".format(parent_cmspath.path, path_str)
-            else:
-                request.data["path"] = "/{}".format(path_str)
-        
-        serializer = CMSPathsSerializer(data=request.data)
+            #if int(parent_obj.id) != 1: #1 is always / so we need to get only what is not 1
+                #parent_cmspath = CMSPaths.objects.get(pk=parent_id)
+                #data_dict["path"] = "{}/{}".format(parent_cmspath.path, path_str)
+            #else:
+                #data_dict["path"] = "/{}".format(path_str)
+
+        if parent_str == "":
+            data_dict["path"]  = data_dict["path"] = "/{}".format(path_str)
+        else:
+            data_dict["path"] = "{}/{}".format(parent_str, path_str)
+            
+        parent = CMSPaths.objects.get(path=parent_str)
+        data_dict["parent"] = parent.id
+        serializer = CMSPathsSerializer(data=data_dict)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -299,6 +334,9 @@ class CMSEntriesROAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     
     
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+    
     
 
 class CMSEntriesAPIView(APIView):
@@ -309,8 +347,9 @@ class CMSEntriesAPIView(APIView):
     * Only admin users are able to access this view.
     """
 
-    #authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
+
     filter_backends = (filters.DjangoFilterBackend,)
 
     def get(self, request, **kwargs):
@@ -339,8 +378,19 @@ class CMSEntriesAPIView(APIView):
         
         cmsentries = CMSEntries.objects.all()
         
+        
         if parent_id is not None:
-            cmsentries = cmsentries.filter(path__parent__id=parent_id) 
+            
+            #We are receiving the id of the parent. We want to return all 
+            #the cms entries whose path is the children of the path 
+            #of the parent. 
+     
+     
+            parent_cmsentry = CMSEntries.objects.get(id=parent_id)
+            parent_path = CMSPaths.objects.get(id=parent_id)
+            
+            
+            cmsentries = cmsentries.filter(path__parent=parent_cmsentry.path) 
             
         if page_type_id:
             cmsentries = cmsentries.filter(page_type=page_type_id)
@@ -487,16 +537,21 @@ class CMSContentsAPIView(APIView):
         Get a list of all available PageTypes
         """
 
+        
         format = kwargs.get("format", None)
         pagetypes = CMSContents.objects.all()        
-        page_id = self.request.query_params.get('id', None)
+        content_id = self.request.query_params.get('resource_id', None)
         
-        if page_id is not None:
-            pagetypes = pagetypes.filter(id=page_id);
+        contents = CMSContents.objects.all()
+        
+        if content_id is not None:
+            contents = contents.filter(id=content_id);
                     
-        serializer = CMSContentsSerializer(pagetypes, many=True)
+        serializer = CMSContentsSerializer(contents, many=True)
         return Response(serializer.data)
 
+    
+    
     def post(self, request, format=None):
         serializer = CMSContentsSerializer(data=request.data)
         if serializer.is_valid():
@@ -512,18 +567,19 @@ class CMSContentsAPIView(APIView):
        
         serializer = CMSContentsSerializer(data=request.data)
        
-        id = request.data.get("id", None)
+        resource_id = request.data.get("id", None)
         
-        if not id:
-            res = {"code": 400, "message": "PUT request requires an id parameter"}
-            return Response(data=json.dumps(res), status=status.HTTP_200_OK)            
+        if not resource_id:
+            res = {"code": 400, "message": "PUT request requires a resource id parameter"}
+            return Response(data=res, status=status.HTTP_200_OK)            
          
         if serializer.is_valid():
-            cmscontent_object = CMSContents.objects.get(id=id)
+            cmscontent_object = CMSContents.objects.get(id=resource_id)
             cmscontent_object.content = request.data.get("content")
             cmscontent_object.save()
             
             include_html = request.GET.get("include_html", None)
+            
             if include_html:
                 #Custom pack results:
                 cmscontent_dict = model_to_dict(cmscontent_object)
@@ -605,7 +661,7 @@ class CMSPageView(View):
                                                                       text = "Category Page",
                                                                       view_class = "CategoryPage",
                                                                       view_template = "CategoryPage.html"
-                                                                      )
+                                                                      )                
                 except MultipleObjectsReturned as e:
                     
                     logger.warn("Multiple PageType: CATEGORY found. Database is inconsistent. Returning the first one found.")
@@ -657,6 +713,10 @@ class  AssetsUploaderView(View):
     """Handles the uploading and deleting of images. Uses multiuploader AJAX plugin.
     made from api on: https://github.com/blueimp/jQuery-File-Upload
     """
+    
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(AssetsUploaderView, self).dispatch(*args, **kwargs)    
         
     def _mkdir(self,newdir):
         """Copied from http://code.activestate.com/recipes/82465-a-friendly-mkdir/ """
@@ -719,7 +779,7 @@ class  AssetsUploaderView(View):
             filenames = os.listdir(fullpath.as_posix())
         except OSError as e:
             return  JsonResponse({'files': []}) 
-
+  
         for filename in filenames:
 
             p_filename = pathlib.Path(fullpath, filename)
@@ -853,3 +913,56 @@ class  AssetsUploaderView(View):
             
             
             return HttpResponse("Deleted")
+
+#class PictureCreateView(CreateView):
+    #model = Picture
+    #fields = "__all__"
+
+    #def form_valid(self, form):
+        #self.object = form.save()
+        #files = [serialize(self.object)]
+        #data = {'files': files}
+        #response = JSONResponse(data, mimetype=response_mimetype(self.request))
+        #response['Content-Disposition'] = 'inline; filename=files.json'
+        #return response
+
+    #def form_invalid(self, form):
+        #data = json.dumps(form.errors)
+        #return HttpResponse(content=data, status=400, content_type='application/json')
+
+#class BasicVersionCreateView(PictureCreateView):
+    #template_name_suffix = '_basic_form'
+
+
+#class BasicPlusVersionCreateView(PictureCreateView):
+    #template_name_suffix = '_basicplus_form'
+
+
+#class AngularVersionCreateView(PictureCreateView):
+    #template_name_suffix = '_angular_form'
+
+
+#class jQueryVersionCreateView(PictureCreateView):
+    #template_name_suffix = '_jquery_form'
+
+
+#class PictureDeleteView(DeleteView):
+    #model = Picture
+
+    #def delete(self, request, *args, **kwargs):
+        #self.object = self.get_object()
+        #self.object.delete()
+        #response = JSONResponse(True, mimetype=response_mimetype(request))
+        #response['Content-Disposition'] = 'inline; filename=files.json'
+        #return response
+
+
+#class PictureListView(ListView):
+    #model = Picture
+
+    #def render_to_response(self, context, **response_kwargs):
+        #files = [ serialize(p) for p in self.get_queryset() ]
+        #data = {'files': files}
+        #response = JSONResponse(data, mimetype=response_mimetype(self.request))
+        #response['Content-Disposition'] = 'inline; filename=files.json'
+        #return response

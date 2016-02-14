@@ -1,4 +1,19 @@
-from __future__ import division, absolute_import, print_function, unicode_literals
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+try:
+    
+    unicode("test")
+
+except NameError as e:
+    #we must be in python 3
+    unicode = str
+    
+
+
 from loremipsum import generate_paragraphs
 from yacms.creole import creole2html
 from pprint import pformat
@@ -6,8 +21,7 @@ import simplejson as json
 
 from django.conf import settings
 import shlex
-import ConfigParser
-import StringIO
+
 
 from xml.sax.saxutils import escape
 

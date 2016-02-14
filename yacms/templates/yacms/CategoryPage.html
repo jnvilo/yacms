@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block YACMS_HEAD %}	
+  
+    <script>
+    var cmsentry_id = {{view_object.id}}
+    </script>
+
+{% endblock YACMS_HEAD %}    
+
+
 {% block TITLE%} {{view_object.title}}{% endblock TITLE %}
 {% block BODY_TITLE%} {{view_object.title}}{% endblock BODY_TITLE %}
 {
 
- {% block INNERBLOCK %} 
+  {% block YACMS_PAGE_MAIN_BODY %}
 <div class="row-fluid">
 
 {{view_object.html_content | safe}}
@@ -18,7 +27,6 @@ Here starts the main view for the article. non logged in
 
     <div class="cmsentries">   
       {% for article in view_object.articles %}
-      <h1>An Article</h1>
         <div class="cmsentry">
             <h2 class="cmsentry title"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
             <span id="span_{{article.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{article.slug}}" article_id={{article.page_object.id}}>{{article.created_timestamp_str}}</span>  
@@ -32,6 +40,7 @@ Here starts the main view for the article. non logged in
   
 </div>
 {% if view_object.request.user.username == "admin" %}
+
 
 <div class="row-fluid">
 <form class="form" id="createpage_form">
@@ -49,67 +58,41 @@ Here starts the main view for the article. non logged in
 
   <div id="notifications"></div>
   <div id="category_table"></div>
+  <div id="category_table_output"></div>
   {% endif %}
  </div>
-{% verbatim %}
-
-<script id="category_table_tmpl">
-<table id="CreateTable" class="table table-hover">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Path</th>
-              <th>Published</th>
-              <th>FrontPage</th>
-              <th>Date Published</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            {#values}
-            <tr>
-              <td child_cmsentry_id="{id}"><a href="{slug}">{title}</a></td>
-              <td>{slug}</td>
-              <td child_cmsentry_id="{id}" onclick="handle_published_clicked(this)">{?published}Yes{:else}No{/published}</td>
-              <td child_cmsentry_id="{id}" onclick="handle_frontpage_clicked(this)">{?frontpage}Yes{:else}No{/frontpage}</td>
-              <td>{date_created}</td>
-            </tr>
-            {/values}
-
-  </tbody>
-</table>
-
-</script>
-
-
-<div id="category_table_output"></div>
-<div id="output"></div>
-
-
-{% endverbatim %}
+ 
+ 
+ 
 
 
  
 <p>CategoryPage.html</p>
-<p>{{view_object.request.user.username}}
+<p>{{view_object.request.user.username}}</p>
+
+{% endblock YACMS_PAGE_MAIN_BODY %}
 
 
 
-{% endblock INNERBLOCK %} 
 
-{% block SCRIPTS %}
+{% block YACMS_JAVASCRIPT %}
 
-<!-- SCRIPTS -->
 {% if view_object.request.user.username == "admin" %}
-
+<script src="{% static "yacms/js/dustjs/dust-full.min.js" %}"></script>
 <script src="{% static "yacms/js/yacms.js" %}"></script>
+<!-- category_table.js - dust.js template-->
+<script src="{% static "yacms/js/category_table.js"%}"></script>
 {% endif %}  
  
  
+ <script>
 
- 
+ $( document ).ready(function() {
+    update_child_categories();
+});
 
+</script>
   
 <!-- End of SCRIPTS-->
-{% endblock SCRIPTS %}
+{% endblock YACMS_JAVASCRIPT %}
     

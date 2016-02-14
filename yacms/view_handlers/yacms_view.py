@@ -122,7 +122,7 @@ class YACMSViewObject(object):
         try:
             content_obj = self.page_object.content.all()[0]
         except IndexError as e:
-            
+         
             if settings.DEBUG:
                 msg = """We did not find a content_obj so returning a fake content since DEBUG is swithed on."""
                 logger.debug(msg)
@@ -258,4 +258,20 @@ class YACMSViewObject(object):
         return _id
     
   
+   
+class MenuEntry(object):
     
+    def __init__(self, cmspath):
+        self.path = cmspath
+
+        
+    def entries(self):
+        pass
+    
+    
+    
+    def expand(self):
+        pass
+        
+        
+        

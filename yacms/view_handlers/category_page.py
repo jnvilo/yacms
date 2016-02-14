@@ -1,50 +1,57 @@
 from yacms.models import CMSEntries
 from yacms.models import CMSPageTypes
-from .yacms_view import YACMSViewObject
+from yacms.view_handlers.yacms_view import YACMSViewObject
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.db.utils import OperationalError
 
 import logging
 logger = logging.getLogger("yacms.page_handlers")
 
-
 try:
-    singlepageview_pagetype_obj, c = obj = CMSPageTypes.objects.get_or_create( page_type = "SINGLEPAGE")
-   
-except ObjectDoesNotExist as e:
-    singlepageview_pagetype_obj = CMSPageTypes( page_type = "SINGLEPAGE", 
-                                                 text = "Single Page HTML",
-                                                 view_class = "SinglePage",
-                                                 view_template = "SinglePage.html")
-    singlepageview_pagetype_obj.save()
-   
-except MultipleObjectsReturned as e:
-    msg = "Got more than 1 CMSPageTypes : SINGLEPAGE. Database is inconsistent, Will return the first one. "
-    logger.warn(msg)
     
-    singlepageview_pagetype_obj = CMSPageTypes.objects.filter(page_type="SINGLEPAGE")[0]
-   
-   
-try:
-    categorypageview_pagetype_obj = CMSPageTypes.objects.get(page_type="CATEGORY")
-
-except ObjectDoesNotExist as e:
+    try:
+        singlepageview_pagetype_obj, c = obj = CMSPageTypes.objects.get_or_create(page_type = "SINGLEPAGE", 
+                                                     text = "Single Page HTML",
+                                                     view_class = "SinglePage",
+                                                     view_template = "SinglePage.html")
+       
+    except ObjectDoesNotExist as e:
+        singlepageview_pagetype_obj = CMSPageTypes( page_type = "SINGLEPAGE", 
+                                                     text = "Single Page HTML",
+                                                     view_class = "SinglePage",
+                                                     view_template = "SinglePage.html")
+        singlepageview_pagetype_obj.save()
+       
+    except MultipleObjectsReturned as e:
+        msg = "Got more than 1 CMSPageTypes : SINGLEPAGE. Database is inconsistent, Will return the first one. "
+        logger.warn(msg)
+        
+        singlepageview_pagetype_obj = CMSPageTypes.objects.filter(page_type="SINGLEPAGE")[0]
+       
+       
+    try:
+        categorypageview_pagetype_obj = CMSPageTypes.objects.get(page_type="CATEGORY")
     
-    msg = "Could not load CATEGORY view object. Going to create it."
-    logger.debug(msg)
-    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="CATEGORY",
-                                                     text = "Category Page",
-                                                     view_class = "CategoryPage",
-                                                     view_template = "CategoryPage.html"
-                                                     )
+    except ObjectDoesNotExist as e:
+        
+        msg = "Could not load CATEGORY view object. Going to create it."
+        logger.debug(msg)
+        pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="CATEGORY",
+                                                         text = "Category Page",
+                                                         view_class = "CategoryPage",
+                                                         view_template = "CategoryPage.html"
+                                                         )
+        
+    except MultipleObjectsReturned as e:
+        msg = "Got more than 1 CMSPageType: CATEGORY. Database is inconsistent. Will return the first one."
+        logger.info(msg)
+        
+        categorypageview_pagetype_obj = CMSPageTypes.objects.filter(page_type="CATEGORY")[0]
     
-except MultipleObjectsReturned as e:
-    msg = "Got more than 1 CMSPageType: CATEGORY. Database is inconsistent. Will return the first one."
-    logger.info(msg)
-    
-    categorypageview_pagetype_obj = CMSPageTypes.objects.filter(page_type="CATEGORY")[0]
-
-    
+except OperationalError as e:
+    #This can happen only when the database is not yet initialized.
+    pass
 
 
 

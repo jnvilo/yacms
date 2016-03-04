@@ -104,8 +104,8 @@ def  get_static_files_dir():
         if each.endswith("static"):
             return each
     else:
-        return None
-    
+        raise Exception("Static Files Dir Not Found. Please create a 'static' dir within the parent path.")
+
 ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
 
 if not ASSETS_DIR.is_dir:
@@ -126,7 +126,7 @@ class CMSFrontPage(View):
     
     def get(self, request, **kwargs):
         
-        template_name = "base_fedora.html"
+        template_name = "base.html"
         return render_to_response(template_name)
 
 
@@ -216,7 +216,7 @@ class CMSPathsAPIView(APIView):
             #else:
                 #data_dict["path"] = "/{}".format(path_str)
 
-        if parent_str == "":
+        if (parent_str == "") or (parent_str == "/"):
             data_dict["path"]  = data_dict["path"] = "/{}".format(path_str)
         else:
             data_dict["path"] = "{}/{}".format(parent_str, path_str)

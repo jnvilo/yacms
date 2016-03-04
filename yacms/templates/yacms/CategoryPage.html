@@ -44,8 +44,10 @@ Here starts the main view for the article. non logged in
 
 <div class="row-fluid">
 <form class="form" id="createpage_form">
-    <div class="col-sm-4"><input id="createpage_title" type="text" placeholder="title"  class="form-control" ></div>
-    <div class="col-sm-4"><input id="createpage_slug" type="text" placeholder="slug"  class="form-control" ></div>
+    <div class="col-sm-4">
+        <input id="createpage_title" type="text" placeholder="title" class="form-control" style="width: 100%; padding-top: 0px !important; padding-bottom: 0px !important; height: 30px !important;">
+    </div>   
+    <div class="col-sm-4"><input id="createpage_slug" type="text" placeholder="slug"  class="form-control" style="width: 100%; padding-top: 0px !important; padding-bottom: 0px !important; height: 30px !important;"></div>
     <div class="col-sm-2"><select id="createpage_pagetype_select" type="text" class="form-control">
     {% for page_type in view_object.page_types %}
     <option value={{page_type.id}}>{{page_type}}</option>

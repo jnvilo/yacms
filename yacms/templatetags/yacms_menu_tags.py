@@ -14,14 +14,20 @@ register = template.Library()
 
 @register.inclusion_tag('yacms/templatetags/dropdown_menu.html')
 def dropdown_menu(path):
-    
-    
     parent = CMSEntries.objects.get(path__path=path)
-    
-    for each in parent.categories():
-        print(each)
-        
-    
     return {"parent":parent}
+
+@register.inclusion_tag('yacms/templatetags/full_menu.html')
+def full_menu():
+    parent = CMSEntries.objects.get(path__path="/")
+    return {"parent":parent}
+
+
+
+
+
+
+
+
 
 

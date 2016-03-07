@@ -1,11 +1,12 @@
-<li class="dropdown"><a href="/cms{{parent.path}}" title="{{parent.title}}">{{parent.title}}</a> 
+
+<li class="dropdown"><a href="/cms{{parent.path}}" title="{{parent.title}}">{{parent.title}}</a>
 <ul class="dropdown-menu" >
    {% for child in parent.categories %}
         <li><a href="/cms/{{child.path}}">{{child.title}}</a></li>
         {% for grandchild in child.categories %}
          <li><a href="/cms/{{grandchild.path}}">&nbsp;-&nbsp;{{grandchild.title}}</a></li>
         {%endfor%}
-    {% endfor %} 
+    {% endfor %}
 </ul>
 </li>
 

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block YACMS_HEAD %}	
-  
+{% block YACMS_HEAD %}
+
     <script>
     var cmsentry_id = {{view_object.id}}
     </script>
 
-{% endblock YACMS_HEAD %}    
+{% endblock YACMS_HEAD %}
 
 
 {% block TITLE%} {{view_object.title}}{% endblock TITLE %}
@@ -17,27 +17,28 @@
   {% block YACMS_PAGE_MAIN_BODY %}
 <div class="row-fluid">
 
+{% comment %}
 {{view_object.html_content | safe}}
-
-{% comment %} 
+{% endcomment %}
+{% comment %}
 Here starts the main view for the article. non logged in
 {% endcomment%}
 
 
 
-    <div class="cmsentries">   
+    <div class="cmsentries">
       {% for article in view_object.articles %}
         <div class="cmsentry">
-            <h2 class="cmsentry title"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
-            <span id="span_{{article.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{article.slug}}" article_id={{article.page_object.id}}>{{article.created_timestamp_str}}</span>  
+            <h2 class="cmsentry title" style="font-weight:bold;     margin-bottom: 0px;"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
+            <span id="span_{{article.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{article.slug}}" article_id={{article.page_object.id}}>{{article.created_timestamp_str}}</span>
             <span id="{{article.slug}}" article_id={{article.id}}></span>
-           
+
             <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
         </div>
         {% endfor %}
-    </div>  
-      
-  
+    </div>
+
+
 </div>
 {% if view_object.request.user.username == "admin" %}
 
@@ -46,15 +47,15 @@ Here starts the main view for the article. non logged in
 <form class="form" id="createpage_form">
     <div class="col-sm-4">
         <input id="createpage_title" type="text" placeholder="title" class="form-control" style="width: 100%; padding-top: 0px !important; padding-bottom: 0px !important; height: 30px !important;">
-    </div>   
+    </div>
     <div class="col-sm-4"><input id="createpage_slug" type="text" placeholder="slug"  class="form-control" style="width: 100%; padding-top: 0px !important; padding-bottom: 0px !important; height: 30px !important;"></div>
     <div class="col-sm-2"><select id="createpage_pagetype_select" type="text" class="form-control">
     {% for page_type in view_object.page_types %}
     <option value={{page_type.id}}>{{page_type}}</option>
     {%endfor%}
     </select></div>
-    <div class="col-sm-2"><button class="btn btn-primary" type="button" style="height: 40px;" id="createpage_button">Create Page</button></div>       
-</form> 
+    <div class="col-sm-2"><button class="btn btn-primary" type="button" style="height: 40px;" id="createpage_button">Create Page</button></div>
+</form>
 </div>
 
 
@@ -63,12 +64,12 @@ Here starts the main view for the article. non logged in
   <div id="category_table_output"></div>
   {% endif %}
  </div>
- 
- 
- 
 
 
- 
+
+
+
+
 <p>CategoryPage.html</p>
 <p>{{view_object.request.user.username}}</p>
 
@@ -84,9 +85,9 @@ Here starts the main view for the article. non logged in
 <script src="{% static "yacms/js/yacms.js" %}"></script>
 <!-- category_table.js - dust.js template-->
 <script src="{% static "yacms/js/category_table.js"%}"></script>
-{% endif %}  
- 
- 
+{% endif %}
+
+
  <script>
 
  $( document ).ready(function() {
@@ -94,7 +95,7 @@ Here starts the main view for the article. non logged in
 });
 
 </script>
-  
+
 <!-- End of SCRIPTS-->
 {% endblock YACMS_JAVASCRIPT %}
-    
+

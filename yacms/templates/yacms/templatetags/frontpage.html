@@ -1,0 +1,13 @@
+
+    <div class="cmsentries">
+      {% for cmsentry in cmsentries %}
+        <div class="cmsentry">
+            <h2 class="cmsentry title" style="font-weight:bold;     margin-bottom: 0px;"><a href="/cms/{{cmsentry.path}}">{{cmsentry.title}}</a></h2>
+            <span id="span_{{cmsentry.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{cmsentry.slug}}" article_id={{cmsentry.id}}>{{cmsentry.view.created_timestamp_str}}</span>
+            <span id="{{cmsentry.slug}}" article_id={{cmsentry.id}}></span>
+
+            <p style="display: inline">{{ cmsentry.view.introduction|safe|truncatewords_html:50 }}</p>
+        </div>
+        {% endfor %}
+    </div>
+

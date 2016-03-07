@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+
+{% block YACMS_PAGE_MAIN_BODY %}
+
+ {% load yacms_content_tags %}
+ {% load yacms_menu_tags %}
+
+
+
+
+<div class="row-fluid">
+
+
+        <div class="blog-content blog-items">
+                <div class="span8">
+
+
+
+                 {% frontpage %}
+
+
+
+
+
+                </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="span4">
+                <!-- Categories -->
+                <div class="widget">
+                        <div class="categories">
+                                {% full_menu %}
+                         </div>
+                </div>
+
+                <!-- Categories end -->
+                <div class="widget">
+
+                        <h2>User:admin</h2>
+                        <a href="/profile">View Profile</a></br>
+                        <a href="/logout">Logout</a>
+                </div>
+
+        </div>
+        <!-- Right Side end -->
+
+        </div>
+
+
+
+{% endblock YACMS_PAGE_MAIN_BODY %}
+
+
+
+

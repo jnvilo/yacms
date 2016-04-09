@@ -15,7 +15,7 @@ register = template.Library()
 
 @register.inclusion_tag('yacms/templatetags/frontpage.html')
 def frontpage():
-    cmsentries = CMSEntries.objects.filter(frontpage=True, published=True)
+    cmsentries = CMSEntries.objects.filter(frontpage=True, published=True).order_by("-date_created")[:10]
 
     for cmsentry in cmsentries:
         print(cmsentry)

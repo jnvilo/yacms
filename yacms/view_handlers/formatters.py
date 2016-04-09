@@ -5,13 +5,13 @@ from __future__ import unicode_literals
 
 
 try:
-    
+
     unicode("test")
 
 except NameError as e:
     #we must be in python 3
     unicode = str
-    
+
 
 
 from loremipsum import generate_paragraphs
@@ -45,7 +45,7 @@ def html(text):
 def  HTML(text):
     """"""
     return html(text)
-    
+
 def pre(text):
     """
     Macro tag <<pre>>...<</pre>>.
@@ -59,11 +59,11 @@ def code(*args, **kwargs):
     Macro tag <<code ext=".some_extension">>...<</code>>
     If pygments is present, highlight the text according to the extension.
     """
-    
+
     text = kwargs.get("text", None)
     ext = kwargs.get("ext", ".sh")
     nums = kwargs.get("nums",None)
-    
+
     if not PYGMENTS:
         return pre(text)
 
@@ -90,95 +90,95 @@ def code(*args, **kwargs):
     #finally:
     #    return highlighted_text.replace('\n', '<br />\n')
 
-    return highlighted_text 
-    
+    return highlighted_text
+
 #----------------------------------------------------------------------
 def  alertblock(text):
-    """"""    
+    """"""
     template = """<div class="alert alert-block">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
 def  alerterror(text):
-    """"""    
+    """"""
     template = """<div class="alert alert-error">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
 def  alertsuccess(text):
-    """"""    
+    """"""
     template = """<div class="alert alert-success">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
 def  alertinfo(text):
-    """"""    
+    """"""
     template = """<div class="alert alert-info">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
 def  infoblock(*args, **kwargs):
     """"""
-    
+
     text = kwargs.get("text", "No text provided.")
     style = kwargs.get("style", "width: 400px; float: right; margin-left:10px")
     image = kwargs.get("image", None)
     author = kwargs.get("author", None)
-    
-    
+
+
     if image:
         image = """<div class="quote-photo"><img src="img/temp/user.jpg" alt=""></div>"""
     else:
         image = ""
-        
+
     if author:
         author = """<div class="quote-author">James Livinston - <span>The New York Post</span></div>"""
     else:
         author=""
-        
+
     template = """
 <div class="boxinfo" style="{}">
         <div class="testimonials-user">{}<p>{}</p>{}</div>
 </div>""".format(style,image, text, author)
-    
+
     return template
 
-    
+
 #----------------------------------------------------------------------
 def  image(*args, **kwargs):
     """
     We parse the content of the text to get the information about the image.
     """
-    
+
     text = kwargs.get("text", None)
     name = kwargs.get("name", None)
     view = kwargs.get("view", None)
     path_str = view.path_str
-    
-    img_url = "/static/assets/{}/{}".format(view.path_str, name)    
+
+    img_url = "/images/{}/{}".format(view.path_str, name)
     img = """<img src="{}" />""".format(img_url)
 
     return img
-    
-    
+
+
 #----------------------------------------------------------------------
 def  debug(*args, **kwargs):
-        
+
     """
     Just a simple example which shows the view's json_data.
-    
+
     """
-    
+
     view = kwargs.get("view", None)
-    
+
     if view is None:
         return "MACRO: Debug did not get a view"
-        
+
     result =  "Object dictionary: {} ".format(view.json_data)
 
     return result
-    
-    
+
+
 ########################################################################
 class  CreoleFormatter(object):
     """"""
@@ -192,18 +192,18 @@ class  CreoleFormatter(object):
     #----------------------------------------------------------------------
     def  html(self, fake_content=False, view=None):
         """Returns the html"""
-    
+
         if view is None:
             view = self.view
-    
+
         if fake_content:
             paragraphs = generate_paragraphs(5, start_with_lorem=False)
             p = ""
             for paragraph in paragraphs:
                 p =  unicode(paragraph[2]) + "\n\n" + p
-            return creole2html(p)            
-            
-        return creole2html(self.raw_content, macros={ "code": code, 
+            return creole2html(p)
+
+        return creole2html(self.raw_content, macros={ "code": code,
                                                    "pre": pre,
                                                    "html": html,
                                                    "HTML":HTML,
@@ -214,10 +214,9 @@ class  CreoleFormatter(object):
                                                    "infoblock":infoblock,
                                                    "image": image,
                                                    "debug":debug,
-                                                  }, 
-                                           verbose=None,  
+                                                  },
+                                           verbose=None,
                                            stderr=None,
                                            view=view)
-        
-        
-   
+
+

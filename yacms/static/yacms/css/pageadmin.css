@@ -9,19 +9,19 @@
 
 
 .pageadmin_buttons {
-  display: inline-block;
-  float: left;
-  background: #FF0000;
-  
-  
+    display: inline-block;
+    float: left;
+    background: #FF0000;
+
+
 }
 ​
 
 .pageadmin_status {
-  display: inline-block;
-  float: right;
-  background: #777777;
-  
+    display: inline-block;
+    float: right;
+    background: #777777;
+
 }
 
 .pageadmin_checkbox {
@@ -46,5 +46,31 @@
     border: 1px solid transparent;
     float: right;
     background:#777777;
+
+}
+
+
+#gallery .thumbnail{
+    width:150px;
+    height: 150px;
+    float:left;
+    margin:2px;
+}
+#gallery .thumbnail img{
+    width:150px;
+    height: 150px;
+    float: left;
+}
+
+.yacms_thumbnail {
+    width:150px;
+    height: 150px;
+    float:left;
+    margin:2px;
+
+}
+
+.yacms_upload_panel {
+    float: left;
 
 }

@@ -33,7 +33,14 @@ var view_json = {{view_object.json_data | safe}}
 {% block YACMS_PAGE_MAIN_BODY %}
 <div class="row-fluid ">
 
-   <form action="" method="POST">      {% csrf_token %}
+   {% if user.is_authenticated %}
+
+   <div class="span8">
+      <a href="/logout/">Logout</a>
+   </div>
+
+   {% else %}
+    <form action="" method="POST">      {% csrf_token %}
    <div class="span10">
 
       <div class="row-fluid">
@@ -50,6 +57,10 @@ var view_json = {{view_object.json_data | safe}}
 
    </div>
    </form>
+
+   {% endif %}
+
+
 </div>
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/>

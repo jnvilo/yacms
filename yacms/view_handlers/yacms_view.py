@@ -193,11 +193,16 @@ class YACMSViewObject(object):
         d["path_str"] = path_str
 
         #django model_to_dict ignores the datetime field.
-        mydate = self.page_object.date_created
-        epoch = int(time.mktime(mydate.timetuple())*1000)
+        date_created = self.page_object.date_created
+        date_created_epoch = int(time.mktime(date_created.timetuple())*1000)
 
-        d["date_created_epoch"] = epoch
 
+        #django model_to_dict ignores the datetime field.
+        date_modified = self.page_object.date_created
+        date_modified_epoch = int(time.mktime(date_modified.timetuple())*1000)
+
+        d["date_created_epoch"] = date_created_epoch
+        d["date_modified_epoch"] = date_modified_epoch
         return d
 
     @property
@@ -245,9 +250,13 @@ class YACMSViewObject(object):
     #----------------------------------------------------------------------
     def created_timestamp_str(self):
         """"""
+        return self.page_object.date_created.strftime("%Y/%m/%d %H:%M")
 
-        return self.page_object.date_created.strftime("%d/%m/%Y %H:%M:%S")
 
+    #----------------------------------------------------------------------
+    def modified_timestamp_str(self):
+        """"""
+        return self.page_object.date_modified.strftime("%Y/%m/%d %H:%M")
 
     #----------------------------------------------------------------------
     def  id(self):
@@ -262,9 +271,15 @@ class YACMSViewObject(object):
 
         return self.page_object.parents_list()
 
+    def content_topics(self):
+        #Get all H1 entries from the page.
+        soup = BeautifulSoup(self.html_content)
+        x = soup.findAll("h1")
 
-
-
+        y = []
+        for z in x:
+            y.append(z.text)
+        return y
 
 
 class MenuEntry(object):

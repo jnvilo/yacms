@@ -13,12 +13,14 @@ import datetime
 from bs4 import BeautifulSoup
 import simplejson as json
 import threading
+import arrow
+from pathlib import Path
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.contrib.sitemaps import Sitemap
 from django.http import JsonResponse
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.http import HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -32,6 +34,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from rest_framework import permissions
+from django.contrib.auth import logout
+from django.contrib.auth import login
 
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -94,8 +98,6 @@ try:
 except:
     pass
 
-
-
 def  get_static_files_dir():
     """
     Gets the static files directory.
@@ -112,6 +114,127 @@ ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
 if not ASSETS_DIR.is_dir:
     ASSETS_DIR.mkdir()
 
+
+class CMSFileUpload(View):
+
+
+    def get(self, request, **kwargs):
+
+        format = request.GET.get("format", None)
+
+        if format == "json":
+            #Get a list of the image names.
+            pass
+
+        from django.conf import settings
+        assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+        path = kwargs.get("path", None).lstrip("/")
+
+        fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
+
+        print(path)
+
+        data = []
+
+        if fullpath.exists():
+
+            for each in fullpath.iterdir():
+
+                if each.suffix in [".jpeg", ".jpg", ".gif", ".png", ".bmp"]:
+                    data.append("/images/{}/{}".format(path, each.name))
+
+
+        return JsonResponse(data,safe=False)
+        #template = "yacms/FileUpload.html"
+        #return render_to_response(template, {})
+
+    def _mkdir(self,newdir):
+        """Copied from http://code.activestate.com/recipes/82465-a-friendly-mkdir/ """
+        """works the way a good mkdir should :)
+            - already exists, silently complete
+            - regular file in the way, raise an exception
+            - parent directory(ies) does not exist, make them as well
+        """
+        if os.path.isdir(newdir):
+            pass
+        elif os.path.isfile(newdir):
+            raise OSError("a file with the same name as the desired " \
+                          "dir, '%s', already exists." % newdir)
+        else:
+            head, tail = os.path.split(newdir)
+            if head and not os.path.isdir(head):
+                self._mkdir(head)
+            #print "_mkdir %s" % repr(newdir)
+            if tail:
+                if not os.path.exists(newdir):
+                    os.mkdir(newdir)
+
+    def fileupload(self,request, **kwargs):
+
+        mylock = threading.Lock()
+
+        with mylock:
+            from django.conf import settings
+            assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+
+            path = kwargs.get("path", None).lstrip("/")
+
+            fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
+
+            if not fullpath.exists():
+                self._mkdir(fullpath.as_posix())
+            elif not fullpath.is_dir():
+                #Fix this to return a proper json response.
+                return HttpResponse("Error. Not full dir")
+
+            thumbnailpath = pathlib.Path(fullpath, "thumbnails")
+
+            if not thumbnailpath.exists():
+                try:
+                    os.makedirs(thumbnailpath.as_posix())
+                except FileExistsError as e:
+                    #If we hit here then it means, some other thread
+                    #created it.
+                    pass
+            elif not thumbnailpath.is_dir():
+                #Fix this to return a proper json response.
+                return HttpResponse("Error. Not full dir")
+
+            if request.method == "POST":
+                uploaded_file = request.FILES.get("upload_file")
+
+                filename = uploaded_file.name
+
+                p_filename = pathlib.Path(fullpath, filename)
+
+                with open(p_filename.as_posix(), 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                #Now do the thumbail.
+                try:
+                    size = 256, 256
+                    outfile =  pathlib.Path(thumbnailpath, filename)
+                    im = Image.open(p_filename.as_posix())
+                    im.thumbnail(size, Image.ANTIALIAS)
+                    im.save(outfile.as_posix(), "JPEG")
+                except IOError as e:
+                    return JsonResponse( { "error" : "cannot create thumbnail for {}".format(outfile)})
+
+                except Exception as e:
+                    return JsonResponse( { "error": "Unhandled exception: {}".format(outfile) })
+
+
+    def post(self,request, **kwargs):
+
+        self.fileupload(request, **kwargs)
+        return HttpResponse("Completed")
+
+    def delete(self, request, **kwargs):
+        pass
+
+
+
 def index(request, **kwargs):
     return HttpResponse("Index page")
 
@@ -124,8 +247,21 @@ def fileupload(request, **kwargs):
 
 
 
+from django.contrib.sitemaps import Sitemap
+#from blog.models import Entry
 
-class CMSLogin(View):
+class CMSSitemap(Sitemap):
+    #changefreq = "never"
+    priority = 0.9
+
+    def items(self):
+        return CMSEntries.objects.filter(published=True)
+
+    def lastmod(self, obj):
+        return obj.date_modified
+
+
+class CMSLoginView(View):
 
     def get(self, request, **kwargs):
         template_name = "yacms/Login.html"
@@ -134,40 +270,46 @@ class CMSLogin(View):
 
     def post(self, request, **kwargs):
 
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username = request.POST.get("username", None)
+        password = request.POST.get("password", None)
+        next_page = request.GET.get("next")
 
         from django.contrib.auth import authenticate
-
-
         user = authenticate(username=username, password=password)
-
 
         error_msg = ""
         if user is not None:
             # the password verified for the user
             if user.is_active:
-                print("User is valid, active and authenticated")
+                login(request, user)
+                if next_page is not None:
+                    return HttpResponseRedirect(next_page)
             else:
                 print("The password is valid, but the account has been disabled!")
+                error_msg = "Account is disabled."
         else:
             # the authentication system was unable to verify the username and password
-
             error_msg = "The system was unable to verify the username and password."
-
 
         template_name = "yacms/Login.html"
         return render_to_response(template_name,{ "error_msg": error_msg},context_instance=RequestContext(request))
 
 
 
+class CMSLogoutView(View):
+
+    def get(self, request, **kwargs):
+        logout(request)
+        #template_name = "yacms/Login.html"
+        #return render_to_response(template_name,context_instance=RequestContext(request))
+        return HttpResponseRedirect("/login/")
 
 class CMSFrontPage(View):
 
     def get(self, request, **kwargs):
 
         template_name = "yacms/Index.html"
-        return render_to_response(template_name)
+        return render_to_response(template_name,context_instance=RequestContext(request) )
 
 
 
@@ -199,11 +341,6 @@ class LoremIpsumAPIView(APIView):
             data = {"content" : html }
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CMSLoginView(View):
-
-    pass
 
 
 
@@ -497,7 +634,7 @@ class CMSEntriesAPIView(APIView):
         content.save()
 
         new_cmsentry.content.add(content)
-
+        new_cmsentry.on_create()
 
         return Response(model_to_dict(new_cmsentry), status=status.HTTP_200_OK)
 
@@ -534,6 +671,16 @@ class CMSEntriesAPIView(APIView):
 
                 cmsentry_object.date_created = created_datetime
 
+            elif key == "date_created_str":
+                #WE re
+                x1 = request.data.get("date_created_str")
+                x2 = arrow.get(x1, 'YYYY/MM/DD HH:mm')
+                setattr(cmsentry_object, "date_created", str(x2))
+
+            elif key == "date_modified_str":
+                y1 = request.data.get("date_modified_str")
+                y2 = arrow.get(y1, 'YYYY/MM/DD HH:mm')
+                setattr(cmsentry_object, "date_modified", str(y2))
 
             elif hasattr(cmsentry_object, key) and (key != "id"):
 
@@ -550,16 +697,10 @@ class CMSEntriesAPIView(APIView):
 
             #if expand:
 
-            #We return only the values that we have set.
+        #We return only the values that we have set.
 
-        return_dict = {}
-        for key in request.data:
-            if hasattr(cmsentry_object, key):
-                value = getattr(cmsentry_object, key)
 
-            return_dict[key] = value
-
-        return Response(return_dict, status=status.HTTP_200_OK)
+        return Response(request.data, status=status.HTTP_200_OK)
 
         #else:
         #    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -820,6 +961,7 @@ class  AssetsUploaderView(View):
 
         files = []
 
+        print(fullpath.as_posix())
         try:
             filenames = os.listdir(fullpath.as_posix())
         except OSError as e:

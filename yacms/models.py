@@ -40,11 +40,13 @@ class CMSMarkUps(models.Model):
         return self.markup
 
 class CMSContents(models.Model):
+    title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")
     timestamp = models.DateTimeField(auto_now=True)
     markup = models.ForeignKey(CMSMarkUps, null=True)
     meta_description = models.TextField(max_length=20480, default="", blank=True)
     tags = models.ManyToManyField(CMSTags, blank=True )
+    page = models.IntegerField(default=1)
 
     def __str__(self):
         return self.content
@@ -52,9 +54,9 @@ class CMSContents(models.Model):
     @property
     def html(self):
 
-
-
-
+        #Lazy import is needed because the yacms.view_handlers requires to import
+        #yacms.models.CMSEntries, but unfortunately the models will not yet
+        #be available during the django startup and causes an exception.
         from yacms.view_handlers.formatters import CreoleFormatter
         return CreoleFormatter(self.content).html()
 
@@ -94,8 +96,9 @@ class CMSEntries(models.Model):
 
     #We make the content a many to many to be able to handle multiple
     #so we can version by published.
-    content = models.ManyToManyField(CMSContents, null=True, blank=True)
+    content = models.ManyToManyField(CMSContents, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now_add=True)
 
     page_type = models.ForeignKey("CMSPageTypes", null=True)
     template = models.ForeignKey(CMSTemplates, null=True, blank=True)
@@ -105,6 +108,11 @@ class CMSEntries(models.Model):
 
     page_number = models.IntegerField(default=1)
 
+
+    def on_create(self):
+
+        if hasattr(self.view, "on_create"):
+            self.view.on_create()
 
 
     def parent(self):
@@ -119,9 +127,19 @@ class CMSEntries(models.Model):
 
 
     #----------------------------------------------------------------------
+    @property
     def  date_created_str(self):
         """"""
-        return self.date_created.strftime("%d/%m/%Y %H:%M:%S")
+        #value = self.date_created.strftime("%Y%m%d %H:%M")
+        value = self.date_created
+        return value
+
+    @property
+    def  date_modified_str(self):
+        """"""
+        value = self.date_modified.strftime("%Y%m%d %H:%M")
+        return value
+
 
     @property
     def view(self):
@@ -174,6 +192,9 @@ class CMSEntries(models.Model):
 
         c = CMSEntries.objects.filter(path__parent=self.path, page_type__page_type="CATEGORY")
         return c
+
+
+
 
     #def save(self, *args, **kwargs):
 

@@ -281,6 +281,8 @@ class YACMSViewObject(object):
             y.append(z.text)
         return y
 
+    def on_create(self):
+        pass
 
 class MenuEntry(object):
 

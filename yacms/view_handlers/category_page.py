@@ -145,3 +145,7 @@ class CategoryPage(object):
         pagetype_objs = CMSPageTypes.objects.all()
 
         return pagetype_objs
+
+
+    def on_create(self):
+        pass

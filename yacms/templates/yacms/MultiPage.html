@@ -44,6 +44,14 @@ Here starts the main view for the article. non logged in
 
                 <div class="widget" style="padding-top:5px;">
                 <ul class="nav nav-list">
+ {% comment %}Also do the parent page contents.{% endcomment %}
+
+                        <li class="nav-header">
+                                <a  style="color:#555555;" href="/cms{{view_object.page_object.path.path}}">{{view_object.page_object.title}} </a>
+                        </li>
+                        {% for topic in mb_page_object.parent.view.content_topics %}
+                        <li><a style="color: #444444;" href="/cms{{mb_page_object.parent.path.path}}#{{topic}}">{{topic}}</a></li>
+                        {% endfor %}
 
                          {% for mb_page_object in view_object.member_page_objects %}
 
@@ -74,7 +82,12 @@ Here starts the main view for the article. non logged in
                 <div class="span12" style="margin-left: 0px; margin-right:0px; border-top-style: solid; border-bottom-style: solid;">
                                 <div class="span4"></div>
                                 <div class="span4"><center></center></div>
+                                
+                                {% if view_object.has_first_page == False %}
+                                <div class="span4"><span style="float:right"><a href="">No Other Pages</a></span></div>
+                                {% else %}
                                 <div class="span4"><span style="float:right"><a href="/cms{{view_object.first_page.path}}">{{view_object.first_page.title}} &gt;&gt;</a></span></div>
+                                {% endif %}                
                 </div>
 
         </div>

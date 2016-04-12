@@ -871,16 +871,13 @@ class CMSPageView(View):
             else:
                 raise Http404("Page Does Not Exist.")
 
-
-
-
-
     def get(self,request, **kwargs):
         """Just get the page and return it."""
 
         obj = self.get_object(**kwargs)
         obj.request = request
         template = obj.template
+        
         return render_to_response(template, {"view_object": obj})
 
     def post(self, request, **kwargs):

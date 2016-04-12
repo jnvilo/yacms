@@ -67,18 +67,19 @@ class MultiPage(object):
         returns a list fo page_types
         """
 
-
         pagetype_objs = CMSPageTypes.objects.filter(page_type="MEMBERPAGE")
 
         return pagetype_objs
-
-
 
     def on_create(self):
 
         print("Created a new article {}".format(self.page_object.title))
 
 
+    @property 
+    def first_page_object(self):
+        #We are the first page object
+        return self.page_object
 
     @property
     def member_page_objects(self):
@@ -86,14 +87,37 @@ class MultiPage(object):
         member_cmsentries =  CMSEntries.objects.filter(path__parent=self.page_object.path).order_by('page_number')
         return member_cmsentries
 
+    @property 
+    def first_page_object(self):
+        #The first_page_object is always the parent. No need to do 
+        #anything here since it is implemented in the CMSEntry 
+        
+        return self.page_object.parent
+        
+        
+
 
     @property
     def first_page(self):
+        #Legacy implementatin. THIS IS VERY MISLEADING. should be 
+        #renamed as first_member_page.
 
         entries = CMSEntries.objects.filter(path__parent=self.page_object.path).order_by('page_number')
-
-        return entries[0]
-
+        
+        num_entries = len(entries)
+        print(num_entries)
+        if entries.count() > 0:
+            return entries[0]
+        else:
+            return None
+        
+    @property
+    def has_first_page(self):
+        
+        if self.first_page == None:
+            return False
+        else:
+            return True
 
 class MemberPage(object):
 
@@ -159,8 +183,8 @@ class MemberPage(object):
         """
 
         next_pages = CMSEntries.objects.filter(path__parent=self.page_object.path.parent, page_number__gt=self.page_object.page_number).order_by('page_number')
-
-        if next_pages.count() > 0:
+        num_results = len(next_pages)
+        if  num_results > 0:
             return next_pages[0]
         else:
             return None
@@ -169,7 +193,8 @@ class MemberPage(object):
     def previous_page(self):
         previous_pages = CMSEntries.objects.filter(path__parent=self.page_object.path.parent, page_number__lt=self.page_object.page_number).order_by('-page_number')
 
-        if previous_pages.count() > 0:
+        num_results = len(previous_pages) 
+        if num_results > 0:
             return previous_pages[0]
         else:
             return None

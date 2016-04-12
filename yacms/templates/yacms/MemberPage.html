@@ -38,6 +38,15 @@ var view_json = {{view_object.json_data | safe}}
 
                 <div class="widget" style="padding-top:5px;">
                 <ul class="nav nav-list">
+                        {% comment %}Also do the parent page contents.{% endcomment %}
+
+                        <li class="nav-header">
+                                <a  style="color:#555555;" href="/cms{{view_object.page_object.parent.path.path}}">{{view_object.page_object.parent.title}} </a>
+                        </li>
+                        {% for topic in mb_page_object.parent.view.content_topics %}
+                        <li><a style="color: #444444;" href="/cms{{mb_page_object.parent.path.path}}#{{topic}}">{{topic}}</a></li>
+                        {% endfor %}
+
 
                          {% for mb_page_object in view_object.member_page_objects %}
 

@@ -75,9 +75,20 @@ var view_json = {{view_object.json_data | safe}}
                 </div>
 
                 <div class="span12" style="margin-left: 0px; margin-right:0px; border-top-style: solid; border-bottom-style: solid;">
-                                <div class="span4"><a href="/cms{{view_object.previous_page.path}}">&lt;&lt;{{view_object.previous_page.title}} </a></div>
+                                <div class="span4"><span style="float:left; margin-top:5px;">
+                                    {% if view_object.is_first_page %}   
+                                        <a class="btn btn-small btn-info" href="/cms{{view_object.page_object.parent.path.path}}"><i class="icon-chevron-left"></i>&nbsp;Previous</a></a></span>
+                                    {% else%}
+                                        <a class="btn btn-small btn-info" href="/cms{{view_object.previous_page.path.path}}"><i class="icon-chevron-left"></i>&nbsp;Previous</a></a></span>
+                                    {% endif %}
+                                </div>
                                 <div class="span4"><center><a href="/cms{{view_object.page_object.parent.path.path}}">{{view_object.page_object.parent.title}}</a></center></div>
-                                <div class="span4"><span style="float:right"><a href="/cms{{view_object.next_page.path}}">{{view_object.next_page.title}} &gt;&gt;</a></span></div>
+                                
+                                <div class="span4"><span style="float:right;margin-top:5px;">
+                                        {% if view_object.is_last_page == False %}     
+                                        <a class="btn btn-small btn-info" href="/cms{{view_object.next_page.path.path}}">Next&nbsp;<i class="icon-chevron-right"></i></a></a>
+                                        {% endif %}                                  
+                                  </span></div>
                 </div>
 
         </div>

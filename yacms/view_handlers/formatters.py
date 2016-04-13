@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
+from django.utils.text import slugify
 try:
 
     unicode("test")
@@ -93,28 +93,53 @@ def code(*args, **kwargs):
     return highlighted_text
 
 #----------------------------------------------------------------------
-def  alertblock(text):
+def  alertblock(*args, **kwargs):
     """"""
-    template = """<div class="alert alert-block">{}</div>"""
+    text = kwargs.get("text", None)
     return template.format(text)
 
 #----------------------------------------------------------------------
-def  alerterror(text):
+def  alerterror(*args, **kwargs):
     """"""
+    text = kwargs.get("text", None)
     template = """<div class="alert alert-error">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
-def  alertsuccess(text):
+def  alertsuccess(*args, **kwargs):
     """"""
+    
+    text = kwargs.get("text", None)
     template = """<div class="alert alert-success">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
-def  alertinfo(text):
+def  alertinfo(*args, **kwargs):
     """"""
+    text = kwargs.get("text", None)
     template = """<div class="alert alert-info">{}</div>"""
     return template.format(text)
+
+
+#----------------------------------------------------------------------
+def H1(*args, **kwargs):
+    """"""
+    text = kwargs.get("text", None)
+    template = """<h1>{}</h2><a class="multipage-submenu-h1" name="{}"> """
+    
+    anchor_text_url = slugify(text)    
+    return template.format(text, anchor_text_url)
+    
+
+def H2(*args, **kwargs):
+    """"""
+    text = kwargs.get("text", None)
+    template = """<h2 class="multipage-submenu-h2">{}</h2>"""
+    anchor_text_url = slugify(text)
+    
+    return template.format(text, anchor_text_url)
+
+
 
 #----------------------------------------------------------------------
 def  infoblock(*args, **kwargs):
@@ -203,10 +228,16 @@ class  CreoleFormatter(object):
                 p =  unicode(paragraph[2]) + "\n\n" + p
             return creole2html(p)
 
+
+
+        #The view object is actually passed to the macro being called such that
+        #it can manipulate the view object to update it.
         return creole2html(self.raw_content, macros={ "code": code,
                                                    "pre": pre,
                                                    "html": html,
                                                    "HTML":HTML,
+                                                   "H1": H1,
+                                                   "H2":H2,
                                                    "alertblock":alertblock,
                                                    "alertsuccess":alertsuccess,
                                                    "alertinfo":alertinfo,

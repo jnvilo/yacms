@@ -84,9 +84,10 @@ Here starts the main view for the article. non logged in
                                 <div class="span4"><center></center></div>
                                 
                                 {% if view_object.has_first_page == False %}
-                                <div class="span4"><span style="float:right"><a href="">No Other Pages</a></span></div>
+                                <div class="span4"><span style="float:right"><a href=""></a></span></div>
                                 {% else %}
-                                <div class="span4"><span style="float:right"><a href="/cms{{view_object.first_page.path}}">{{view_object.first_page.title}} &gt;&gt;</a></span></div>
+                                <div class="span4"><span style="float:right;margin-top:5px;">
+                                <a class="btn btn-small btn-info" href="/cms{{view_object.first_page.path.path}}"><i class="icon-info-sign"></i> Next</a></span></div>
                                 {% endif %}                
                 </div>
 

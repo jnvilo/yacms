@@ -200,10 +200,26 @@ class MemberPage(object):
             return None
 
 
-
     @property
     def first_page(self):
 
         entries = CMSEntries.objects.filter(path__parent=self.page_object.path.parent).order_by('page_number')
 
         return entries[0]
+
+
+    @property
+    def is_last_page(self):
+        entries = CMSEntries.objects.filter(path__parent=self.page_object.path.parent).order_by('-page_number')
+        
+        if entries[0] == self.page_object:
+            return True
+        else:
+            return False
+       
+    @property
+    def is_first_page(self):
+        if self.page_object == self.first_page:
+            return True
+        else:
+            return False

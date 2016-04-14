@@ -108,7 +108,7 @@ def  alerterror(*args, **kwargs):
 #----------------------------------------------------------------------
 def  alertsuccess(*args, **kwargs):
     """"""
-    
+
     text = kwargs.get("text", None)
     template = """<div class="alert alert-success">{}</div>"""
     return template.format(text)
@@ -125,18 +125,18 @@ def  alertinfo(*args, **kwargs):
 def H1(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
-    template = """<h1>{}</h2><a class="multipage-submenu-h1" name="{}"></a> """
-    
-    anchor_text_url = slugify(text)    
+    template = """<h1 class="multipage-submenu-h1">{}</h2><a  name="{}"></a> """
+
+    anchor_text_url = slugify(text)
     return template.format(text, anchor_text_url)
-    
+
 
 def H2(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
-    template = """<h2 class="multipage-submenu-h2">{}</h2><a class="multipage-submenu-h1" name="{}"></a> """
+    template = """<h2 class="multipage-submenu-h2">{}</h2><a name="{}"></a> """
     anchor_text_url = slugify(text)
-    
+
     return template.format(text, anchor_text_url)
 
 

@@ -8,7 +8,7 @@ import time
 import logging
 from django.conf import settings
 from django.forms.models import model_to_dict
-
+from django.utils.text import slugify
 import simplejson as json
 from bs4 import BeautifulSoup
 
@@ -18,24 +18,29 @@ from . formatters import CreoleFormatter
 
 
 class ContentTopicsContainer(object):
-    
+
     def __init__(self, title, anchor_text=None):
-        
+
         self.title = title
         self._anchor_text = anchor_text
-        
-    @property 
+
+    @property
     def has_children(self):
         pass
-    
+
     @property
     def children(self):
         """
-        Returns a list of ContentTopics that exists below this content 
+        Returns a list of ContentTopics that exists below this content
         Topic
         """
-    
-    
+        pass
+
+    @property
+    def anchor_text(self):
+
+        return slugify(self.title)
+
 
 class YACMSViewObject(object):
 
@@ -296,11 +301,11 @@ class YACMSViewObject(object):
     def content_topics(self):
         #Get all H1 entries from the page.
         soup = BeautifulSoup(self.html_content)
-        x = soup.findAll("h1")
+        x = soup.findAll("h1", class_ = "multipage-submenu-h1" )
 
         y = []
         for z in x:
-            y.append(z.text)
+            y.append(ContentTopicsContainer(z.text))
         return y
 
     #def on_create(self):

@@ -15,6 +15,28 @@ from bs4 import BeautifulSoup
 logger = logging.getLogger("yacms.view_handlers.YACMSViewObject")
 
 from . formatters import CreoleFormatter
+
+
+class ContentTopicsContainer(object):
+    
+    def __init__(self, title, anchor_text=None):
+        
+        self.title = title
+        self._anchor_text = anchor_text
+        
+    @property 
+    def has_children(self):
+        pass
+    
+    @property
+    def children(self):
+        """
+        Returns a list of ContentTopics that exists below this content 
+        Topic
+        """
+    
+    
+
 class YACMSViewObject(object):
 
     """

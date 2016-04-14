@@ -108,6 +108,8 @@ class YACMSViewObject(object):
         else:
             return self._obj
 
+
+
     @property
     def page_id(self):
         if self._page_id is None:

@@ -4,6 +4,7 @@
 {%block YACMS_HEAD %}
 
 <link href="{%static "yacms/css/pageadmin.css" %}" rel="stylesheet">
+<link href="{%static "yacms/css/yacms.css" %}" rel="stylesheet">
 
 <script>
 
@@ -36,7 +37,7 @@ var view_json = {{view_object.json_data | safe}}
         <div class="span3">
                 <!-- Nav List -->
 
-                <div class="widget" style="padding-top:5px;">
+                <div class="sidemenu" >
                 <ul class="nav nav-list">
                         {% comment %}Also do the parent page contents.{% endcomment %}
 
@@ -44,7 +45,7 @@ var view_json = {{view_object.json_data | safe}}
                                 <a  style="color:#555555;" href="/cms{{view_object.page_object.parent.path.path}}">{{view_object.page_object.parent.title}} </a>
                         </li>
                         {% for topic in view_object.page_object.parent.view.content_topics %}
-                        <li><a style="color: #444444;" href="/cms{{view_object.page_object.parent.path.path}}#{{topic.anchor_text}}">{{topic.title}}</a></li>
+                        <li><a style="color: #444444; padding-left:25px; line-height:16px;" href="/cms{{view_object.page_object.parent.path.path}}#{{topic.anchor_text}}">{{topic.title}}</a></li>
                         {% endfor %}
 
 
@@ -54,7 +55,7 @@ var view_json = {{view_object.json_data | safe}}
                                 <a  style="color:#555555;" href="/cms{{mb_page_object.path.path}}">{{mb_page_object.title}}</a>
                         </li>
                             {% for topic in mb_page_object.view.content_topics %}
-                               <li><a style="color: #444444;" href="/cms{{mb_page_object.path.path}}#{{topic.anchor_text}}">{{topic.title}}</a></li>
+                               <li><a style="color: #444444; padding-left:25px; line-height:16px;" href="/cms{{mb_page_object.path.path}}#{{topic.anchor_text}}">{{topic.title}}</a></li>
 
                             {% endfor %}
 

@@ -10,7 +10,7 @@ from django.core.cache import cache
 
 from django.db import models
 from django.template.defaultfilters import slugify
-
+from django.contrib.auth.models import User
 from django.conf import settings
 from yacms.creole import creole2html
 
@@ -89,6 +89,12 @@ class CMSPageTypes(models.Model):
     def __str__(self):
         return self.text
 
+
+def get_admin_user():
+
+    admin = User.objects.get(username="admin")
+    return admin
+
 class CMSEntries(models.Model):
     title = models.CharField(max_length=1024, default=None)
     path = models.ForeignKey(CMSPaths, null=True)
@@ -107,6 +113,11 @@ class CMSEntries(models.Model):
     published = models.BooleanField(default=False)
 
     page_number = models.IntegerField(default=1)
+    created_by = models.ForeignKey(User, default=get_admin_user().pk)
+
+
+
+
 
 
     def on_create(self):
@@ -120,6 +131,12 @@ class CMSEntries(models.Model):
         #Get the cms entry that has a path belonging to the parent of our path.
         parent_entry = CMSEntries.objects.get(path=self.path.parent)
         return parent_entry
+
+
+    def html_content(self):
+        #We are going to index the parsed content of the CMSEntrie so we are going to
+        #ask our view to give that to us.
+        return self.view.html_content
 
 
     def __str__(self):
@@ -199,7 +216,7 @@ class CMSEntries(models.Model):
         if self.pk is None:
             super(CMSEntries, self).save(*args, **kwargs)
             self.on_create()
-            
+
         else:
             super(CMSEntries, self).save(*args, **kwargs)
 

@@ -20,6 +20,7 @@ from yacms.views import  (
 
 urlpatterns = [
 
+    url(r'^search/', include('haystack.urls')),
     url(r'^cmsupload$',  csrf_exempt(CMSFileUpload.as_view()), name="cmsfileupload"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(CMSFileUpload.as_view()), name="assets_manager_get"),
 

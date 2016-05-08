@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{%block YACMS_HEAD %}
+
+<link href="{%static "yacms/css/pageadmin.css" %}" rel="stylesheet">
+
+<script>
+
+var view_json = {{view_object.json_data | safe}}
+</script>
+
+<link rel="stylesheet" href="/static/yacms/mediauploader/css/jquery.fileupload.css">
+<link rel="stylesheet" href="/static/yacms/mediauploader/css/jquery.fileupload-ui.css">
+
+ <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<link href="/static/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+
+{%endblock YACMS_HEAD %}
+
+
+{%block DESCRIPTION %}{{view_object.introduction}}{% endblock DESCRIPTION %}
+{% block TITLE%} {{view_object.title}}{% endblock TITLE %}
+{% block BODY_TITLE%} Search Results {% endblock BODY_TITLE %}
+{% block BREADCRUMBS_LIST_ENTRIES %}{% endblock BREADCRUMBS_LIST_ENTRIES %}
+
+
+
+
+
+
+{% block YACMS_PAGE_MAIN_BODY %}
+
+
+        {% if query %}
+
+            <div class="cmsentries">
+              {% for result  in page.object_list %}
+                <div class="cmsentry">
+                    <h2 class="cmsentry title" style="font-weight:bold;     margin-bottom: 0px;"><a href="{{result.object.get_absolute_url}}">{{result.object.title}}</a></h2>
+                    <span>{{result.object.view.created_timestamp_str}}</span>
+
+
+                    <p style="display: inline">{{ result.object.view.introduction|safe }}</p>
+                </div>
+
+
+
+            {% empty %}
+                <p>No results found.</p>
+            {% endfor %}
+
+                {% if page.has_previous or page.has_next %}
+                    <div>
+                        {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                        |
+                        {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                    </div>
+                {% endif %}
+
+
+            </div>
+
+        {% else %}
+            {# Show some example queries to run, maybe query syntax, something else? #}
+
+
+
+
+        {% endif %}
+
+
+
+{% endblock YACMS_PAGE_MAIN_BODY %}

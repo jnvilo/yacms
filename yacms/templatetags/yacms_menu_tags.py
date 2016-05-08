@@ -39,6 +39,17 @@ def full_menu():
     return {"parent":parent}
 
 
+@register.inclusion_tag('yacms/templatetags/mini_menu.html')
+def mini_menu():
+    try:
+        parent = CMSEntries.objects.get(path__path="/")
+    except ObjectDoesNotExist as e:
+        msg = "No CMSEntries to produce full_menu from /. Perhaps / does not yet exist!!"
+        logger.fatal(msg)
+        parent = None
+    return {"parent":parent}
+
+
 
 
 

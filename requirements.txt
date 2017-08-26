@@ -1,0 +1,24 @@
+arrow==0.7.0
+beautifulsoup4==4.4.1
+defusedxml==0.4.1
+Django==1.9.6
+django-filter==0.13.0
+django-haystack==2.5.dev0
+djangorestframework==3.3.3
+loremipsum==1.0.5
+oauthlib==1.1.1
+pathlib==1.0.1
+Pillow==3.2.0
+Pygments==2.1.3
+PyJWT==1.4.0
+python-creole==1.3.1
+python-dateutil==2.5.3
+python-social-auth==0.2.19
+python3-openid==3.0.10
+requests==2.10.0
+requests-oauthlib==0.6.1
+sh==1.11
+simplejson==3.8.2
+six==1.10.0
+Whoosh==2.7.4
+-e git+git@bitbucket.org:private_members_only/yacms.git@eb4a375cf5fbf528c70a2d028807a3d712ded3fd#egg=yacms

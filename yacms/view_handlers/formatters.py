@@ -125,7 +125,7 @@ def  alertinfo(*args, **kwargs):
 def H1(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
-    template = """<h1 class="multipage-submenu-h1">{}</h2><a  name="{}"></a> """
+    template = """<a  name="{}"></a><h1 class="multipage-submenu-h1">{}</h2> """
 
     anchor_text_url = slugify(text)
     return template.format(text, anchor_text_url)

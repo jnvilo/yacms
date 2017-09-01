@@ -1,5 +1,5 @@
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.decorators.csrf import csrf_exempt
 from yacms.views import  (
                        CMSContentsAPIView,
@@ -53,7 +53,7 @@ urlpatterns = [
     url(r'^(?P<path>[-/\.a-z\d_]*)/$', CMSPageView.as_view(), name="cms_page"),
     url(r'^$', CMSPageView.as_view(), name="cms_page"),
 
-    url(r'^fileupload$', 'yacms.views.fileupload', name="fileupload"),
+    #url(r'^fileupload$', 'yacms.views.fileupload', name="fileupload"),
 
 
     #url(r'^(?P<path>[-/\.a-z\d_]*)/fileUploader/$', 'yacms.views.fileupload', name="page"),

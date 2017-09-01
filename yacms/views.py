@@ -309,8 +309,8 @@ class CMSFrontPage(View):
     def get(self, request, **kwargs):
 
         template_name = "yacms/Index.html"
-        return render_to_response(template_name,context_instance=RequestContext(request) )
-
+        #return render(template_name,context_instance=RequestContext(request) )
+        return render(request, template_name)
 
 
 class LoremIpsumAPIView(APIView):

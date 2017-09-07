@@ -50,14 +50,13 @@ class YACMSViewObject(object):
     be serialized.  The YACMSViewObject handles the management of the
     attributes of the CMSEntry model.
     """
+    
     def __init__(self, path=None, page_id=None, page_object=None):
 
         if  page_object:
             self.path = page_object.path.path
             self._page_id = page_object.id
             self._obj = page_object
-
-
 
         else:
             self.path = path
@@ -217,10 +216,12 @@ class YACMSViewObject(object):
 
     @property
     def data(self):
-        d =  model_to_dict(self.page_object)
+        d =  model_to_dict(self.page_object, exclude="content")
         path_str = self.page_object.path.path
         d["path_str"] = path_str
-
+        d["content"] = [x.id for x in self.page_object.content.all()]
+        page_object = self.page_object
+        
         #django model_to_dict ignores the datetime field.
         date_created = self.page_object.date_created
         date_created_epoch = int(time.mktime(date_created.timetuple())*1000)
@@ -236,10 +237,15 @@ class YACMSViewObject(object):
 
     @property
     def json_data(self):
-        value =  json.dumps(self.data)
-        return value
+        
+        try:
+            value =  json.dumps(self.data)
+            return value
+        except Exception as e:
+            print("fuck", e)
 
 
+    @property
     def get_absolute_url(self):
         cms_base_path = getattr(settings, "YACMS_BASEPATH", None)
 
@@ -252,8 +258,6 @@ class YACMSViewObject(object):
         #we assume here that self.path.path will always start with a /
         abs_url =  "{}{}".format(cms_base_path, self.page_object.path.path)
         return abs_url
-
-
 
     @property
     def request(self):
@@ -274,7 +278,6 @@ class YACMSViewObject(object):
     def  timestamp(self):
         """"""
         pass
-
 
     #----------------------------------------------------------------------
     def created_timestamp_str(self):

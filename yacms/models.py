@@ -38,7 +38,7 @@ class CMSMarkUps(models.Model):
 
     def __str__(self):
         return self.markup
-
+                    
 class CMSContents(models.Model):
     title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")

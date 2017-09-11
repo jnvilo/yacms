@@ -16,16 +16,17 @@ from yacms.views import  (
 
                        )
 
-
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
 
     url(r'^search/', include('haystack.urls')),
+    
     url(r'^cmsupload$',  csrf_exempt(CMSFileUpload.as_view()), name="cmsfileupload"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(CMSFileUpload.as_view()), name="assets_manager_get"),
 
     url(r'^api/v1/cmsentriesro', CMSEntriesROAPIView.as_view(), name="cmsentriesro_apiview"),
-
+    url(r'^api/v1/docs/', include_docs_urls(title='YACMS API Documentation')),
 
     #Read Write API Views
     url(r'^api/v1/cmspagetypes', CMSPageTypesAPIView.as_view(), name="cmspagetypes_apiview"),
@@ -51,6 +52,8 @@ urlpatterns = [
 
     #CMS View - Returns website pages
     url(r'^(?P<path>[-/\.a-z\d_]*)/$', CMSPageView.as_view(), name="cms_page"),
+    
+
     url(r'^$', CMSPageView.as_view(), name="cms_page"),
 
     #url(r'^fileupload$', 'yacms.views.fileupload', name="fileupload"),

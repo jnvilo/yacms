@@ -593,8 +593,6 @@ class CMSEntriesAPIView(APIView):
         #Because the serializer is so fucking picky, we don't use it
         #to serialize the form
 
-
-
         title = request.data.get("title", None)
         path_id = request.data.get("path", None)
         slug = request.data.get("slug", None)
@@ -602,7 +600,6 @@ class CMSEntriesAPIView(APIView):
 
         if slug is None:
             slug = slugify(title)
-
 
         if None in (title, path_id, slug, page_type_id):
             return Response({"error": "title,path, slug and page_type are not optional"},
@@ -636,7 +633,7 @@ class CMSEntriesAPIView(APIView):
         new_cmsentry.content.add(content)
         new_cmsentry.on_create()
 
-        return Response(model_to_dict(new_cmsentry), status=status.HTTP_200_OK)
+        return Response(model_to_dict(new_cmsentry, exclude="content"), status=status.HTTP_200_OK)
 
 
 
@@ -784,11 +781,6 @@ class CMSContentsAPIView(APIView):
 
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
 
 
 

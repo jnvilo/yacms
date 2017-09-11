@@ -30,6 +30,10 @@ def dropdown_menu(path):
 
 @register.inclusion_tag('yacms/templatetags/full_menu.html')
 def full_menu():
+    """
+    Used to get a full category tree starting from /cms/. 
+    """
+    
     try:
         parent = CMSEntries.objects.get(path__path="/")
     except ObjectDoesNotExist as e:

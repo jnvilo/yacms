@@ -1,5 +1,20 @@
-This is yaCMS, yet another CMS for www.jnvilo.com
 
-This branch is a major rewrite that exposes all website management functions via django-rest-framework. Also the page models and entries have all been split up rather than having 1 big mode. 
+Test
+----
 
+    make test
 
+Overrides
+---------
+
+- `python` version:
+
+        make PYTHON_VERSION='2.7.8' test
+        make PYTHON_VERSION='2.7.8' virtualenv
+- `pep8` options:
+
+        make PEP8_OPTIONS='--max-line-length=120' python-pep8
+
+If you have already downloaded the tarballs you need (Python and/or virtualenv) you can work offline like this:
+
+    make ONLINE=false virtualenv

@@ -3,3 +3,4 @@
 .DS_Store
 yacms/static/.DS_Store
 yacms/.DS_Store
+node_module/

@@ -107,7 +107,7 @@ def  get_static_files_dir():
         if each.endswith("static"):
             return each
     else:
-        raise Exception("Static Files Dir Not Found. Please create a 'static' dir within the parent path.")
+        raise Exception("""Static Files Dir Not Found. Please create a 'static' dir within the parent path.""")
 
 ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
 
@@ -308,7 +308,8 @@ class CMSFrontPage(View):
 
     def get(self, request, **kwargs):
 
-        template_name = "yacms/Index.html"
+        #template_name = "yacms/Index.html"
+        template_name = "blog_index.html"
         #return render(template_name,context_instance=RequestContext(request) )
         return render(request, template_name)
 

@@ -21,7 +21,7 @@ test-clean:
 	test -z "$$($(GIT) clean --dry-run -dx)"
 
 .PHONY: build
-build: test virtualenv
+build: nodejs test virtualenv
 	mkdir -p $@
 	. virtualenv/bin/activate && \
 		python setup.py build
@@ -52,6 +52,14 @@ clean-test:
 	-$(RM) .coverage
 	-$(RM) virtualenv
 
+
+nodejs: | ./node_modules
+	echo "Not going to do anything, it is already installed"
+
+node_modules:
+	npm install --save --production dustjs-linkedin
+
+.PHONY: nodejs
 include configuration.mk
 include make-includes/python.mk
 include make-includes/variables.mk

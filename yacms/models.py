@@ -19,7 +19,8 @@ from loremipsum import generate_paragraphs
 
 class CMSPaths(models.Model):
     path = models.CharField(max_length=2000, null=True)
-    parent = models.ForeignKey("CMSPaths", null=True, blank=True)
+    parent = models.ForeignKey("CMSPaths", null=True, blank=True, 
+                               on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.path
@@ -43,7 +44,7 @@ class CMSContents(models.Model):
     title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")
     timestamp = models.DateTimeField(auto_now=True)
-    markup = models.ForeignKey(CMSMarkUps, null=True)
+    markup = models.ForeignKey(CMSMarkUps, null=True, on_delete=models.DO_NOTHING)
     meta_description = models.TextField(max_length=20480, default="", blank=True)
     tags = models.ManyToManyField(CMSTags, blank=True )
     page = models.IntegerField(default=1)
@@ -97,7 +98,9 @@ def get_admin_user():
 
 class CMSEntries(models.Model):
     title = models.CharField(max_length=1024, default=None)
-    path = models.ForeignKey(CMSPaths, null=True)
+    path = models.ForeignKey(CMSPaths, 
+                             null=True, 
+                             on_delete=models.DO_NOTHING)
     slug = models.SlugField(max_length=1024, unique=True)
 
     #We make the content a many to many to be able to handle multiple
@@ -106,18 +109,21 @@ class CMSEntries(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now_add=True)
 
-    page_type = models.ForeignKey("CMSPageTypes", null=True)
-    template = models.ForeignKey(CMSTemplates, null=True, blank=True)
+    page_type = models.ForeignKey("CMSPageTypes", 
+                                  null=True, 
+                                  on_delete=models.DO_NOTHING)
+    template = models.ForeignKey(CMSTemplates, 
+                                 null=True, 
+                                 blank=True, 
+                                  on_delete=models.DO_NOTHING)
 
     frontpage = models.BooleanField(default=False)
     published = models.BooleanField(default=False)
 
     page_number = models.IntegerField(default=1)
-    created_by = models.ForeignKey(User, default=get_admin_user().pk)
-
-
-
-
+    created_by = models.ForeignKey(User, 
+                                   default=get_admin_user().pk, 
+                                  on_delete=models.DO_NOTHING)
 
 
     def on_create(self):

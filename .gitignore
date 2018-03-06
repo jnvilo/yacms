@@ -4,3 +4,11 @@
 yacms/static/.DS_Store
 yacms/.DS_Store
 node_module/
+.coverage
+.eggs/
+build/
+node_modules/
+requirements.txt.old
+virtualenv
+
+

@@ -209,19 +209,15 @@ class CMSEntries(models.Model):
 
         return pl
 
-
-
     def categories(self):
-
         c = CMSEntries.objects.filter(path__parent=self.path, page_type__page_type="CATEGORY")
         return c
-
 
 
     def save(self, *args, **kwargs):
         if self.pk is None:
             super(CMSEntries, self).save(*args, **kwargs)
-            self.on_create()
+            #self.on_create()
 
         else:
             super(CMSEntries, self).save(*args, **kwargs)

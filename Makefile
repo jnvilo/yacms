@@ -2,7 +2,7 @@ NAME = $(notdir $(CURDIR))
 PACKAGE_NAME = $(subst -,_,$(NAME))
 
 .PHONY: all
-all: build
+all: dustjs build
 
 .PHONY: test-dependencies
 test-dependencies: virtualenv
@@ -21,7 +21,7 @@ test-clean:
 	test -z "$$($(GIT) clean --dry-run -dx)"
 
 .PHONY: build
-build: nodejs test virtualenv
+build: test virtualenv
 	mkdir -p $@
 	. virtualenv/bin/activate && \
 		python setup.py build
@@ -52,14 +52,27 @@ clean-test:
 	-$(RM) .coverage
 	-$(RM) virtualenv
 
-
+.PHONY: nodejs
 nodejs: | ./node_modules
 	echo "Not going to do anything, it is already installed"
 
 node_modules:
 	npm install --save --production dustjs-linkedin
 
-.PHONY: nodejs
+.PHONY: dustjs
+dustjs:  dustjs_files
+
+dustjs_files: 
+	mkdir -p ./yacms/static/yacms/dustjs
+	cp -r ./node_modules/dustjs-linkedin/dist/* ./yacms/static/yacms/dustjs
+
+	
+.PHONEY: templates
+templates: compile_dustjs
+
+compile_dustjs: 
+	node_modules/dustjs-linkedin/bin/dustc yacms/templates/yacms/dustjs_templates/*.dust -o yacms/static/yacms/templates.js	
+
 include configuration.mk
 include make-includes/python.mk
 include make-includes/variables.mk

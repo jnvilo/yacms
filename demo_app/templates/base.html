@@ -42,7 +42,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{% block PROJECT_NAME %}Project name{%endblock PROJECT_NAME %}</a>
+          <a class="navbar-brand" href="/">{% block PROJECT_NAME %}Project name{%endblock PROJECT_NAME %}</a>
         </div>
         <div class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" role="form">
@@ -60,173 +60,55 @@
     {% endblock NAVBAR %}
     <!-- Main jumbotron for a primary marketing message or call to action -->
   
-    {%block PAGE_CONTENT %}
+   
     <section id="page">
                         <header class="page-header padding-top-30">
                                 <div class="container">
                                         <div class="row">
                                                 <div class="col-md-12">
-                                                        <h1>Blog</h1>
-                                                        <p>Downtown news</p>
-                                                <ul class="breadcrumb visible-md visible-lg">
-                                                                <li><a href="index.html">Home</a></li>
-                                                                <li><a href="blog-home-sidebar-right.html">Blog</a></li>
-                                                                <li class="active">Blog sidebar right</li>
-                                                        </ul>
+                                                        
+                                                        <h1>{% block BODY_TITLE%} BodyTitle {% endblock %}</h1>
+                                                      
+                                                        <div class="row">
+                                                        <ul class="breadcrumb">
+                                                          {% block BREADCRUMBS_LIST_ENTRIES %}
+
+                                                                  <li><a href="/">Home</a> <span class="divider">/</span></li>
+                                                                  {% for p in view_object.parent_entries_list %}
+                                                  
+                                                  
+                                                                      {% if forloop.last %}
+                                                                      <li><a href="{{p.get_absolute_url}}">{{p.title}}</a></li>
+                                                                      {% else %}
+                                                  
+                                                                           <li><a href="{{p.get_absolute_url}}">{{p.title}}</a><span class="divider">/</span></li>
+                                                                      {%endif%}
+                                                  
+                                                  
+                                                                  {% endfor %}
+                                                  
+                                                                  <!-- li><a href="/">Home</a> <span class="divider">/</span></li>
+                                                  
+                                                                  <li><a href="/cms/sysadmin">SysAdmin/DevOps</a><span class="divider">/</span></li>
+                                                  
+                                                                  <li><a href="/cms/sysadmin/linux">Linux</a><span class="divider">/</span></li>
+                                                  
+                                                                  <li><a href="/cms/sysadmin/linux/mail-server-administration">Mail Server Administration</a><span class="divider">/</span></li -->
+                                                  
+                                                  
+                                                  
+                                                                  {% endblock BREADCRUMBS_LIST_ENTRIES %}
+                                                        
+                                                        
+                                                        </ul></div>
                                                 </div>
                                         </div>
                                 </div>
                         </header>
-                        <section id="content" class="mt30 pb30">
-                                <div class="container">
-                                        <div class="row">
-                                                <div class="col-md-8">
-                                                        <article class="post clearfix">
-                                                                <div class="postPic">
-                                                                        <div class="imgBorder mb15">
-                                                                                <a href="blog-post.html"><img src="images/blog/blog-pic1.jpg" alt="" class="img-responsive"></a>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                        <div class="postMeta col-sm-1 col-xs-2">
-                                                                                <i class="iconRounded icon-camera"></i>
-                                                                        </div>
-                                                                        <section class="col-sm-11 col-xs-10">
-                                                                                <h2><a href="blog-post.html">Some people walk in the rain, others just get wet.</a></h2>
-                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor lacus ac justo varius in vehicula nibh mattis. Aenean ac diam metus. Aliquam tempor tincidunt pretium. Suspendisse bibendum, sapien venenatis vestibulum commodo, eros lectus iaculis magna, sit amet pellentesque ligula turpis a nibh... 
-                                                                                <a href="blog-post.html" class="readMore">read more</a>
-                                                                                </p>
-                                                                                <ul class="entry-meta">
-                                                                                        <li class="entry-date"><a href="#"><i class="icon-pin"></i>&nbsp;12 Oct. 2027</a></li>
-                                                                                        <li class="entry-category"><a href="#"><i class="icon-th-list"></i>&nbsp;category</a></li>
-                                                                                        <li class="entry-author"><a href="#"><i class="icon-male"></i>&nbsp;Admin</a></li>
-                                                                                        <li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li>
-                                                                                </ul>
-                                                                        </section>
-                                                                </div>
-                                                        </article>
-                                                        <hr>
-                                                        <article class="post clearfix">
-                                                                <div class="postPic">
-                                                                        <div class="videoWrapper col-md-12 mb30 videoFormat2">
-                                                                                <iframe width="560" height="315" src="//www.youtube.com/embed/5d8kzQnuUpM" frameborder="0" allowfullscreen=""></iframe>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                        <div class="postMeta col-sm-1 col-xs-2">
-                                                                                <i class="iconRounded icon-videocam"></i>
-                                                                        </div>
-                                                                        <section class="col-sm-11 col-xs-10">
-                                                                                <h2>
-                                                                                        <a href="blog-post.html">
-                                                                                                Rain is grace; rain is the sky descending to the earth; without rain, there would be no life.
-                                                                                        </a>
-                                                                                </h2>
-                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor lacus ac justo varius in vehicula nibh mattis. Aenean ac diam metus. Aliquam tempor tincidunt pretium. Suspendisse bibendum, sapien venenatis vestibulum commodo, eros lectus iaculis magna, sit amet pellentesque ligula turpis a nibh... <a href="blog-post.html" class="readMore">read more</a>
-                                                                                </p>
-                                                                                <ul class="entry-meta">
-                                                                                        <li class="entry-date"><a href="#"><i class="icon-pin"></i>&nbsp;12 Oct. 2027</a></li>
-                                                                                        <li class="entry-category"><a href="#"><i class="icon-th-list"></i>&nbsp;category</a></li>
-                                                                                        <li class="entry-author"><a href="#"><i class="icon-male"></i>&nbsp;Admin</a></li>
-                                                                                        <li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li>
-                                                                                </ul>
-                                                                        </section>
-                                                                </div>
-                                                        </article>
-                                                        <hr>
-                                                        <article class="post clearfix">
-                                                                <div class="postPic">
-                                                                        <div class="imgBorder mb15">
-                                                                                <a href="blog-post.html"><img src="images/blog/blog-pic2.jpg" alt="" class="img-responsive"></a>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                        <div class="postMeta col-sm-1 col-xs-2">
-                                                                                <i class="iconRounded icon-picture"></i>
-                                                                        </div>
-                                                                        <section class="col-sm-11 col-xs-10">
-                                                                                <h2><a href="blog-post.html">The rain begins with a single drop</a></h2>
-                                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor lacus ac justo varius in vehicula nibh mattis. Aenean ac diam metus. Aliquam tempor tincidunt pretium. Suspendisse bibendum, sapien venenatis vestibulum commodo, eros lectus iaculis magna, sit amet pellentesque ligula turpis a nibh... <a href="blog-post.html" class="readMore">read more</a>
-                                                                                </p>
-                                                                                <ul class="entry-meta">
-                                                                                        <li class="entry-date"><a href="#"><i class="icon-pin"></i>&nbsp;12 Oct. 2027</a></li>
-                                                                                        <li class="entry-category"><a href="#"><i class="icon-th-list"></i>&nbsp;category</a></li>
-                                                                                        <li class="entry-author"><a href="#"><i class="icon-male"></i>&nbsp;Admin</a></li>
-                                                                                        <li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li>
-                                                                                </ul>
-                                                                        </section>
-                                                                </div>
-                                                        </article>
-                                                        <ul class="pagination">
-                                                                <li><a href="#">«</a></li>
-                                                                <li><a href="#">1</a></li>
-                                                                <li><a href="#">2</a></li>
-                                                                <li><a href="#">3</a></li>
-                                                                <li><a href="#">4</a></li>
-                                                                <li><a href="#">5</a></li>
-                                                                <li><a href="#">»</a></li>
-                                                        </ul>
-                                                </div>
-                                                <!-- Sidebar -->
-                                                <aside class="col-md-4">
-                                                        <section>
-                                                                <h1>
-                                                                        If you think it's going to rain, it will.
-                                                                </h1>
-                                                                <p>
-                                                                        Nullam sed tortor odio. Suspendisse tincidunt dictum nisi, nec convallis odio lacinia ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.
-                                                                </p>
-                                                        </section>
-                                                        <section class="widget search clearfix">
-                                                                <form class="form-inline" role="form">
-                                                                        <div class="input-group input-group-lg">
-                                                                                <input type="text" class="form-control lg" placeholder="Search…">
-                                                                                <span class="input-group-btn">
-                                                                                        <button type="submit" class="btn btn-sm">Submit</button>
-                                                                                </span>
-                                                                        </div>
-                                                                </form>
-                                                        </section>
-                                                        <section class="widget">
-                                                                <h3>Categories</h3>
-                                                                <ul class="list-unstyled iconList">
-                                                                        <li><a href="#">Solace of a lonely highway</a></li>
-                                                                        <li><a href="#">Write with purpose</a></li>
-                                                                        <li><a href="#">Tree on a lake</a></li>
-                                                                        <li><a href="#">Don’t stop questioning</a></li>
-                                                                        <li><a href="#">Overheard this morning</a></li>
-                                                                </ul>
-                                                        </section>
-                                                        <section class="widget">
-                                                                <h3>Archives</h3>
-                                                                <ul class="list-unstyled iconList">
-                                                                        <li><a href="#">March 2012</a></li>
-                                                                        <li><a href="#">September 2011</a></li>
-                                                                        <li><a href="#">July 2011</a></li>
-                                                                        <li><a href="#">June 2011</a></li>
-                                                                </ul>
-                                                        </section>
-                                                        <section class="widget tagCloud">
-                                                                <h3>Tag cloud</h3>
-                                                                <a href="#" class="w2">News</a>
-                                                                <a href="#" class="w1">category</a>
-                                                                <a href="#" class="w3">business</a>
-                                                                <a href="#" class="w3">economy</a>
-                                                                <a href="#" class="w1">lolcats</a>
-                                                                <a href="#" class="w2">design</a>
-                                                                <a href="#" class="w2">Videos</a>
-                                                                <a href="#" class="w1">Web</a>
-                                                                <a href="#" class="w3">Photos</a>
-                                                                <a href="#" class="w2">Music</a>
-                                                        </section>
-                                                </aside>
-                                                <!-- Sidebar -->
-                                        </div><!-- row -->
-                                </div><!-- container -->
-                        </section>
-                </section>
-    <!-- sample page content-->
-    <div class="jumbotron">
+     <section id="content" class="mt30 pb30 margin10" >                
+     {%block PAGE_CONTENT %}                 
+   
+      <div class="jumbotron">
       <div class="container">
         <h1>Hello, world!</h1>
         <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
@@ -256,7 +138,10 @@
     </div>
     <!-- sample page_content-->
     
+    </section>
+    
     {%endblock PAGE_CONTENT %}
+    </section>
     
   
       {%block FOOTER %}

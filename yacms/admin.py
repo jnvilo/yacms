@@ -8,11 +8,11 @@ from .models import CMSPaths
 
 @admin.register(CMSPaths)
 class CMSPathsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "path", "parent"]
 
 @admin.register(CMSContents)
 class CMSContents(admin.ModelAdmin):
-    pass
+    list_display = ["id", "title","timestamp", "markup",]
 
 @admin.register(CMSEntries)
 class CMSEntries(admin.ModelAdmin):
@@ -29,6 +29,7 @@ class CMSTemplates(admin.ModelAdmin):
 @admin.register(CMSPageTypes)
 class CMSPageTypesAdmin(admin.ModelAdmin):
     list_filter = ("page_type", "text", "view_class")
+    list_display = ['id','page_type', 'text', 'view_class', 'view_template']
     
 
 

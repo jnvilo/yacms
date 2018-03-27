@@ -101,10 +101,6 @@ function create_path(parent_path_id){
     create_cms_entry(data);
 
 
-
-
-
-
     }
 });
 

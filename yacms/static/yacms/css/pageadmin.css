@@ -1,76 +1,38 @@
-.pageadmin_menu_container {
-    background:#777777;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
 }
 
-
-
-.pageadmin_buttons {
-    display: inline-block;
-    float: left;
-    background: #FF0000;
-
-
-}
-​
-
-.pageadmin_status {
-    display: inline-block;
-    float: right;
-    background: #777777;
-
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
 }
 
-.pageadmin_checkbox {
-
-    display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none;
-    border: 1px solid transparent;
-    float: right;
-    background:#777777;
-
+.sidenav a:hover {
+    color: #f1f1f1;
 }
 
-
-#gallery .thumbnail{
-    width:150px;
-    height: 150px;
-    float:left;
-    margin:2px;
-}
-#gallery .thumbnail img{
-    width:150px;
-    height: 150px;
-    float: left;
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
 }
 
-.yacms_thumbnail {
-    width:150px;
-    height: 150px;
-    float:left;
-    margin:2px;
-
-}
-
-.yacms_upload_panel {
-    float: left;
-
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
 }

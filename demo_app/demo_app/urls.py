@@ -25,16 +25,18 @@ from yacms.views import CMSLogoutView
 from yacms.views import CMSSitemap
 
 from django.contrib.sitemaps.views import sitemap
+from .views import TemplateSampleLoader
 
 sitemaps = {
     'sitemaps': CMSSitemap,
 }
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^cms/',include('yacms.urls')),
+    url(r'^cms',include('yacms.urls')),
     url(r'^$', CMSFrontPage.as_view()),
     url(r'^login/', CMSLoginView.as_view()),
     url(r'^logout/', CMSLogoutView.as_view()),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
-    
+    url(r'^templates/(?P<template>[-._\w\d]*.html)$', TemplateSampleLoader.as_view()),
+    url(r'^templates/?$', TemplateSampleLoader.as_view()),   
 ]

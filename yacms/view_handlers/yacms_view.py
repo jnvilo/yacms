@@ -91,11 +91,24 @@ class YACMSViewObject(object):
 
         if (self._obj is None) or (reload):
             from yacms.models import CMSEntries
+            
             if self.path:
                 if not self.path.startswith("/"):
                     self.path =   "/" + self.path
 
-                obj = CMSEntries.objects.get(path__path=self.path)
+                try:
+                    obj = CMSEntries.objects.get(path__path=self.path)
+                except CMSEntries.MultipleObjectsReturned:
+                    #Something is wrong with the database. It is inconsistent 
+                    #and this is usually caused by having two pages with the same
+                    #path. To resolve this, we take the newest one. 
+                    
+                    #TODO: Fix logging here too
+                    
+                    objs =  CMSEntries.objects.filter(path__path=self.path)
+                    obj = objs[1]
+                    
+            
             elif self.page_id:
                 obj = CMSEntries.objects.get(pk=self.page_id)
             else:
@@ -233,6 +246,7 @@ class YACMSViewObject(object):
 
         d["date_created_epoch"] = date_created_epoch
         d["date_modified_epoch"] = date_modified_epoch
+        
         return d
 
     @property
@@ -243,7 +257,7 @@ class YACMSViewObject(object):
             return value
         except Exception as e:
             print("fuck", e)
-
+            return ""
 
     @property
     def get_absolute_url(self):

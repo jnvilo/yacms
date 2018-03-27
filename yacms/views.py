@@ -91,6 +91,12 @@ from yacms.models import CMSPaths
 
 from yacms.view_handlers import YACMSViewObject
 
+
+
+from yacms.api import CMSContentsViewSet
+from yacms.api import CMSFormatterContent
+
+
 logger = logging.getLogger(name="yacms.views")
 
 try:
@@ -127,11 +133,15 @@ class CMSFileUpload(View):
             pass
 
         from django.conf import settings
-        assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+        
+        try:
+            assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+        except AttributeError as e: 
+            print("ARTICLE_IMAGES_DIR IS NOT CONFIGURED! Falling back to default.")
+            assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
+        
         path = kwargs.get("path", None).lstrip("/")
-
         fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
-
         print(path)
 
         data = []
@@ -139,10 +149,8 @@ class CMSFileUpload(View):
         if fullpath.exists():
 
             for each in fullpath.iterdir():
-
                 if each.suffix in [".jpeg", ".jpg", ".gif", ".png", ".bmp"]:
                     data.append("/images/{}/{}".format(path, each.name))
-
 
         return JsonResponse(data,safe=False)
         #template = "yacms/FileUpload.html"
@@ -175,7 +183,14 @@ class CMSFileUpload(View):
 
         with mylock:
             from django.conf import settings
-            assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+
+            try:
+                assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+            except AttributeError as e: 
+                print("ARTICLE_IMAGES_DIR IS NOT CONFIGURED! Falling back to default.")
+                assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
+                        
+
 
             path = kwargs.get("path", None).lstrip("/")
 
@@ -201,7 +216,9 @@ class CMSFileUpload(View):
                 return HttpResponse("Error. Not full dir")
 
             if request.method == "POST":
-                uploaded_file = request.FILES.get("upload_file")
+    
+                
+                uploaded_file = request.FILES.get("files[]")
 
                 filename = uploaded_file.name
 
@@ -309,7 +326,7 @@ class CMSFrontPage(View):
     def get(self, request, **kwargs):
 
         #template_name = "yacms/Index.html"
-        template_name = "blog_index.html"
+        template_name = "yacms/index.html"
         #return render(template_name,context_instance=RequestContext(request) )
         return render(request, template_name)
 
@@ -944,8 +961,13 @@ class  AssetsUploaderView(View):
         ]}
         """
 
-
-        assets_dir = ASSETS_DIR
+        try:
+            assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+        except AttributeError as e: 
+            print("ARTICLE_IMAGES_DIR IS NOT CONFIGURED! Falling back to default.")
+            assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
+    
+        
         path = kwargs.get("path", None).lstrip("/")
         fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
 
@@ -1029,8 +1051,9 @@ class  AssetsUploaderView(View):
                     outfile =  pathlib.Path(thumbnailpath, filename)
                     im = Image.open(p_filename.as_posix())
                     im.thumbnail(size, Image.ANTIALIAS)
-                    im.save(outfile.as_posix(), "JPEG")
+                    im.save(outfile.as_posix())
                 except IOError as e:
+                    print(e)
                     return JsonResponse( { "error" : "cannot create thumbnail for {}".format(outfile)})
 
                 except Exception as e:
@@ -1052,7 +1075,7 @@ class  AssetsUploaderView(View):
                                   "deleteType": "DELETE" }
 
                 files.append(file_dict)
-
+                
                 return JsonResponse({'files': files})
 
     #----------------------------------------------------------------------
@@ -1143,3 +1166,32 @@ class  AssetsUploaderView(View):
         #response = JSONResponse(data, mimetype=response_mimetype(self.request))
         #response['Content-Disposition'] = 'inline; filename=files.json'
         #return response
+
+
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views import View
+import os
+
+
+class TemplateSampleLoader(View):
+
+    def get(self, request, **kwargs):
+
+        template_name = kwargs.get("template", None)
+
+        if template_name:
+            return render(request, "{}".format(template_name))
+        else:
+            #Return a list of html files in bootstrap_templates
+
+            bootstrap_examples_dir = os.path.join(settings.BASE_DIR, "templates/")
+
+            files = []
+            for filename in os.listdir(path=bootstrap_examples_dir):
+                if filename.endswith(".html"):
+                    files.append(filename)
+
+            return render(request, "bootstrap_templates.html", { "files": files})
+
+

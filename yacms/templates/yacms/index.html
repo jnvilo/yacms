@@ -8,10 +8,13 @@
 
 
 
+{%block META_DESCRIPTION %} jnvilo.com is a  technology blog , howtos and news site about open source software, operating systems most Linux and OSX and some windows, IT and anything else that matters.{% endblock META_DESCRIPTION %}
+{% block TITLE%}jnvilo.com{% endblock TITLE %}
+{% block BODY_TITLE%} Welcome{% endblock BODY_TITLE %}
 
 
 
-{% block TITLE %}jnvilo.com{% endblock %}</title>
+
 
 
 {%block HEAD_BOTTOM %}
@@ -32,18 +35,18 @@
                 <!-- Sidebar -->
                 <aside class="col-md-4">
                     <section>
-                        <h1>If you think it's going to rain, it will.</h1>
+                        <h1>Thoughts, Knowledge and Ideas ...</h1>
                     <p>
-                    Nullam sed tortor odio. Suspendisse tincidunt dictum nisi, 
-                    nec convallis odio lacinia ac. Vestibulum ante ipsum primis 
-                    in faucibus orci luctus et ultrices posuere cubilia Curae.
+                    Welcome to jnvilo.com. A technology blog , howtos and news site about open source software, operating systems most Linux and OSX and some windows,   IT and anything else
+                    that matters. 
+                   
                     </p>
                     </section>
                     
                     <section class="widget search clearfix">
-                        <form class="form-inline" role="form">
+                        <form class="form-inline" role="form" method="get" action="/cms/search">
                             <div class="input-group input-group-lg">
-                            <input type="text" class="form-control lg" placeholder="Search…">
+                            <input type="search" name="q" id="id_q" class="form-control lg" placeholder="Search…">
                             <span class="input-group-btn"><button type="submit" class="btn btn-sm">Submit</button></span>
                         </div>
                         </form>

@@ -2,16 +2,17 @@
 {% load staticfiles %}
 {% load yacms_tags %}
 
-{%block PAGE_HEADER %}
 
+
+{%block PAGE_HEADER %}
 <link type="text/css" rel="stylesheet" hrefp="/static/yacms/css/pageadmin.css">
 <link type="text/css" rel="stylesheet" href="/static/yacms/editor/editor.css">
-
 <script>
 var view_json = {{view_object.json_data | safe }}
 </script>
-
 {% endblock PAGE_HEADER %}
+
+
 
 {%block META_DESCRIPTION %}{{view_object.introduction}}{% endblock META_DESCRIPTION %}
 {% block TITLE%} {{view_object.title}}{% endblock TITLE %}
@@ -30,20 +31,28 @@ var view_json = {{view_object.json_data | safe }}
         <!-- end of contents -->
     </div>    
     
+    {% if view_object.request.user.username == "jason" %}
     <div id="overlay">
 
     <div class="row-fluid">
     
-        <div class="col-md-12 page-content" id="page_editor">
+        <div class="col-md-12 page-content" id="page_editor" style="margin-top:10px;">
     
             <!-- START PAGE_CONTENT -->    
-           
+            <div id="admin-message-panel"></div>
             <!--div id="info-container">
                 <div class="alert alert-warning alert-dismissible" role="alert" _vimium-has-onclick-listener="">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                    <strong>Warning!</strong> Better check yourself, you're not looking too good.
                </div>
             </div-->
+            
+            
+            
+            
+            
+            
+            
             <div style="box-shadow: 0px 5px 26px 1px rgba(0,0,0,0.75); border-radius: 5px;">
                 <ul class="nav nav-pills" id="admin-tabs">
                    <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
@@ -73,28 +82,16 @@ var view_json = {{view_object.json_data | safe }}
 
         
     </div>
+    {% endif %}
+
 </div>
 {% endblock PAGE_CONTENT %}  
 
 {% Script type="text/javascript" src="/static/yacms/yacms.js" priority=8888 %}  
 {% Script type="text/javascript" src="/static/yacms/templates.js" priority=8888 %}  
+{% Script type="text/javascript" src="/static/yacms/editor/article.editor.js" priority=8888 %}
 
 
 {% block PAGE_BOTTOM %}
-
-
-
-
-<script>
-    $(document).ready(function(){
-            readCMSContents();
-    })
-
-
-
-
-</script>
-
-
 
 {% endblock PAGE_BOTTOM %}

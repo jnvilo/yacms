@@ -60,14 +60,16 @@ function updateCMSContents(content_id){
         success: function(data){
             console.log("Updated published status of the page.: " ,data);
             /*We also need to update the window.page_content and force a refresh */
-            url = "/cms/api/v2/cmscontents/"+ view_json.content[0] + "/html/"
+            url = "/cms/api/v2/cmscontents/"+ view_json.content[0] + "/h2ml/"
             //url = "/cms/api/v2/utils/cmsformatter/" + view_json.content[0] + "/html/"
            
             $.ajax({
                 url: url,
                 type: 'GET',
-                error: function(){
-                    console.log("Failed to get cmscontent object");
+                error: function(error){
+                console.log("Error is ", error);
+                    var message = "<strong>Failed to get cmscontent object</strong>. The server gave us: " + error.statusText;
+                    alerterror(message, "admin-message-panel");
                 },
                 success: function(data){
                     /*On success we update window.editor_content before going ahead
@@ -75,6 +77,8 @@ function updateCMSContents(content_id){
                     html_content = data["html"];
                     window.page_content = html_content;
                     document.getElementById('page_content').innerHTML = html_content;
+                    
+                    alertsuccess("Successfully updated page.", "admin-message-panel");
                 }
             });
                 

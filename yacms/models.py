@@ -140,8 +140,11 @@ class CMSEntries(models.Model):
 
 
     def html_content(self):
-        #We are going to index the parsed content of the CMSEntrie so we are going to
-        #ask our view to give that to us.
+        # We are going to index the parsed content of the CMSEntries 
+        # so we are going to ask our view to give that to us.
+        
+        #Fortunately the view for this CMSEntrie should alread
+        #implement html_content so we let it handle it. 
         return self.view.html_content
 
 

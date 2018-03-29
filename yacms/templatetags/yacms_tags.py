@@ -104,8 +104,6 @@ class ScriptCollectorNode(template.Node):
 def ScriptCollector(parser, token_str):
     return ScriptCollectorNode()
 
-
-
     
 class NullNode(template.Node):
     

@@ -249,6 +249,7 @@ class YACMSViewObject(object):
         
         return d
 
+
     @property
     def json_data(self):
         

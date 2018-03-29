@@ -39,76 +39,82 @@ var view_json = {{view_object.json_data | safe }}
         </div>
         <!-- end of contents -->
     </div>
-    <div class="row-fluid">
-        <div class="col-md-12 page-content" id="page_editor" style="margin-top:10px;">
-
-            <!-- START PAGE_CONTENT -->    
-            <hr>
-            <div id="info-container">
-                <div class="alert alert-warning alert-dismissible" role="alert" _vimium-has-onclick-listener="">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <strong>Warning!</strong> Better check yourself, you're not looking too good.
-            </div>
-            </div>
-            <div style="box-shadow: 0px 5px 26px 1px rgba(0,0,0,0.75); border-radius: 5px;">
-            <ul class="nav nav-pills">
-                <li class="active"><a data-toggle="pill" href="#home">Child Categories</a></li>
-                <li><a data-toggle="pill" href="#menu1">Page Assets</a></li>
-                <li><a data-toggle="pill" href="#menu2">Page Meta</a></li>
-            </ul>
-
-            <div class="tab-content" style="background:#ccc;">
-
-                <div id="home" class="tab-pane fade in active" style="background: #ccc;">     
-                    
-                    
-                    <div class="row" id="category_form">
-                        <form class="form" id="createpage_form">
-                            <div class="col-sm-4">
-                                <input id="createpage_title" type="text" placeholder="title" class="form-control">
-                            </div>
-                            <div class="col-sm-4">
-                                <input id="createpage_slug" type="text" placeholder="slug" class="form-control">
-                            </div>
-                        <div class="col-sm-2">
-                            <select id="createpage_pagetype_select" name="createpage_pagetype_select" type="text" class="form-control">
-                        
-                                <option value="1">Single Page HTML</option>
-                                <option value="2">Category Page</option>
-                                <option value="3">MultPage Article</option>
-                                <option value="4">MemberPage Article</option>
-                                
-                            </select></div>
-                            <div class="col-sm-2">
-                                <button class="btn btn-primary" type="button" id="create_page_button">Create Page</button>
-                            </div>
-                        </form>
-                    
+    
+    <div id="overlay">    
+        <div class="row-fluid">
+            <div class="col-md-12 page-content" id="page_editor" style="margin-top:10px;">
+    
+                <!-- START PAGE_CONTENT -->    
+                <!--div id="info-container">
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Warning!</strong> Better check yourself, you're not looking too good.
                     </div>
-                    
+                </div-->
+                <div style="box-shadow: 0px 5px 26px 1px rgba(0,0,0,0.75); border-radius: 5px;">
+                    <ul class="nav nav-pills" id="admin-tabs">
+                       <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+                       <li><a data-toggle="pill" href="#menu1">Page Assets</a></li>
+                       <li><a data-toggle="pill" href="#menu2">Page Meta</a></li>
+                       <li id="close-admin"><img id="close-admin-overlay-button" src="/static/yacms/editor/close-window-50.png"/ ></li>
+                    </ul>
 
-                    <div id="category_editor">
-                     
-                    </div>        
-                </div>
-
-                <div id="menu1" class="tab-pane fade">
-                    <!-- will be loaded as a temlate-->
-                    {% file_upload %}
-                </div>
-
-
-                <div id="menu2" class="tab-pane fade">
-                    <h3>Article Meta Info</h3>
-                    <p>Not Implemented Yet.</p>
-                </div>
-
-            </div>           
-        <!-- END PAGE_CONTENT -->
+                    <div class="tab-content" style="background:#ccc;">
+                        <div id="home" class="tab-pane fade in active" style="background: #ccc;">     
+                        
+                        
+                            <!-- put this in a template later???-->
+                            <div class="row" id="category_form">
+                                <form class="form" id="createpage_form">
+                                    <div class="col-sm-4">
+                                        <input id="createpage_title" type="text" placeholder="title" class="form-control">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input id="createpage_slug" type="text" placeholder="slug" class="form-control">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <select id="createpage_pagetype_select" name="createpage_pagetype_select" type="text" class="form-control">
+                                            <option value="1">Single Page HTML</option>
+                                            <option value="2">Category Page</option>
+                                            <option value="3">MultPage Article</option>
+                                            <option value="4">MemberPage Article</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary" type="button" id="create_page_button">Create Page</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                             <!-- div class="row">
+                                <div class="col-sm-6"> left </div>
+                                <div class="col-sm-6"> right </div>
+                            </div -->   
+                            
+                            <!-- end put in tempalte -->
+                            <div id="category_editor">
+                                <div col-sm-6> left </div>
+                                <div col-sm-6> right </div>
+                            </div>        
+                    </div>
+    
+                    <div id="menu1" class="tab-pane fade">
+                        <!-- will be loaded as a temlate-->
+                        {% file_upload %}
+                    </div>
+    
+    
+                    <div id="menu2" class="tab-pane fade">
+                        <h3>Article Meta Info</h3>
+                        <p>Not Implemented Yet.</p>
+                    </div>
+    
+                </div>           
+            <!-- END PAGE_CONTENT -->
+            </div>
+    
+            </div>
         </div>
-
-    </div>
-
     </div>
 </div>
 
@@ -132,6 +138,7 @@ var view_json = {{view_object.json_data | safe }}
 
 {% Script type="text/javascript" src="/static/yacms/dustjs/dust-full.js" priority=8888 %}  
 {% Script type="text/javascript" src="/static/yacms/templates.js" priority=8889 %}  
+{% Script type="text/javascript" src="/static/yacms/editor/category.editor.js" priority=8889 %}  
 {% endblock PAGE_CONTENT %}  
 
 
@@ -144,114 +151,6 @@ var view_json = {{view_object.json_data | safe }}
 
 <script type="text/javascript">
 
-function getCMSCategories(content_id){
-/** Does a GET for the content and updates the editor textarea.
-
-API Version 1 defines the endpoint as: 
-
-/cms/api/v1/cmscontents/{resource_id}/
-**/
-    console.log("getCMSCategories called.");
-
-    pk = view_json.id;
-    //var pk=2;
-    url = "/cms/api/v2/cmsentries/" + pk  + "/get_categories/";
-    
-    $.ajax({
-        url: url,
-        type: 'GET',
-        error: function(){
-            console.log("Failed to get cmscontent object");
-        },
-        success: function(data){
-            content = data["categories"];
-            console.log("DATA ", data);
-            results = data["results"];
-            console.log("RESULTS " + results );
-                dust.render("yacms\/templates\/yacms\/dustjs_templates\/category_editor"
-                            , { data: data }, function(err, out) {
-                  // `out` contains the rendered output.
-                  document.getElementById('category_editor').innerHTML= out;
-                });            
-        }
-    });
-    
-}
-
-
-    function string_to_slug (str) {
-    str = str.replace(/^\s+|\s+$/g, ''); // trim
-    str = str.toLowerCase();
-  
-    // remove accents, swap ñ for n, etc
-    var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-    var to   = "aaaaeeeeiiiioooouuuunc------";
-    for (var i=0, l=from.length ; i<l ; i++) {
-        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-    }
-
-    str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-        .replace(/\s+/g, '-') // collapse whitespace and replace by -
-        .replace(/-+/g, '-'); // collapse dashes
-
-    console.log(str);
-    return str;
-}
-
-    $(document).ready(function(){
-        getCMSCategories();
-    })
-
-    $("#create_page_button").click(function(){
-        console.log("yhou want to create a category");
-        console.log($("#createpage_title").val()); 
-        
-        /* create the path. We need to post: 
-            1. current path + slug 
-            2. parent id 
-        */
-        
-        title = $("#createpage_title").val();
-        slug = $("#createpage_slug").val();
-        page_type = $('select[name=createpage_pagetype_select]').val();
-        
-        console.log(page_type);
-        data = {
-             title: title ,
-             slug : slug,
-             content: [ ],
-             page_type: page_type,
-            frontpage: false,
-            published: false,
-            page_number: 0
-            };
-            
-        url = "/cms/api/v2/cmsentries/" + view_json.id + "/create_child/";
-         $.ajax({
-        url: url,
-        type: 'POST',
-        data: data,
-
-        error: function(data){ 
-            console.log("Category Child Creation Failed with error", data); 
-        },
-        success: function(data){
-            /**Update the editor for the newly created pages.**/
-           console.log("Success"); 
-           getCMSCategories();
-           
-        }
-    }); 
-});
-
-    $("#createpage_title").focusout(function(){
-        console.log("createpage_title");
-        console.log($("#createpage_title").val());
-    
-        var title = $("#createpage_title").val();
-        var slug = string_to_slug(title);
-        $("#createpage_slug").val(slug);
-    });
 
 
 </script>

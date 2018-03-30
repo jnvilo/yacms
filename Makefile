@@ -62,7 +62,7 @@ node_modules:
 .PHONY: dustjs
 dustjs:  dustjs_files
 
-dustjs_files: 
+dustjs_files:  
 	mkdir -p ./yacms/static/yacms/dustjs
 	cp -r ./node_modules/dustjs-linkedin/dist/* ./yacms/static/yacms/dustjs
 

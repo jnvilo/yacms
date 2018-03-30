@@ -1,4 +1,10 @@
 
+Build Requirements
+
+Centos: 
+
+	yum -y install npm gcc
+
 Test
 ----
 

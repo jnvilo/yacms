@@ -15,7 +15,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.1"
+VERSION_STRING="0.0.3"
 
 
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -44,7 +44,6 @@ setup(
     packages=find_packages(),
     include_package_data=True, # include package data under svn source control
    install_requires=["django-haystack", "whoosh", "pygments","Pillow","python-social-auth","arrow","Django","simplejson","python-creole", "djangorestframework", "django-filter", "beautifulsoup4","sh", "pathlib", "loremipsum"],
-    data_files=[("", ["README.txt"])], # README used in unittest test_setup_utils.py
     #entry_points={
     #    "console_scripts": [
     #        "creole2html = creole.cmdline:cli_creole2html",
@@ -53,7 +52,7 @@ setup(
     #        "html2textile = creole.cmdline:cli_html2textile",
     #    ],
     #},
-    zip_safe=True, # http://packages.python.org/distribute/setuptools.html#setting-the-zip-safe-flag
+    #zip_safe=True, # http://packages.python.org/distribute/setuptools.html#setting-the-zip-safe-flag
     keywords="django cms",
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers

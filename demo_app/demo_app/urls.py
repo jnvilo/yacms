@@ -19,10 +19,10 @@ from django.conf.urls import url, include
 
 from django.conf.urls import url,include
 from django.contrib import admin
-from yacms.views import CMSFrontPage
-from yacms.views import CMSLoginView
-from yacms.views import CMSLogoutView
-from yacms.views import CMSSitemap
+from mycms.views import CMSFrontPage
+from mycms.views import CMSLoginView
+from mycms.views import CMSLogoutView
+from mycms.views import CMSSitemap
 
 from django.contrib.sitemaps.views import sitemap
 from .views import TemplateSampleLoader
@@ -32,7 +32,7 @@ sitemaps = {
 }
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^cms',include('yacms.urls')),
+    url(r'^cms',include('mycms.urls')),
     url(r'^$', CMSFrontPage.as_view()),
     url(r'^login/', CMSLoginView.as_view()),
     url(r'^logout/', CMSLogoutView.as_view()),

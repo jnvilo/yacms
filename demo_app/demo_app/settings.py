@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'haystack', #YACMS requires this. 
-    'yacms', #YACMS: The module itself.
+    'mycms', #YACMS: The module itself.
 ]
 
 MIDDLEWARE = [

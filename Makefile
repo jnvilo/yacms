@@ -63,15 +63,15 @@ node_modules:
 dustjs:  dustjs_files
 
 dustjs_files:  
-	mkdir -p ./yacms/static/yacms/dustjs
-	cp -r ./node_modules/dustjs-linkedin/dist/* ./yacms/static/yacms/dustjs
+	mkdir -p ./mycms/static/mycms/dustjs
+	cp -r ./node_modules/dustjs-linkedin/dist/* ./mycms/static/mycms/dustjs
 
 	
 .PHONEY: templates
 templates: compile_dustjs
 
 compile_dustjs: 
-	node_modules/dustjs-linkedin/bin/dustc yacms/templates/yacms/dustjs_templates/*.dust -o yacms/static/yacms/templates.js	
+	node_modules/dustjs-linkedin/bin/dustc mycms/templates/mycms/dustjs_templates/*.dust -o mycms/static/mycms/templates.js	
 
 include configuration.mk
 include make-includes/python.mk

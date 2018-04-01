@@ -19,9 +19,7 @@ VERSION_STRING="0.0.3"
 
 
 
-print(find_packages())
 
-sys.exit()
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -35,24 +33,20 @@ def get_authors():
         authors = "[Error: %s]" % evalue
     return authors
 
-#installvia brew: brew install libtiff lbjpeg webp littlecms
 
-from pip.req import parse_reuirements
-install_reqs = parse_requirements("requirements.txt")
 
 
 setup(
-    name='yacms',
+    name='mycms',
     version=VERSION_STRING,
     description='Yet another CMS. This one for django.',
     author=get_authors(),
     author_email="jnvilo@gmail.com",
     maintainer="Jason Viloria",
-    url='https://github.com/jnvilo/yacms',
-    download_url = 'https://github.com/jnvilo/yacms/archive/0.0.3.tar.gz', 
+    url='https://github.com/jnvilo/mycms',
+    download_url = 'https://github.com/jnvilo/mycms/archive/0.0.3.tar.gz', 
     packages=find_packages(),
     include_package_data=True, # include package data under svn source control
-   install_requires= reqs = [str(ir.req) for ir in install_reqs]
     #entry_points={
     #    "console_scripts": [
     #        "creole2html = creole.cmdline:cli_creole2html",

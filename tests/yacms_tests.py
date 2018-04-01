@@ -2,7 +2,7 @@ from __future__ import print_function
 import unittest
 import mock
 
-#from yacms import views
+#from mycms import views
 from tests.utilities import module_function_name
 
 

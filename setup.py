@@ -18,6 +18,10 @@ from setuptools import setup, find_packages, Command
 VERSION_STRING="0.0.3"
 
 
+
+print(find_packages())
+
+sys.exit()
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -33,6 +37,10 @@ def get_authors():
 
 #installvia brew: brew install libtiff lbjpeg webp littlecms
 
+from pip.req import parse_reuirements
+install_reqs = parse_requirements("requirements.txt")
+
+
 setup(
     name='yacms',
     version=VERSION_STRING,
@@ -40,10 +48,11 @@ setup(
     author=get_authors(),
     author_email="jnvilo@gmail.com",
     maintainer="Jason Viloria",
-    url='http://bitbucket.org/jnvilo/yacms.git',
+    url='https://github.com/jnvilo/yacms',
+    download_url = 'https://github.com/jnvilo/yacms/archive/0.0.3.tar.gz', 
     packages=find_packages(),
     include_package_data=True, # include package data under svn source control
-   install_requires=["django-haystack", "whoosh", "pygments","Pillow","python-social-auth","arrow","Django","simplejson","python-creole", "djangorestframework", "django-filter", "beautifulsoup4","sh", "pathlib", "loremipsum"],
+   install_requires= reqs = [str(ir.req) for ir in install_reqs]
     #entry_points={
     #    "console_scripts": [
     #        "creole2html = creole.cmdline:cli_creole2html",
@@ -53,7 +62,7 @@ setup(
     #    ],
     #},
     #zip_safe=True, # http://packages.python.org/distribute/setuptools.html#setting-the-zip-safe-flag
-    keywords="django cms",
+    keywords=["django", "cms", "blog"] ,
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
 #        "Development Status :: 4 - Beta",

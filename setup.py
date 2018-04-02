@@ -15,7 +15,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.3"
+VERSION_STRING="0.0.8"
 
 
 
@@ -56,7 +56,7 @@ setup(
     #    ],
     #},
     #zip_safe=True, # http://packages.python.org/distribute/setuptools.html#setting-the-zip-safe-flag
-    keywords=["django", "cms", "blog"] ,
+    keywords=["django","cms","blog"] ,
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
 #        "Development Status :: 4 - Beta",

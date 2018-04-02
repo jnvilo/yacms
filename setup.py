@@ -15,7 +15,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.8"
+VERSION_STRING="0.1.0"
 
 
 

@@ -34,8 +34,17 @@ def get_authors():
     return authors
 
 
-
-
+def get_requirements():
+    reqs = []
+    try:
+        f = file("requirements.txt", "r")
+        l = f.readlines()
+        for e in l:
+            reqs.append(e.strip("\n"))
+    except Exception:
+        print("Failed to install requirements") 
+	
+    return reqs
 setup(
     name='mycms',
     version=VERSION_STRING,
@@ -46,6 +55,7 @@ setup(
     url='https://github.com/jnvilo/mycms',
     download_url = 'https://github.com/jnvilo/mycms/archive/0.0.3.tar.gz', 
     packages=find_packages(),
+    install_requires=get_requirements(), 
     include_package_data=True, # include package data under svn source control
     #entry_points={
     #    "console_scripts": [
@@ -59,13 +69,13 @@ setup(
     keywords=["django","cms","blog"] ,
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-#        "Development Status :: 4 - Beta",
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 4 - Alpha",
+        #"Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.6",
         "Operating System :: OS Independent",
         "Topic :: Documentation",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",

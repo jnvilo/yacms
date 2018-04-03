@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'haystack', #YACMS requires this. 
     'mycms', #YACMS: The module itself.
+    'rest_framework', 
+    'rest_framework_docs',
 ]
 
 MIDDLEWARE = [

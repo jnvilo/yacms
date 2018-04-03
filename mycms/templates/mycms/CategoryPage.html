@@ -4,8 +4,8 @@
 
 {%block PAGE_HEADER %}
 
-<link type="text/css" rel="stylesheet" hrefp="/static/yacms/css/pageadmin.css">
-<link type="text/css" rel="stylesheet" href="/static/yacms/editor/editor.css">
+<link type="text/css" rel="stylesheet" hrefp="/static/mycms/css/pageadmin.css">
+<link type="text/css" rel="stylesheet" href="/static/mycms/editor/editor.css">
 
 <script>
 var view_json = {{view_object.json_data | safe }}
@@ -56,7 +56,7 @@ var view_json = {{view_object.json_data | safe }}
                        <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
                        <li><a data-toggle="pill" href="#menu1">Page Assets</a></li>
                        <li><a data-toggle="pill" href="#menu2">Page Meta</a></li>
-                       <li id="close-admin"><img id="close-admin-overlay-button" src="/static/yacms/editor/close-window-50.png"/ ></li>
+                       <li id="close-admin"><img id="close-admin-overlay-button" src="/static/mycms/editor/close-window-50.png"/ ></li>
                     </ul>
 
                     <div class="tab-content" style="background:#ccc;">
@@ -136,9 +136,10 @@ var view_json = {{view_object.json_data | safe }}
 </script>
 {% endverbatim %}
 
-{% Script type="text/javascript" src="/static/yacms/dustjs/dust-full.js" priority=8888 %}  
-{% Script type="text/javascript" src="/static/yacms/templates.js" priority=8889 %}  
-{% Script type="text/javascript" src="/static/yacms/editor/category.editor.js" priority=8889 %}  
+{% Script type="text/javascript" src="/static/mycms/dustjs/dust-full.js" priority=8888 %}  
+{% Script type="text/javascript" src="/static/mycms/templates.js" priority=8889 %}  
+{% Script type="text/javascript" src="/static/mycms/editor/category.editor.js" priority=8889 %}  
+
 {% endblock PAGE_CONTENT %}  
 
 

@@ -28,6 +28,7 @@ urlpatterns = [
 
     url(r'^search/', include('haystack.urls')),
     
+    
     #url(r'^cmsupload$',  csrf_exempt(CMSFileUpload.as_view()), name="cmsfileupload"),
     #url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(CMSFileUpload.as_view()), name="assets_manager_get"),
 
@@ -74,7 +75,7 @@ urlpatterns = [
     url(r'^templates/(?P<template>[-._\w\W\d]*.html)$', TemplateSampleLoader.as_view()),
     url(r'^templates/?$', TemplateSampleLoader.as_view()),    
     
-    url(r'^api/docs/', include_docs_urls(title='YACMS API')),
+   
 
 
     #url(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', api.CMSFormatterContent.as_view()),
@@ -93,6 +94,12 @@ urlpatterns = [
 ]
 
 
+
+cms_root = [url(r'^$', CMSPageView.as_view(), name="cms_page"),
+            url(r'^api/v2/drf-docs/', include('rest_framework_docs.urls')),
+            url(r'^api/v2/docs/', include_docs_urls(title='MyCMS API')),]
+
+
 router = routers.DefaultRouter()
 #router.register(r'zones/(?P<zone_name>[-/\.a-z\d_]*)/records', RecordsViewSet, base_name='Records')
 router.register(r'api/v2/cmscontents', api.CMSContentsViewSet, base_name='cmscontents')
@@ -101,6 +108,7 @@ router.register(r'api/v2/cmspaths', api.CMSPathsViewSet, base_name='cmspaths')
 
 router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')
 
-urlpatterns =  router.urls + urlpatterns
+urlpatterns =  cms_root + router.urls + urlpatterns 
 
-print(urlpatterns)
+#for i in urlpatterns:
+#    print(i)

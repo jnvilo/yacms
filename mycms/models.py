@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 from django.db.models.signals import post_save
-
+from django.db.utils import OperationalError
 import pathlib
 from datetime import datetime
 from django.core.cache import cache
@@ -19,8 +19,8 @@ from loremipsum import generate_paragraphs
 
 class CMSPaths(models.Model):
 
-    class Meta: 
-        db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
+    #class Meta: 
+    #    db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
 
     path = models.CharField(max_length=2000, null=True)
     parent = models.ForeignKey("CMSPaths", null=True, blank=True, 
@@ -34,8 +34,8 @@ class CMSPaths(models.Model):
 
 class CMSTags(models.Model):
 
-    class Meta:
-        db_table = "yacms_cmstags"
+    #class Meta:
+    #    db_table = "yacms_cmstags"
 
     name = models.CharField(max_length=256, default="NotSet")
 
@@ -50,8 +50,9 @@ class CMSMarkUps(models.Model):
                     
 class CMSContents(models.Model):
     
-    class Meta:
-        db_table = "yacms_cmscontents" 
+    #class Meta:
+    #    db_table = "yacms_cmscontents" 
+    
     title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")
     timestamp = models.DateTimeField(auto_now=True)
@@ -74,8 +75,8 @@ class CMSContents(models.Model):
 
 class CMSTemplates(models.Model):
 
-    class Meta: 
-        db_table = "yacms_cmstemplates"
+    #class Meta: 
+    #    db_table = "yacms_cmstemplates"
 
     name = models.CharField(max_length=1024, default="page.html")
     template = models.TextField(max_length=10240, default="empty template")
@@ -85,9 +86,8 @@ class CMSTemplates(models.Model):
 
 class CMSPageTypes(models.Model):
 
-    class Meta:
-
-        db_table = "yacms_cmspagetypes"
+    #class Meta:
+    #    db_table = "yacms_cmspagetypes"
 
     page_type = models.CharField(max_length=64, default="DefaultType")
     text = models.CharField(max_length=128, default="default class")
@@ -113,17 +113,18 @@ class CMSPageTypes(models.Model):
 
 def get_admin_user():
 
-    admin = User.objects.get(username="admin")
-    return admin
-
+    try:
+        admin = User.objects.get(username="admin")
+        return admin
+    except OperationalError as e:
+        return 1
 
 
 
 class CMSEntries(models.Model):
 
-
-    class Meta: 
-        db_table = "yacms_cmsentries"
+    #class Meta: 
+    #    db_table = "_cmsentries"
 
     title = models.CharField(max_length=1024, default=None)
     path = models.ForeignKey(CMSPaths, 
@@ -150,7 +151,9 @@ class CMSEntries(models.Model):
 
     page_number = models.IntegerField(default=1)
     created_by = models.ForeignKey(User, 
-                                   default=get_admin_user().pk, 
+                                   #default=get_admin_user().pk, 
+                                   null=True, 
+                                   blank=True,                                   
                                   on_delete=models.DO_NOTHING)
 
 

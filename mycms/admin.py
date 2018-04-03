@@ -16,7 +16,8 @@ class CMSContents(admin.ModelAdmin):
 
 @admin.register(CMSEntries)
 class CMSEntries(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'title', 'slug', 'path', 'page_type']
+    list_filter =["page_type"]
 
 @admin.register(CMSMarkUps)
 class CMSMarkUps(admin.ModelAdmin):

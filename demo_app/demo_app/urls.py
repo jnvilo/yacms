@@ -32,7 +32,7 @@ sitemaps = {
 }
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^cms',include('mycms.urls')),
+    url(r'^cms/',include('mycms.urls')),
     url(r'^$', CMSFrontPage.as_view()),
     url(r'^login/', CMSLoginView.as_view()),
     url(r'^logout/', CMSLogoutView.as_view()),

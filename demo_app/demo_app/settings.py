@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'mycms', #YACMS: The module itself.
     'rest_framework', 
     'rest_framework_docs',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,16 @@ HAYSTACK_CONNECTIONS = {
         'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
     },
 }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication', 
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+

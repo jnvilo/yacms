@@ -17,6 +17,8 @@ from mycms.views import  (
                        )
 
 from rest_framework.documentation import include_docs_urls
+from rest_framework.schemas import get_schema_view
+from rest_framework.authtoken import views as authtoken_views
 
 from mycms.views import TemplateSampleLoader
 from rest_framework import routers
@@ -94,10 +96,14 @@ urlpatterns = [
 ]
 
 
+schema_view = get_schema_view(title="MyCMS API")
 
 cms_root = [url(r'^$', CMSPageView.as_view(), name="cms_page"),
             url(r'^api/v2/drf-docs/', include('rest_framework_docs.urls')),
-            url(r'^api/v2/docs/', include_docs_urls(title='MyCMS API')),]
+            url(r'^api/v2/docs/', include_docs_urls(title='MyCMS API')),
+             url('^api/v2/schemas/', schema_view),
+            url(r'api/v2/cmsauthtoken', api.CMSAuthToken.as_view({'post': 'retrieve'}), name='cmsauthtoken')
+        ]
 
 
 router = routers.DefaultRouter()
@@ -105,8 +111,9 @@ router = routers.DefaultRouter()
 router.register(r'api/v2/cmscontents', api.CMSContentsViewSet, base_name='cmscontents')
 router.register(r'api/v2/cmsentries', api.CMSEntriesViewSet, base_name='cmsentries')
 router.register(r'api/v2/cmspaths', api.CMSPathsViewSet, base_name='cmspaths')
-
-router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')
+router.register(r'api/v2/cmspages', api.CMSPagesViewSet, base_name='cmspages')
+#router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, base_name='cmsauthtoken')
+#router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')
 
 urlpatterns =  cms_root + router.urls + urlpatterns 
 

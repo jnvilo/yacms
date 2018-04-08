@@ -12,15 +12,21 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
 from mycms.creole import creole2html
 
+
+from rest_framework.authtoken.models import Token
 
 from loremipsum import generate_paragraphs
 
 class CMSPaths(models.Model):
 
-    #class Meta: 
-    #    db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
+    class Meta: 
+        db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
 
     path = models.CharField(max_length=2000, null=True)
     parent = models.ForeignKey("CMSPaths", null=True, blank=True, 
@@ -34,8 +40,8 @@ class CMSPaths(models.Model):
 
 class CMSTags(models.Model):
 
-    #class Meta:
-    #    db_table = "yacms_cmstags"
+    class Meta:
+        db_table = "yacms_cmstags"
 
     name = models.CharField(max_length=256, default="NotSet")
 
@@ -43,6 +49,9 @@ class CMSTags(models.Model):
         return self.name
 
 class CMSMarkUps(models.Model):
+    class Meta:
+        db_table = "yacms_cmsmarkups"
+
     markup = models.CharField(max_length=128, default="Creole")
 
     def __str__(self):
@@ -50,8 +59,8 @@ class CMSMarkUps(models.Model):
                     
 class CMSContents(models.Model):
     
-    #class Meta:
-    #    db_table = "yacms_cmscontents" 
+    class Meta:
+        db_table = "yacms_cmscontents" 
     
     title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")
@@ -75,8 +84,8 @@ class CMSContents(models.Model):
 
 class CMSTemplates(models.Model):
 
-    #class Meta: 
-    #    db_table = "yacms_cmstemplates"
+    class Meta: 
+        db_table = "yacms_cmstemplates"
 
     name = models.CharField(max_length=1024, default="page.html")
     template = models.TextField(max_length=10240, default="empty template")
@@ -86,8 +95,8 @@ class CMSTemplates(models.Model):
 
 class CMSPageTypes(models.Model):
 
-    #class Meta:
-    #    db_table = "yacms_cmspagetypes"
+    class Meta:
+        db_table = "yacms_cmspagetypes"
 
     page_type = models.CharField(max_length=64, default="DefaultType")
     text = models.CharField(max_length=128, default="default class")
@@ -123,8 +132,8 @@ def get_admin_user():
 
 class CMSEntries(models.Model):
 
-    #class Meta: 
-    #    db_table = "_cmsentries"
+    class Meta: 
+        db_table = "yacms_cmsentries"
 
     title = models.CharField(max_length=1024, default=None)
     path = models.ForeignKey(CMSPaths, 
@@ -282,6 +291,7 @@ class CMSEntries(models.Model):
         #else:
             #super(CMSEntries, self).save(*args, **kwargs)
 
+            
 
 ## method for updating
 #def create_default_content(sender, instance, created, **kwargs):
@@ -298,3 +308,10 @@ class CMSEntries(models.Model):
 ## register the signal
 #post_save.connect(create_default_content, sender=CMSEntries, dispatch_uid="CREATE_CONTENT")
 
+
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

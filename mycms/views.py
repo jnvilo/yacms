@@ -69,6 +69,9 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import CreateView, DeleteView, ListView
 
+
+from django_filters.rest_framework import DjangoFilterBackend
+
 from loremipsum import get_paragraphs
 from mycms.creole import creole2html
 
@@ -550,7 +553,7 @@ class CMSEntriesAPIView(APIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
 
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
 
     def get(self, request, **kwargs):
         """

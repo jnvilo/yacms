@@ -99,7 +99,6 @@ urlpatterns = [
 schema_view = get_schema_view(title="MyCMS API")
 
 cms_root = [url(r'^$', CMSPageView.as_view(), name="cms_page"),
-            url(r'^api/v2/drf-docs/', include('rest_framework_docs.urls')),
             url(r'^api/v2/docs/', include_docs_urls(title='MyCMS API')),
              url('^api/v2/schemas/', schema_view),
             url(r'api/v2/cmsauthtoken', api.CMSAuthToken.as_view({'post': 'retrieve'}), name='cmsauthtoken')

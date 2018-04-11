@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load rest_framework %}
 
@@ -12,7 +12,7 @@
         <meta name="robots" content="NONE,NOARCHIVE" />
       {% endblock %}
 
-      <title>{% block title %}{% if name %}{{ name }} – {% endif %}Django REST framework{% endblock %}</title>
+      <title>{% block title %}{% if name %}{{ name }} – {% endif %}MyCMS{% endblock %}</title>
 
       {% block style %}
         {% block bootstrap_theme %}
@@ -22,6 +22,7 @@
 
         <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/prettify.css" %}"/>
         <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/default.css" %}"/>
+        {% if code_style %}<style>{{ code_style }}</style>{% endif %}
       {% endblock %}
 
     {% endblock %}
@@ -32,12 +33,13 @@
 
     <div class="wrapper">
       {% block navbar %}
-        <div class="navbar navbar-static-top {% block bootstrap_navbar_variant %}navbar-inverse{% endblock %}">
+        <div class="navbar navbar-static-top {% block bootstrap_navbar_variant %}navbar-inverse{% endblock %}"
+             role="navigation" aria-label="{% trans "navbar" %}">
           <div class="container">
             <span>
               {% block branding %}
-                <a class='navbar-brand' rel="nofollow" href='http://www.django-rest-framework.org'>
-                    Django REST framework
+                <a class='navbar-brand' rel="nofollow" href='/cms/api/v2/docs'>
+                    MyCMS
                 </a>
               {% endblock %}
             </span>
@@ -70,9 +72,10 @@
         {% endblock %}
 
         <!-- Content -->
-        <div id="content">
+        <div id="content" role="main" aria-label="{% trans "content" %}">
           {% block content %}
 
+          <div class="region"  aria-label="{% trans "request form" %}">
           {% if 'GET' in allowed_methods %}
             <form id="get-form" class="pull-right">
               <fieldset>
@@ -131,8 +134,9 @@
               {% trans "Filters" %}
             </button>
           {% endif %}
+          </div>
 
-            <div class="content-main">
+            <div class="content-main" role="main"  aria-label="{% trans "main content" %}">
               <div class="page-header">
                 <h1>{{ name }}</h1>
               </div>
@@ -148,11 +152,11 @@
                 </nav>
               {% endif %}
 
-              <div class="request-info" style="clear: both" >
+              <div class="request-info" style="clear: both" aria-label="{% trans "request info" %}">
                 <pre class="prettyprint"><b>{{ request.method }}</b> {{ request.get_full_path }}</pre>
               </div>
 
-              <div class="response-info">
+              <div class="response-info" aria-label="{% trans "response info" %}">
                 <pre class="prettyprint"><span class="meta nocode"><b>HTTP {{ response.status_code }} {{ response.status_text }}</b>{% autoescape off %}{% for key, val in response_headers|items %}
 <b>{{ key }}:</b> <span class="lit">{{ val|break_long_headers|urlize_quoted_links }}</span>{% endfor %}
 
@@ -271,7 +275,7 @@
           csrfCookieName: "{{ csrf_cookie_name|default:'csrftoken' }}"
         };
       </script>
-      <script src="{% static "rest_framework/js/jquery-1.12.4.min.js" %}"></script>
+      <script src="{% static "rest_framework/js/jquery-3.3.1.min.js" %}"></script>
       <script src="{% static "rest_framework/js/ajax-form.js" %}"></script>
       <script src="{% static "rest_framework/js/csrf.js" %}"></script>
       <script src="{% static "rest_framework/js/bootstrap.min.js" %}"></script>

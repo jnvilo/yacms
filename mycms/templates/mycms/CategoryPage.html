@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% load yacms_tags %}
+{% load mycms_tags %}
 
 {%block PAGE_HEADER %}
 
@@ -39,7 +39,7 @@ var view_json = {{view_object.json_data | safe }}
         </div>
         <!-- end of contents -->
     </div>
-    
+    {% if view_object.request.user.username == "admin" %}
     <div id="overlay">    
         <div class="row-fluid">
             <div class="col-md-12 page-content" id="page_editor" style="margin-top:10px;">
@@ -116,30 +116,33 @@ var view_json = {{view_object.json_data | safe }}
             </div>
         </div>
     </div>
+    {% endif %}
+    
 </div>
 
 
-{% verbatim %}
+{% if view_object.request.user.username == "admin" %}
 
+    {% verbatim %}
 
-
-<script type="text/dust" id="empty_category_editor_template">
-   <div class="row" style="background: #bbb; border-top: 1px solid #dddddd; margin:0px;" >
-        <div class="col-md-2">Category Title</div>
-        <div class="col-md-4">Path URL</div>
-    </div>
-
-    <div class="row" style="background:#ccc; border-top: 1px solid #dddddd; margin:0px;" >
-        <div class="col-md-12">There are no sub categories!</div>
-    </div>
-  
-</script>
-{% endverbatim %}
-
-{% Script type="text/javascript" src="/static/mycms/dustjs/dust-full.js" priority=8888 %}  
-{% Script type="text/javascript" src="/static/mycms/templates.js" priority=8889 %}  
-{% Script type="text/javascript" src="/static/mycms/editor/category.editor.js" priority=8889 %}  
-
+    <script type="text/dust" id="empty_category_editor_template">
+        <div class="row" style="background: #bbb; border-top: 1px solid #dddddd; margin:0px;" >
+            <div class="col-md-2">Category Title</div>
+            <div class="col-md-4">Path URL</div>
+        </div>
+    
+        <div class="row" style="background:#ccc; border-top: 1px solid #dddddd; margin:0px;" >
+            <div class="col-md-12">There are no sub categories!</div>
+        </div>
+      
+    </script>
+    {% endverbatim %}
+    
+    {% Script type="text/javascript" src="/static/mycms/dustjs/dust-full.js" priority=8888 %}  
+    {% Script type="text/javascript" src="/static/mycms/templates.js" priority=8889 %}  
+    {% Script type="text/javascript" src="/static/mycms/editor/category.editors.js" priority=8889 %}  
+      
+{% endif %}
 {% endblock PAGE_CONTENT %}  
 
 

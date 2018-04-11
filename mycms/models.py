@@ -25,8 +25,8 @@ from loremipsum import generate_paragraphs
 
 class CMSPaths(models.Model):
 
-    class Meta: 
-        db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
+    #class Meta: 
+    #    db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
 
     path = models.CharField(max_length=2000, null=True)
     parent = models.ForeignKey("CMSPaths", null=True, blank=True, 
@@ -40,8 +40,8 @@ class CMSPaths(models.Model):
 
 class CMSTags(models.Model):
 
-    class Meta:
-        db_table = "yacms_cmstags"
+    #class Meta:
+    #    db_table = "yacms_cmstags"
 
     name = models.CharField(max_length=256, default="NotSet")
 
@@ -49,8 +49,8 @@ class CMSTags(models.Model):
         return self.name
 
 class CMSMarkUps(models.Model):
-    class Meta:
-        db_table = "yacms_cmsmarkups"
+    #class Meta:
+    #    db_table = "yacms_cmsmarkups"
 
     markup = models.CharField(max_length=128, default="Creole")
 
@@ -59,8 +59,8 @@ class CMSMarkUps(models.Model):
                     
 class CMSContents(models.Model):
     
-    class Meta:
-        db_table = "yacms_cmscontents" 
+    #class Meta:
+    #    db_table = "yacms_cmscontents" 
     
     title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")
@@ -84,8 +84,8 @@ class CMSContents(models.Model):
 
 class CMSTemplates(models.Model):
 
-    class Meta: 
-        db_table = "yacms_cmstemplates"
+    #class Meta: 
+    #    db_table = "yacms_cmstemplates"
 
     name = models.CharField(max_length=1024, default="page.html")
     template = models.TextField(max_length=10240, default="empty template")
@@ -95,8 +95,8 @@ class CMSTemplates(models.Model):
 
 class CMSPageTypes(models.Model):
 
-    class Meta:
-        db_table = "yacms_cmspagetypes"
+    #class Meta:
+    #    db_table = "yacms_cmspagetypes"
 
     page_type = models.CharField(max_length=64, default="DefaultType")
     text = models.CharField(max_length=128, default="default class")
@@ -132,8 +132,8 @@ def get_admin_user():
 
 class CMSEntries(models.Model):
 
-    class Meta: 
-        db_table = "yacms_cmsentries"
+    #class Meta: 
+    #    db_table = "yacms_cmsentries"
 
     title = models.CharField(max_length=1024, default=None)
     path = models.ForeignKey(CMSPaths, 

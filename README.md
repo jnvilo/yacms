@@ -1,4 +1,11 @@
 
+MyCMS - Yet Another Django Based CMS. 
+
+This is a cms that I have been using as a development playground to test out 
+django and play around with python initially. I have used it in production at 
+jnvilo.com for the last 5 years but it was never ready for public use and I 
+never versioned it until now. I am iteratively preparing it for public consumption. 
+
 Build Requirements
 
 Centos: 

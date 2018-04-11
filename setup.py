@@ -5,7 +5,7 @@
     distutils setup
     ~~~~~~~~~~~~~~~
 
-    :copyleft: 2009-2011 by Jason Viloria , see AUTHORS for more details.
+    :copyleft: 2009-2018 by Jason Viloria , see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -15,8 +15,9 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.1.0"
-
+VERSION_STRING="0.0.9"
+URL = "https://github.com/jnvilo/mycms"
+DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 
 
 
@@ -52,8 +53,8 @@ setup(
     author=get_authors(),
     author_email="jnvilo@gmail.com",
     maintainer="Jason Viloria",
-    url='https://github.com/jnvilo/mycms',
-    download_url = 'https://github.com/jnvilo/mycms/archive/0.0.3.tar.gz', 
+    url=URL,
+    download_url = DOWNLOAD_URL, 
     packages=find_packages(),
     install_requires=get_requirements(), 
     include_package_data=True, # include package data under svn source control

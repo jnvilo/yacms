@@ -825,26 +825,49 @@ class CMSIndexView(APIView):
         pass
 
 
+class CMSArticleListsView(View):
+    """
+    Implements a paginated list view of all published articles. 
+    """
+    from django.db.models import Q
+    
+    def get(self,request, **kwargs):
+        
+        obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | Q(page_type = multipageview_pagetype_obj)) &
+                                             Q(path__parent__id = self.page_object.path.id))[start: start+page_size]
+        #wrap the entries of the obj_list into their view_handler representations
+        view_list = []
+        
+        
+        for obj in obj_list:
+            view_list.append(YACMSViewObject(page_object=obj))
+
+        return view_list
+    
+    
+
 class CMSPageView(View):
     """
     The main interface to the website.
     """
 
-    def get_object(self,**kwargs):
+    def get_object(self,request, **kwargs):
         """
         returns a YACMSViewObject
         """
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
 
-        try:
+        try: 
             if path:
-                obj = YACMSViewObject(path=path)
+                obj = YACMSViewObject(path=path, request=request)
+            
             elif page_id:
-                obj = YACMSViewObject(page_id=page_id)
+                obj = YACMSViewObject(page_id=page_id, request=request)
             else:
                 #Lets make path = "/" as default.
-                obj = YACMSViewObject(path=u"/")
+                obj = YACMSViewObject(path=u"/", request=request)
+                
             return obj
 
         except ObjectDoesNotExist as e:
@@ -882,6 +905,8 @@ class CMSPageView(View):
                 obj = YACMSViewObject(path=u"/")
                 return obj
             else:
+                
+                #TODO: Make sure to log this too 
                 raise Http404("Page Does Not Exist.")
 
 
@@ -893,14 +918,16 @@ class CMSPageView(View):
         
         show_toolbar = "toolbar" in request.GET.keys()
         
-        obj = self.get_object(**kwargs)
+        obj = self.get_object(request, **kwargs)
         obj.request = request
         obj.show_toolbar = show_toolbar
         
         template = obj.template
-        
-        return render_to_response(template, {"view_object": obj})
-
+        try:
+            return render_to_response(template, {"view_object": obj})
+        except Exception as e:
+            # TODO: Make sure to log this.
+            return HttpResponse(content=b'Application Error', status=500)
     def post(self, request, **kwargs):
         print(request, kwargs)
         return HttpResponse("Not implemented")

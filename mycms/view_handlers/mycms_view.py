@@ -16,6 +16,54 @@ logger = logging.getLogger("mycms.view_handlers.YACMSViewObject")
 
 from . formatters import CreoleFormatter
 
+class ArticleList(list):
+    
+    def __init__(self):
+        super().__init__(self)
+    
+        self._next = None
+        self._total_articles = None
+        self._limit = 10
+        self._offset = 0 
+        self.has_newer = False
+        self.has_older = False
+        self.processed = False 
+    @property
+    def next_offset(self):
+        return self.limit + self.offset
+        
+    @property
+    def next(self):
+        return self._next
+    
+    @next.setter
+    def next(self, value):
+        self._next = value
+    
+    @property 
+    def total_articles(self):
+        return self._total_articles
+    
+    @total_articles.setter
+    def total_articles(self, value):
+        self._total_articles = value
+    
+    @property 
+    def limit(self):
+        return self._limit 
+    
+    @limit.setter
+    def limit(self,value):
+        self._limit = value
+    
+    @property 
+    def offset(self):
+        return self._offset
+    
+    @offset.setter
+    def offset(self, value):
+        self._offset = value
+
 
 class ContentTopicsContainer(object):
 
@@ -51,9 +99,13 @@ class YACMSViewObject(object):
     attributes of the CMSEntry model.
     """
     
-    def __init__(self, path=None, page_id=None, page_object=None):
+    def __init__(self, path=None, page_id=None, page_object=None, request=None):
 
+        self.request = request
+        
         if  page_object:
+            # A page_object is a models.CMSEntries instance. 
+            # 
             self.path = page_object.path.path
             self._page_id = page_object.id
             self._obj = page_object
@@ -65,8 +117,15 @@ class YACMSViewObject(object):
 
         x = __import__("mycms.view_handlers")
         y = getattr(x, "view_handlers")
+        
+        #the view class take care of providing extra implementation that is 
+        #needed in the page. vie_class is defined as an attribute inside the 
+        #the database.
+        # 
+        # we provide it the page_object and 
+        
         ViewClass  = getattr(y, self.page_object.page_type.view_class)
-        instance =  ViewClass(self.page_object)
+        instance =  ViewClass(self.page_object, request=self.request)
         self.view_handler = instance
 
 

@@ -10,7 +10,7 @@ logger = logging.getLogger("mycms.page_handlers")
 
 class MultiPage(object):
 
-    def __init__(self, page_object):
+    def __init__(self, page_object, request=None):
 
         #page_object is a mycms.models.CMSEntries instance.
         #which represents the page.

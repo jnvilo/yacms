@@ -5,7 +5,8 @@
     distutils setup
     ~~~~~~~~~~~~~~~
 
-    :copyleft: 2009-2018 by Jason Viloria , see AUTHORS for more details.
+ lpha
+   :copyleft: 2009-2018 by Jason Viloria , see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -70,7 +71,6 @@ setup(
     keywords=["django","cms","blog"] ,
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        "Development Status :: 4 - Alpha",
         #"Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",

@@ -157,6 +157,7 @@ class CMSEntries(models.Model):
 
     frontpage = models.BooleanField(default=False)
     published = models.BooleanField(default=False)
+    lists_include = models.BooleanField(default=True)
 
     page_number = models.IntegerField(default=1)
     created_by = models.ForeignKey(User, 
@@ -191,7 +192,7 @@ class CMSEntries(models.Model):
     def __str__(self):
         return self.title
 
-
+ 
     #----------------------------------------------------------------------
     @property
     def  date_created_str(self):
@@ -308,10 +309,19 @@ class CMSEntries(models.Model):
 ## register the signal
 #post_save.connect(create_default_content, sender=CMSEntries, dispatch_uid="CREATE_CONTENT")
 
-
-
+class CMSArchivesIndex(models.Model):
+    
+    month = models.IntegerField(default=0)
+    year = models.IntegerField(default=1975)
+    entries = models.ManyToManyField(CMSEntries, blank=True)
+    
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+        
+        
+        
+        
+        

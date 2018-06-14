@@ -20,14 +20,19 @@ register = template.Library()
 
 @register.inclusion_tag('mycms/templatetags/frontpage.html')
 def frontpage():
-    
-    
-    cmsentries = CMSEntries.objects.filter(frontpage=True, published=True).order_by("-date_created")
+        
+    cmsentries = CMSEntries.objects.filter(frontpage=True, published=True).order_by("-date_created")[:10]
     paginator = Paginator(cmsentries, 4)
     
     return {"cmsentries":cmsentries}
 
-
+@register.inclusion_tag('mycms/templatetags/archives.html')
+def archives():
+    return None
+    
+    
+    
+    
 
 
 

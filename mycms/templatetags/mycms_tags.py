@@ -45,6 +45,9 @@ def Script(context, *args, **kwargs):
     if kwargs.get("src", None) is not None: 
         #We need at minimum src
         if isLoggedIn: 
+            #the isLoggedIn flag is used to know if we need to check whether
+            #the user is logged in or not. If he is not logged in , then 
+            #there is nothing to do and we just return an empty string. 
             #Needs to check if the user is logged in. 
             view_object = context["view_object"]
             
@@ -52,15 +55,14 @@ def Script(context, *args, **kwargs):
                 #If user is not authenticated then we should not add
                 #this script. 
                 return ""
-        else:
-            #We need to check if the user is logged in. 
-                registry.register(src=kwargs.get("src","/dummy/path"),
+        
+        registry.register(src=kwargs.get("src","/dummy/path"),
                                   type=kwargs.get("type", "text/javascript"),
                                   priority=kwargs.get("priority", 9999))
-        
+                
     else: 
         print("skipped {}".format(token_str))
-        return None
+        return ""
     
    
 class ScriptCollectorNode(template.Node):

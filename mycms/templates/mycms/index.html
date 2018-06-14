@@ -14,9 +14,6 @@
 
 
 
-
-
-
 {%block HEAD_BOTTOM %}
 <!-- This page has no other contents < -->     
 {%endblock HEAD_BOTTOM %}
@@ -28,7 +25,7 @@
             <div class="row">
                 <div class="col-md-8">
                 {%frontpage%}
-
+                <h1>Read More</h1>
                 </div>
            
                   
@@ -53,24 +50,19 @@
                     </section>
                                 
                     <section class="widget">
-                    <h3>Categories</h3>
-                        <ul class="list-unstyled iconList">
-                            <li><a href="#">Solace of a lonely highway</a></li>
-                            <li><a href="#">Write with purpose</a></li>
-                            <li><a href="#">Tree on a lake</a></li>
-                            <li><a href="#">Don’t stop questioning</a></li>
-                        <li><a href="#">Overheard this morning</a></li>
-                        </ul>
-                            </section>
-                            <section class="widget">
-                                <h3>Archives</h3>
-                                <ul class="list-unstyled iconList">
-                                <li><a href="#">March 2012</a></li>
-                                <li><a href="#">September 2011</a></li>
-                                <li><a href="#">July 2011</a></li>
-                            <li><a href="#">June 2011</a></li>
-                        </ul>
-                        </section>
+                        <h3>Categories</h3>
+                            <ul class="list-unstyled iconList">
+                                <li><a href="#">Solace of a lonely highway</a></li>
+                                <li><a href="#">Write with purpose</a></li>
+                                <li><a href="#">Tree on a lake</a></li>
+                                <li><a href="#">Don’t stop questioning</a></li>
+                            <li><a href="#">Overheard this morning</a></li>
+                            </ul>
+                    </section>
+                    <section class="widget">
+                        {% archives %}
+                    </section>
+                    
                             <section class="widget tagCloud">
                             <h3>Tag cloud</h3>
                                 <a href="#" class="w2">News</a>

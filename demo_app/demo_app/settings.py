@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'haystack', #YACMS requires this. 
     'mycms', #YACMS: The module itself.
     'rest_framework', 
-    'rest_framework_docs',
     'rest_framework.authtoken'
 ]
 

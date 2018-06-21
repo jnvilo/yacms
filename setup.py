@@ -16,7 +16,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.10"
+VERSION_STRING="0.0.11"
 URL = "https://github.com/jnvilo/mycms"
 DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 

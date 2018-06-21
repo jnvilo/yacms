@@ -68,10 +68,21 @@ class CategoryPage(object):
     def get_categories(self):
         """Returns a list of all child categories of type: CATEGORY"""
 
-        obj_list = CMSEntries.objects.filter(path__path__parent__id = self.page_object.id,
-                                             page_type=page_obj.page_type)
+        print("doping query")
+        try: 
+            obj_list = CMSEntries.objects.filter(path__parent__id = self.page_object.id,
+                                                 page_type=self.page_object.page_type)
+        except Exception as e: 
+            print(e)
 
+        print("done with the query")
         return obj_list
+
+    
+    @property
+    def categories(self):
+        return self.get_categories()
+
 
 
 
@@ -90,3 +101,4 @@ class CategoryPage(object):
 
     def on_create(self):
         pass
+

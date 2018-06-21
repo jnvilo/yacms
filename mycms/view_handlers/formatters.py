@@ -84,8 +84,12 @@ def code(*args, **kwargs):
             formatter = HtmlFormatter(linenos='table',lineseparator="\n")
         else:
             formatter = HtmlFormatter(lineseparator="\n")
-        highlighted_text = highlight(text, lexer, formatter).decode('utf-8')
-    except:
+        
+        #highlighted_text = highlight(text, lexer, formatter).decode('utf-8')
+        #It seems with python3 there is no need to do a decode.
+        highlighted_text = highlight(text, lexer, formatter)
+    except Exception as e:
+        print(e)
         highlighted_text = pre(text)
     #finally:
     #    return highlighted_text.replace('\n', '<br />\n')

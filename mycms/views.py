@@ -914,6 +914,8 @@ class CMSPageView(View):
     def get(self,request, **kwargs):
         """Just get the page and return it."""
         
+        
+        print("This is a test")
         get = request.GET
         
         show_toolbar = "toolbar" in request.GET.keys()
@@ -926,8 +928,10 @@ class CMSPageView(View):
         try:
             return render_to_response(template, {"view_object": obj})
         except Exception as e:
-            # TODO: Make sure to log this.
-            return HttpResponse(content=b'Application Error', status=500)
+            # TODO: Make sure to log this
+            
+            msg = "Application Error {}".format(e)            
+            return HttpResponse(content=bytes(msg, 'utf-8'), status=500)
     def post(self, request, **kwargs):
         print(request, kwargs)
         return HttpResponse("Not implemented")

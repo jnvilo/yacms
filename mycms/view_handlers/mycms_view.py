@@ -12,7 +12,7 @@ from django.utils.text import slugify
 import simplejson as json
 from bs4 import BeautifulSoup
 
-logger = logging.getLogger("mycms.view_handlers.YACMSViewObject")
+logger = logging.getLogger("mycms.view_handlers.ViewObject")
 
 from . formatters import CreoleFormatter
 
@@ -90,12 +90,12 @@ class ContentTopicsContainer(object):
         return slugify(self.title)
 
 
-class YACMSViewObject(object):
+class ViewObject(object):
 
     """
-    A YACMSViewObject represents a full page object. It takes care of
+    A ViewObject represents a full page object. It takes care of
     coupling together the different pieces of a page such that it can
-    be serialized.  The YACMSViewObject handles the management of the
+    be serialized.  The ViewObject handles the management of the
     attributes of the CMSEntry model.
     """
     
@@ -171,7 +171,7 @@ class YACMSViewObject(object):
             elif self.page_id:
                 obj = CMSEntries.objects.get(pk=self.page_id)
             else:
-                raise RuntimeError("YACMSViewObject did not get a path or page_id.")
+                raise RuntimeError("ViewObject did not get a path or page_id.")
 
             self._obj = obj
             return obj

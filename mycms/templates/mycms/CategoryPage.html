@@ -25,20 +25,33 @@ var view_json = {{view_object.json_data | safe }}
 
         <!-- Contents -->
         <div class="col-md-12 page-content" id="page_content" >
-            <div class="cmsentries">
-                {% for article in view_object.articles %}
-                    <div class="cmsentry">
-                        <h2 class="cmsentry title" style="font-weight:bold;     margin-bottom: 0px;"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
-                        <span id="span_{{article.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{article.slug}}" article_id={{article.page_object.id}}>{{article.created_timestamp_str}}</span>
-                        <span id="{{article.slug}}" article_id={{article.id}}></span>
 
-                        <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
-                    </div>
-                {% endfor %}
-            </div> 
+    {% for article in view_object.articles %}
+            <article class="post clearfix">
+                <div class="row">
+                    <section class="col-sm-11 col-xs-10 article-summary">
+                        <h2><a class="frontpage" href="/cms{{article.path}}">{{article.title}}</a></h2>
+                            <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>                                     
+                            <ul class="entry-meta">
+                                <li class="entry-date"><a href="#"><i class="icon-pin"></i>&nbsp;{{article.created_timestamp_str}}</a></li>
+                                <li class="entry-category"><a href="{{article.parent.path}}"><i class="icon-th-list"></i>&nbsp;{{article.page_object.parent.title}}</a></li>
+                                <li class="entry-author"><a href="#"><i class="icon-male"></i>&nbsp;Admin</a></li>
+                                <li class="entry-date"><a href="/cms/{{article.page_object.parent.path}} class="readMore">read more</a></li>
+                                <!-- li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li -->
+                            </ul>
+                    </section>
+                </div>
+            </article>
+        {% endfor %}
+
+        
+         
         </div>
         <!-- end of contents -->
     </div>
+
+
+
     {% if view_object.request.user.username == "admin" %}
     <div id="overlay">    
         <div class="row-fluid">
@@ -54,51 +67,71 @@ var view_json = {{view_object.json_data | safe }}
                 <div style="box-shadow: 0px 5px 26px 1px rgba(0,0,0,0.75); border-radius: 5px;">
                     <ul class="nav nav-pills" id="admin-tabs">
                        <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
-                       <li><a data-toggle="pill" href="#menu1">Page Assets</a></li>
-                       <li><a data-toggle="pill" href="#menu2">Page Meta</a></li>
+                       <li><a data-toggle="pill" href="#sub_pages">Sub Pages</a></li>
+                       <li><a data-toggle="pill" href="#file_upload">File Upload</a></li>
                        <li id="close-admin"><img id="close-admin-overlay-button" src="/static/mycms/editor/close-window-50.png"/ ></li>
                     </ul>
 
-                    <div class="tab-content" style="background:#ccc;">
-                        <div id="home" class="tab-pane fade in active" style="background: #ccc;">     
+                    <div class="tab-content" style="background:#fff;">
+                        <div id="home" class="tab-pane fade in active" style="background: #fff;">     
                         
                         
-                            <!-- put this in a template later???-->
-                            <div class="row" id="category_form">
-                                <form class="form" id="createpage_form">
-                                    <div class="col-sm-4">
-                                        <input id="createpage_title" type="text" placeholder="title" class="form-control">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input id="createpage_slug" type="text" placeholder="slug" class="form-control">
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <select id="createpage_pagetype_select" name="createpage_pagetype_select" type="text" class="form-control">
-                                            <option value="1">Single Page HTML</option>
-                                            <option value="2">Category Page</option>
-                                            <option value="3">MultPage Article</option>
-                                            <option value="4">MemberPage Article</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button class="btn btn-primary" type="button" id="create_page_button">Create Page</button>
-                                    </div>
-                                </form>
-                            </div>
+                            <div class="row"><hr></div>
+                        
                             
-                             <!-- div class="row">
-                                <div class="col-sm-6"> left </div>
-                                <div class="col-sm-6"> right </div>
-                            </div -->   
+                           
                             
                             <!-- end put in tempalte -->
-                            <div id="category_editor">
-                                <div col-sm-6> left </div>
-                                <div col-sm-6> right </div>
-                            </div>        
+                             <div class="row"><hr></div>  
+                            <div class="row" id="category_editor_container">
+                                <div class="col-md-1">Content</div>
+                                <div class="col-md-8">  
+                                        <textarea id="category_texteditor_area" data-gramm_editor="false" rows="10"></textarea>
+                                </div>   
+                                 <div class="col-md-3"> right </div>
+                            </div>    
+
+                            <div class="row">   
+                                <div class="col-md-12">
+                                    <div class="rect_container">
+                                        <div id="editor_message_pane"></div>
+                                        <button class="btn btn-primary float-right margin-left-10px" type="button" id="save_content_button">Save Content</button>    
+                                    </div>
+                                </div> 
+                            </div>
+                            
+                             <div class="row"><hr></div>  
+                            
+                             
+                           
+                        
+                           
+                            
+                            
                     </div>
-    
-                    <div id="menu1" class="tab-pane fade">
+                    
+                    <div id="sub_pages" class="tab-pane fade">
+                             <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="rect_container">
+                                       <form class="form" id="create_entry_form">
+                                       
+                                       <input id="createpage_title" type="text" placeholder="title" class="form-control">
+                                       <input id="createpage_slug" type="text" placeholder="slug" class="form-control">
+                                        <select id="createpage_pagetype_select" name="createpage_pagetype_select" type="text" class="form-control">
+                                               <option value="1">Single Page HTML</option>
+                                               <option value="2">Category Page</option>
+                                               <option value="3">MultPage Article</option>
+                                               <option value="4">MemberPage Article</option>
+                                           </select>
+                                        <button class="btn btn-primary float-right" type="button" id="create_page_button">Create Page</button>
+                                       </form>
+                                   </div> 
+                                </div>                         
+                            </div>
+                    </div>
+                    
+                    <div id="file_upload" class="tab-pane fade">
                         <!-- will be loaded as a temlate-->
                         {% file_upload %}
                     </div>
@@ -140,7 +173,7 @@ var view_json = {{view_object.json_data | safe }}
     
     {% Script type="text/javascript" src="/static/mycms/dustjs/dust-full.js" priority=8888 %}  
     {% Script type="text/javascript" src="/static/mycms/templates.js" priority=8889 %}  
-    {% Script type="text/javascript" src="/static/mycms/editor/category.editors.js" priority=8889 %}  
+    {% Script type="text/javascript" src="/static/mycms/editor/category.editor.js" priority=8889 %}  
       
 {% endif %}
 {% endblock PAGE_CONTENT %}  
@@ -154,7 +187,14 @@ var view_json = {{view_object.json_data | safe }}
 
 
 <script type="text/javascript">
-
+    
+    $( document ).ready(function() {
+    console.log( "ready!" );
+    on();
+    
+     loadCMSContentToTextArea();
+    
+    });
 
 
 </script>

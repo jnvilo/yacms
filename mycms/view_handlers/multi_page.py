@@ -1,6 +1,6 @@
 from mycms.models import CMSEntries
 from mycms.models import CMSPageTypes
-from mycms.view_handlers.mycms_view import YACMSViewObject
+from mycms.view_handlers.mycms_view import ViewObject
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.utils import OperationalError
@@ -54,7 +54,7 @@ class MultiPage(object):
         #wrap the entries of the obj_list into their view_handler representations
         view_list = []
         for obj in obj_list:
-            view_list.append(YACMSViewObject(page_object=obj))
+            view_list.append(ViewObject(page_object=obj))
 
         return view_list
 

@@ -1,4 +1,4 @@
-from . mycms_view  import YACMSViewObject
+from . mycms_view  import ViewObject
 from . category_page import CategoryPage
 from . multi_page import MultiPage
 from . single_page import SinglePage

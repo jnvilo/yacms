@@ -47,7 +47,22 @@ clean-build-local:
 	-$(FIND) . -type d -name '__pycache__' -exec $(RM) -r {} +
 	-$(FIND) . -type f -name '*.pyc' -delete
 
+
+copysvg: devicon svg
+	cp -r devicon/icons/* mycms/static/mycms/logos/svg/
+
+svg: 
+	mkdir -p mycms/static/mycms/logos/svg/
+
+devicon:  
+	git clone https://github.com/konpa/devicon.git	
+
+
 .PHONY: clean-test
+
+
+
+
 clean-test:
 	-$(RM) .coverage
 	-$(RM) virtualenv

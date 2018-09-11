@@ -5,8 +5,7 @@
     distutils setup
     ~~~~~~~~~~~~~~~
 
- lpha
-   :copyleft: 2009-2018 by Jason Viloria , see AUTHORS for more details.
+   :copyleft: 2009-2018 by Jason Viloria , see AUTHORS.txt for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -16,22 +15,20 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.12"
+VERSION_STRING="0.0.16"
 URL = "https://github.com/jnvilo/mycms"
 DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
-
-
 def get_authors():
     try:
-        f = file(os.path.join(PACKAGE_ROOT, "AUTHORS"), "r")
-        authors = [l.strip(" *\r\n") for l in f if l.strip().startswith("*")]
-        f.close()
+        with open("AUTHORS.txt", "r") as f: 
+            authors = [l.strip(" *\r\n") for l in f if l.strip().startswith("*")]
     except Exception:
         evalue = sys.exc_info()[1]
         authors = "[Error: %s]" % evalue
+        print("Error: {}".format(evalue))
     return authors
 
 

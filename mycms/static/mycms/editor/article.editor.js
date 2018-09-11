@@ -51,6 +51,7 @@ API Version 1 defines the endpoint as:
         },
         success: function(data){
             content = data["content"];
+            console.log(content);
             $("textarea#markup").text(content);
         }
     });

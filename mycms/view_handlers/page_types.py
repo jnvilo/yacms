@@ -1,6 +1,6 @@
 from mycms.models import CMSEntries
 from mycms.models import CMSPageTypes
-from mycms.view_handlers.mycms_view import YACMSViewObject
+from mycms.view_handlers.mycms_view import ViewObject
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.utils import OperationalError

@@ -1,6 +1,6 @@
 from mycms.models import CMSEntries
 from mycms.models import CMSPageTypes
-from mycms.view_handlers.mycms_view import YACMSViewObject
+from mycms.view_handlers.mycms_view import ViewObject
 from mycms.view_handlers.mycms_view import ArticleList
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -96,7 +96,7 @@ class AllArticlesPage(object):
                 self._article_list.has_newer = True
             
             for obj in obj_list:
-                self._article_list.append(YACMSViewObject(page_object=obj))
+                self._article_list.append(ViewObject(page_object=obj))
 
         
         return self._article_list

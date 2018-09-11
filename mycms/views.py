@@ -92,7 +92,7 @@ from mycms.models import CMSMarkUps
 from mycms.models import CMSTemplates
 from mycms.models import CMSPaths
 
-from mycms.view_handlers import YACMSViewObject
+from mycms.view_handlers import ViewObject
 
 
 
@@ -789,7 +789,7 @@ class CMSContentsAPIView(APIView):
                 cmscontent_dict = model_to_dict(cmscontent_object)
 
 
-                #We need to get the html. So We need the freaking YACMSViewObject.
+                #We need to get the html. So We need the freaking ViewObject.
 
 
 
@@ -840,7 +840,7 @@ class CMSArticleListsView(View):
         
         
         for obj in obj_list:
-            view_list.append(YACMSViewObject(page_object=obj))
+            view_list.append(ViewObject(page_object=obj))
 
         return view_list
     
@@ -848,25 +848,32 @@ class CMSArticleListsView(View):
 
 class CMSPageView(View):
     """
-    The main interface to the website.
+    The main interface to the website. This view serves all of the web pages
+    except pages served by:
+    
+        CMSArticleListsView.    
+        CMSIndexView
+        CMSFrontPage
+        
+        
     """
 
     def get_object(self,request, **kwargs):
         """
-        returns a YACMSViewObject
+        returns a ViewObject
         """
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
 
         try: 
             if path:
-                obj = YACMSViewObject(path=path, request=request)
+                obj = ViewObject(path=path, request=request)
             
             elif page_id:
-                obj = YACMSViewObject(page_id=page_id, request=request)
+                obj = ViewObject(page_id=page_id, request=request)
             else:
                 #Lets make path = "/" as default.
-                obj = YACMSViewObject(path=u"/", request=request)
+                obj = ViewObject(path=u"/", request=request)
                 
             return obj
 
@@ -902,7 +909,7 @@ class CMSPageView(View):
 
 
 
-                obj = YACMSViewObject(path=u"/")
+                obj = ViewObject(path=u"/")
                 return obj
             else:
                 

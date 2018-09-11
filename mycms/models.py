@@ -166,6 +166,9 @@ class CMSEntries(models.Model):
                                    blank=True,                                   
                                   on_delete=models.DO_NOTHING)
 
+    logo_url = models.CharField(default="/static/mycms/images/png/default.png", 
+                                null=True,blank=True, 
+                                max_length=1024)
 
     def on_create(self):
 
@@ -210,9 +213,12 @@ class CMSEntries(models.Model):
 
     @property
     def view(self):
-        from mycms.view_handlers import YACMSViewObject
-        return YACMSViewObject(page_object=self)
+        from mycms.view_handlers import ViewObject
+        return ViewObject(page_object=self)
 
+    @property
+    def view_object(self):
+        return self.view
 
     def get_absolute_url(self):
         cms_base_path = getattr(settings, "YACMS_BASEPATH", None)
@@ -265,6 +271,7 @@ class CMSEntries(models.Model):
 
         else:
             super(CMSEntries, self).save(*args, **kwargs)
+            
 
     #def save(self, *args, **kwargs):
 
@@ -320,8 +327,9 @@ class CMSArchivesIndex(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-        
-        
-        
-        
-        
+
+
+    #
+ 
+ 
+ 

@@ -12,12 +12,13 @@ class CMSPathsAdmin(admin.ModelAdmin):
 
 @admin.register(CMSContents)
 class CMSContents(admin.ModelAdmin):
-    list_display = ["id", "title","timestamp", "markup",]
-
+    list_display = ["id", "title","timestamp", "markup", "page"]
+    list_filter=["title","markup"]
+    
 @admin.register(CMSEntries)
 class CMSEntries(admin.ModelAdmin):
     list_display = ['id', 'title', 'slug', 'path', 'page_type']
-    list_filter =["page_type"]
+    list_filter =["page_type", "template"]
 
 @admin.register(CMSMarkUps)
 class CMSMarkUps(admin.ModelAdmin):

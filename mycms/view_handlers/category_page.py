@@ -1,6 +1,6 @@
 from mycms.models import CMSEntries
 from mycms.models import CMSPageTypes
-from mycms.view_handlers.mycms_view import YACMSViewObject
+from mycms.view_handlers.mycms_view import ViewObject
 
 from mycms.view_handlers.mycms_view import ArticleList
 
@@ -47,6 +47,7 @@ class CategoryPage(object):
         #
         # paginate_by = 10
         # page = 2
+        
         if self.request: 
             limit = int(self.request.GET.get("limit",10))
             offset = int(self.request.GET.get("offset", 0))
@@ -61,7 +62,7 @@ class CategoryPage(object):
         
         
         for obj in obj_list:
-            article_list.append(YACMSViewObject(page_object=obj))
+            article_list.append(ViewObject(page_object=obj))
 
         return article_list
 
@@ -83,16 +84,11 @@ class CategoryPage(object):
     def categories(self):
         return self.get_categories()
 
-
-
-
     def page_types(self):
-
         """
         Refactor me into a parent class.
         returns a list fo page_types
         """
-
 
         pagetype_objs = CMSPageTypes.objects.all()
 
@@ -101,4 +97,27 @@ class CategoryPage(object):
 
     def on_create(self):
         pass
+
+    
+    def all_sub_articles(self):
+        """
+        Returns all articles under this category.
+        """
+        
+        from django.db.models import Q
+        
+       
+        
+        obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | 
+                                              Q(page_type = multipageview_pagetype_obj)) &
+                                             Q(path__path__startswith =  self.page_object.path.path))               
+                
+
+        return obj_list
+
+
+
+    
+    
+
 

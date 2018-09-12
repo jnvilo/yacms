@@ -37,12 +37,6 @@ for example:
 
 In order to create a CMSEntry we use the endpoint /cms/api/v2/cmsentries/id/create_child/ where id is the parent of the page we want to create. 
 
-
-
-
-
-
-
 """
 
 

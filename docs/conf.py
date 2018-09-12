@@ -19,17 +19,17 @@ import sys
 from pathlib import Path
 import django
 
-#sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('..'))
 
-#filepath = Path(os.path.abspath(__file__))
-#demo_app_path = Path(filepath.parent.parent, "demo_app").as_posix()
-#sys.path.insert(0, demo_app_path)
-#print(demo_app_path)
+filepath = Path(os.path.abspath(__file__))
+demo_app_path = Path(filepath.parent.parent, "demo_app").as_posix()
+sys.path.insert(0, demo_app_path)
+print(demo_app_path)
 
 
 
-#os.environ['DJANGO_SETTINGS_MODULE'] = 'demo_app.settings'
-#django.setup()
+os.environ['DJANGO_SETTINGS_MODULE'] = 'demo_app.settings'
+django.setup()
 
 
 # If extensions (or modules to document with autodoc) are in another directory,

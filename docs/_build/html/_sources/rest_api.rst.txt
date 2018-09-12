@@ -1,8 +1,6 @@
 Rest API
 ===========================
 
-.. automodule:: mycms
-
 .. image:: mycms-api.png
   :width: 600
   :alt: API web interface

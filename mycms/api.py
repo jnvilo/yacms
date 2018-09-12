@@ -28,7 +28,7 @@ Create a new CMSEntry using javascript
 Every mycms page defines a view_json object which contains information about the page. This can be seen in the html page 
 for example
 
-.. highlight:: 
+.. code-block:: javascript
 
     var view_json = {"id": 1, "title": "Yet Another CMS.", "path": 1, "slug": "yet-another-cms", "page_type": 5, "template": null, "frontpage": false, "published": true, "lists_include": false, "page_number": 1, "created_by": 1, "logo_url": "/static/mycms/images/png/default.png", "path_str": "/", "content": [], "date_created_epoch": 1460237699000, "date_modified_epoch": 1460237699000}
 

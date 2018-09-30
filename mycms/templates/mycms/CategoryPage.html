@@ -31,7 +31,7 @@ var view_json = {{view_object.json_data | safe }}
                 <div class="row">
                     <section class="col-sm-11 col-xs-10 article-summary">
                         <h2><a class="frontpage" href="/cms{{article.path}}">{{article.title}}</a></h2>
-                            <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>                                     
+                            <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
                             <ul class="entry-meta">
                                 <li class="entry-date"><a href="#"><i class="icon-pin"></i>&nbsp;{{article.created_timestamp_str}}</a></li>
                                 <li class="entry-category"><a href="{{article.parent.path}}"><i class="icon-th-list"></i>&nbsp;{{article.page_object.parent.title}}</a></li>
@@ -44,8 +44,8 @@ var view_json = {{view_object.json_data | safe }}
             </article>
         {% endfor %}
 
-        
-         
+
+
         </div>
         <!-- end of contents -->
     </div>
@@ -53,11 +53,11 @@ var view_json = {{view_object.json_data | safe }}
 
 
     {% if view_object.request.user.username == "admin" %}
-    <div id="overlay">    
+    <div id="overlay">
         <div class="row-fluid">
             <div class="col-md-12 page-content" id="page_editor" style="margin-top:10px;">
-    
-                <!-- START PAGE_CONTENT -->    
+
+                <!-- START PAGE_CONTENT -->
                 <!--div id="info-container">
                     <div class="alert alert-warning alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -73,84 +73,104 @@ var view_json = {{view_object.json_data | safe }}
                     </ul>
 
                     <div class="tab-content" style="background:#fff;">
-                        <div id="home" class="tab-pane fade in active" style="background: #fff;">     
-                        
-                        
+                        <div id="home" class="tab-pane fade in active" style="background: #fff;">
+
+
                             <div class="row"><hr></div>
-                        
-                            
-                           
-                            
+
+
+
+
                             <!-- end put in tempalte -->
-                             <div class="row"><hr></div>  
+                             <div class="row"><hr></div>
                             <div class="row" id="category_editor_container">
                                 <div class="col-md-1">Content</div>
-                                <div class="col-md-8">  
+                                <div class="col-md-8">
                                         <textarea id="category_texteditor_area" data-gramm_editor="false" rows="10"></textarea>
-                                </div>   
+                                </div>
                                  <div class="col-md-3"> right </div>
-                            </div>    
+                            </div>
 
-                            <div class="row">   
+                            <div class="row">
                                 <div class="col-md-12">
                                     <div class="rect_container">
                                         <div id="editor_message_pane"></div>
-                                        <button class="btn btn-primary float-right margin-left-10px" type="button" id="save_content_button">Save Content</button>    
+                                        <button class="btn btn-primary float-right margin-left-10px" type="button" id="save_content_button">Save Content</button>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
-                            
-                             <div class="row"><hr></div>  
-                            
-                             
-                           
-                        
-                           
-                            
-                            
+
+                             <div class="row"><hr></div>
+
+
+
+
+
+
+
                     </div>
-                    
+
                     <div id="sub_pages" class="tab-pane fade">
-                             <div class="row">
+                            <div class="row">
                                 <div class="col-sm-12">
                                     <div class="rect_container">
                                        <form class="form" id="create_entry_form">
-                                       
+
                                        <input id="createpage_title" type="text" placeholder="title" class="form-control">
                                        <input id="createpage_slug" type="text" placeholder="slug" class="form-control">
                                         <select id="createpage_pagetype_select" name="createpage_pagetype_select" type="text" class="form-control">
-                                               <option value="1">Single Page HTML</option>
+                                               <option value="1">Single Page HTML Update</option>
                                                <option value="2">Category Page</option>
                                                <option value="3">MultPage Article</option>
                                                <option value="4">MemberPage Article</option>
                                            </select>
                                         <button class="btn btn-primary float-right" type="button" id="create_page_button">Create Page</button>
                                        </form>
-                                   </div> 
-                                </div>                         
+                                   </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                            <div class="col-sm-12">
+                            {# contains a list of immediate sub articles #}
+                                <table class="table" id="CMSEntriesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Title</th>
+                                            <th>PageType</th>
+                                            <th>Published</th>
+                                            <th>Front Page</th>
+                                            <th>Date Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
                             </div>
                     </div>
-                    
+
                     <div id="file_upload" class="tab-pane fade">
                         <!-- will be loaded as a temlate-->
                         {% file_upload %}
                     </div>
-    
-    
+
+
                     <div id="menu2" class="tab-pane fade">
                         <h3>Article Meta Info</h3>
                         <p>Not Implemented Yet.</p>
                     </div>
-    
-                </div>           
+
+                </div>
             <!-- END PAGE_CONTENT -->
             </div>
-    
+
             </div>
         </div>
     </div>
     {% endif %}
-    
+
 </div>
 
 
@@ -163,20 +183,24 @@ var view_json = {{view_object.json_data | safe }}
             <div class="col-md-2">Category Title</div>
             <div class="col-md-4">Path URL</div>
         </div>
-    
+
         <div class="row" style="background:#ccc; border-top: 1px solid #dddddd; margin:0px;" >
             <div class="col-md-12">There are no sub categories!</div>
         </div>
-      
+
     </script>
     {% endverbatim %}
-    
-    {% Script type="text/javascript" src="/static/mycms/dustjs/dust-full.js" priority=8888 %}  
-    {% Script type="text/javascript" src="/static/mycms/templates.js" priority=8889 %}  
-    {% Script type="text/javascript" src="/static/mycms/editor/category.editor.js" priority=8889 %}  
-      
+
+    {% Script type="text/javascript" src="/static/mycms/dustjs/dust-full.js" priority=8888 %}
+    {% Script type="text/javascript" src="/static/mycms/templates.js" priority=8889 %}
+    {% Script type="text/javascript" src="/static/mycms/editor/category.editor.js" priority=8889 %}
+
+
+
+
+
 {% endif %}
-{% endblock PAGE_CONTENT %}  
+{% endblock PAGE_CONTENT %}
 
 
 
@@ -184,19 +208,20 @@ var view_json = {{view_object.json_data | safe }}
 
 
 
+    <script type="text/javascript">
 
-
-<script type="text/javascript">
-    
     $( document ).ready(function() {
     console.log( "ready!" );
-    on();
-    
+    //on();
+
      loadCMSContentToTextArea();
-    
+
+        getChildCMSEntries();
     });
+    </script>
 
 
-</script>
+
+
 
 {% endblock PAGE_BOTTOM %}

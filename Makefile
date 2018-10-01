@@ -88,6 +88,11 @@ templates: compile_dustjs
 compile_dustjs: 
 	node_modules/dustjs-linkedin/bin/dustc mycms/templates/mycms/dustjs_templates/*.dust -o mycms/static/mycms/templates.js	
 
+
+.PHONEY: upload
+upload:
+	python setup.py sdist
+	twine upload dist/*
 include configuration.mk
 include make-includes/python.mk
 include make-includes/variables.mk

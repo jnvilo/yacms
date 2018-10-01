@@ -919,17 +919,25 @@ class CMSPageView(View):
 
 
     def get(self,request, **kwargs):
-        """Just get the page and return it."""
-        
-        
-        print("This is a test")
+        """
+        The main entry point to the frontend of the CMS. 
+        All website user pages are obtained through this method."""
+    
         get = request.GET
         
-        show_toolbar = "toolbar" in request.GET.keys()
+        toolbar = request.GET.get("toolbar", None)
+        if toolbar and toolbar.upper() == "TRUE":
+            request.session["show_toolbar"] = True
+        elif toolbar and toolbar.upper() == "FALSE":
+            request.session["show_toolbar"] = False
         
+        #get object will load return an instance of mycms.view_handlers.ViewObject
+        #which encapsulates the CMSEntry and all other operations on it. 
         obj = self.get_object(request, **kwargs)
         obj.request = request
-        obj.show_toolbar = show_toolbar
+        obj.show_toolbar = request.session.get("show_toolbar", False) 
+        
+        
         
         template = obj.template
         try:

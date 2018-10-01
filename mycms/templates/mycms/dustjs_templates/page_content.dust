@@ -16,7 +16,9 @@
                 <li><button class="btn btn-default" type="submit" onclick="formatButtonHandler('H4')">H4</button></li>
                 <li><button class="btn btn-default" type="submit" onclick="formatButtonHandler('H5')">H5</button></li>
                 <li><button class="btn btn-default" type="submit" onclick="readCMSContents(1)">Read</button></li>
+                <li><button class="btn btn-default" type="submit" onclick="previewContent()">Preview</button></li>
                 <li><button class="btn btn-default" type="submit" onclick="updateCMSContents(1)">Update</button></li>
+
               </ul>
               <textarea class="editor" id="editor_id">{page_content}</textarea>
             </div>

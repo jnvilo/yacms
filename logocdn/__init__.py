@@ -1,0 +1,1 @@
+from logocdn import wingdbstub

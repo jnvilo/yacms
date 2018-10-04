@@ -862,6 +862,10 @@ class CMSPageView(View):
         """
         returns a ViewObject
         """
+        
+        from mycms.templatetags import registry
+        
+        registry.empty()
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
 
@@ -923,6 +927,7 @@ class CMSPageView(View):
         The main entry point to the frontend of the CMS. 
         All website user pages are obtained through this method."""
     
+    
         get = request.GET
         
         toolbar = request.GET.get("toolbar", None)
@@ -936,8 +941,6 @@ class CMSPageView(View):
         obj = self.get_object(request, **kwargs)
         obj.request = request
         obj.show_toolbar = request.session.get("show_toolbar", False) 
-        
-        
         
         template = obj.template
         try:
@@ -960,8 +963,9 @@ class CMSPageView(View):
 
 ########################################################################
 class  AssetsUploaderView(View):
-    """Handles the uploading and deleting of images. Uses multiuploader AJAX plugin.
-    made from api on: https://github.com/blueimp/jQuery-File-Upload
+    """
+    Handles the uploading and deleting of images. Uses multiuploader 
+    AJAX plugin. made from api on: https://github.com/blueimp/jQuery-File-Upload
     """
 
     @csrf_exempt
@@ -995,8 +999,6 @@ class  AssetsUploaderView(View):
         We assume we have a GET
         According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
         we have to return a list of the images in the dir as follows:
-
-
 
         {"files": [
           {

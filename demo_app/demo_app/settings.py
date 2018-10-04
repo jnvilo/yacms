@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +41,9 @@ INSTALLED_APPS = [
     'haystack', #YACMS requires this. 
     'mycms', #YACMS: The module itself.
     'rest_framework', 
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+     'django_filters',
+    'logocdn',
 ]
 
 MIDDLEWARE = [
@@ -144,8 +147,14 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication', 
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5 ,
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
+
+#for this demo we are setting the 
+SVG_LOGOS_PATH=Path(BASE_DIR,"static/logos/logos").as_posix()

@@ -44,6 +44,10 @@ class ScriptRegistry(object):
         self.index_by_name = {}
         self._entry_as_list = []
 
+    def empty(self):
+        self.index_by_name = {}
+        self._entry_as_list = []
+
     def register(self, src=None, type="text/javascript", priority=9999):
             
         script_entry = ScriptEntry(src=src, type=type, priority=priority)    

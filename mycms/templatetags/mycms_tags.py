@@ -14,6 +14,10 @@ from . import registry
 script_str_re_obj =re.compile(r"""(?P<name>src|type)="(?P<value>.*)"|((?P<name2>priority)=(?P<value2>(\d*)))""", re.DOTALL)
 
 
+@register.simple_tag
+def flush_script_registry():
+    registry.empty()
+    
 @register.inclusion_tag('mycms/templatetags/file_upload.html')
 def file_upload():
     #Nothing to add to the context for now.

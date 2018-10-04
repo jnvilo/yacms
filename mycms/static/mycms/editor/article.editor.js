@@ -33,12 +33,7 @@ function formatButtonHandler(label){
 
 
 function readCMSContents(content_id){
-/* Does a GET for the content and updates the editor textarea.
-
-API Version 1 defines the endpoint as: 
-
-/cms/api/v1/cmscontents/{resource_id}/
-*/
+/* Does a GET for the content and updates the editor textarea.*/
     console.log("readCMSContents called.");
 
     url = "/cms/api/v2/cmscontents/" + view_json.content[0]+ "/";
@@ -203,6 +198,7 @@ function hideEditor(){
 
 function showEditor(){
     
+
     console.log("showEditor called.");
     /* backup the page_content div */
      window.page_content = document.getElementById('page_content').innerHTML;
@@ -253,4 +249,14 @@ function showEditor(){
                     });
         window.editor_window = true;
     }
+}
+
+function preview(){
+
+    /*assume we have the content in the text area already */
+    
+      
+
+
+
 }

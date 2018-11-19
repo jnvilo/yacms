@@ -1,10 +1,13 @@
 
-
-
 function on() {
-        console.log("Showing overlay");
+    
+    //enables the display of the editor hidden layer.
+    console.log("Showing overlay");
     document.getElementById("overlay").style.display = "block";
-}
+    
+    //here we should also load up the content of the editor data.
+    readCMSContents(1); //The parameter is no longer used. Its a dummy param
+ }
 
 function close_admin_overlay() {
     document.getElementById("overlay").style.display = "none";
@@ -51,8 +54,8 @@ API Version 1 defines the endpoint as:
         },
         success: function(data){
             content = data["content"];
-            console.log(content);
-            $("textarea#markup").text(content);
+            //console.log(content);
+            $("#markup").text(content);
         }
     });
     
@@ -105,6 +108,34 @@ function updateCMSContents(content_id){
     });
 
 }
+
+
+function previewCMSContent(content_id){
+
+    console.log("previewCMSContents callled");
+    url = "/cms/api/v2/cmspreview/";
+    
+    console.log("updateCMSContents: PUT :  " + url);
+    
+    content = $("textarea#markup").val();
+     $.ajax({
+        url: url,
+        type: 'POST',
+        data: { content : content, markup: 1},
+
+        error: function(data){ 
+            console.log("Publish Failed with error", data); 
+        },
+        success: function(data){
+            console.log("got Formatted content");
+            document.getElementById('page_preview').innerHTML = data["content"];
+           // close_admin_overlay()
+        }
+    });
+
+}
+
+
 
 
 function resizeEditor(){

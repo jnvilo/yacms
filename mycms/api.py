@@ -182,6 +182,46 @@ class CMSPagesViewSet(viewsets.ModelViewSet):
     serializer_class =  mycmsserializers.CMSPageSerializer
 
 
+class CMSContentPreview(viewsets.GenericViewSet):
+    """Implements API endpoint to preview a page."""
+
+    #from rest_framework.schemas.inspectors import AuthoSchema
+    schema = ManualSchema(fields=[
+           coreapi.Field(
+               "content",
+               required=True,
+               location="form",
+               schema=coreschema.String(description= "The raw content that needs to be formatted."),
+
+           )
+           
+       ], description="Retrieves the Creole formatted content of what is posted.")
+
+
+    #def get(self, request):
+
+        #if request.user.is_authenticated:
+
+            #token =
+
+
+    def retrieve(self, request, **kwargs):
+
+        content = request.data.get("content", None)
+       
+        if content:
+            from mycms.view_handlers.formatters import CreoleFormatter
+            content =  CreoleFormatter(content).html()
+            return Response(data={"content" : content},\
+                            status=status.HTTP_200_OK)
+
+        else:
+            return Response(data={"error": "No Content"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    
+
 class CMSAuthToken(viewsets.GenericViewSet):
     """Implements retrieving of Token."""
 
@@ -201,8 +241,6 @@ class CMSAuthToken(viewsets.GenericViewSet):
                required=True,
                location="form",
                schema=coreschema.String(description="password required to create or retrieve token"),
-
-
            ),
            coreapi.Field(
                "renew",

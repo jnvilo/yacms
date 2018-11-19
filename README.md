@@ -47,3 +47,31 @@ Overrides
 If you have already downloaded the tarballs you need (Python and/or virtualenv) you can work offline like this:
 
     make ONLINE=false virtualenv
+
+
+Feature Requested
+-----------------
+
+- A way to preview the current editing changes without actually pushing to the 
+server. 
+
+- 
+
+
+Work In Progress
+-----------------
+
+
+
+
+Code Documentation:
+
+
+Each page is loaded by its won page handler. 
+
+
+SinglePage 
+==========
+
+The single page uses the SinglePage.html as a template. 
+It also uses mycms/templatetags/article_editor.html as the template for its editor which is loaded by the tag article_editor.

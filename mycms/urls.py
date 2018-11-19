@@ -101,7 +101,8 @@ schema_view = get_schema_view(title="MyCMS API")
 cms_root = [url(r'^$', CMSPageView.as_view(), name="cms_page"),
             url(r'^api/v2/docs/', include_docs_urls(title='MyCMS API')),
              url('^api/v2/schemas/', schema_view),
-            url(r'api/v2/cmsauthtoken', api.CMSAuthToken.as_view({'post': 'retrieve'}), name='cmsauthtoken')
+            url(r'api/v2/cmsauthtoken', api.CMSAuthToken.as_view({'post': 'retrieve'}), name='cmsauthtoken'),
+            url(r'api/v2/cmspreview', api.CMSContentPreview.as_view({'post': 'retrieve'}), name='cmspreview')
         ]
 
 
@@ -111,6 +112,7 @@ router.register(r'api/v2/cmscontents', api.CMSContentsViewSet, base_name='cmscon
 router.register(r'api/v2/cmsentries', api.CMSEntriesViewSet, base_name='cmsentries')
 router.register(r'api/v2/cmspaths', api.CMSPathsViewSet, base_name='cmspaths')
 router.register(r'api/v2/cmspages', api.CMSPagesViewSet, base_name='cmspages')
+#router.register(r'api/v2/cmspreview', api.CMSContentPreview, base_name='cmspreview')
 #router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, base_name='cmsauthtoken')
 #router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')
 

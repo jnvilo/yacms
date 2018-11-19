@@ -1252,3 +1252,25 @@ class TemplateSampleLoader(View):
             return render(request, "bootstrap_templates.html", { "files": files})
 
 
+
+class LogoViewer(View):
+
+    
+    pass
+
+
+
+class CMSPreviewAPIView(View):
+    
+    def get(self, request):
+        raise NotImplementedError("This method is not supported")
+        
+    def post(self, request):
+        #We expect to recieve unformatted text and we shall 
+        #return it formatted.
+        
+        #For now it is assumed this is Creole 
+        pass
+        
+    
+    

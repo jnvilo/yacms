@@ -1,5 +1,3 @@
-{% load mycms_tags %}
-{% Script type="text/javascript" src="/static/mycms/editor/article.editor.js" priority=8888 %} 
 <ul id="editor-buttons">
     <li><button class="btn btn-default" type="submit" onclick="formatButtonHandler('H1')">H1</button></li>
     <li><button class="btn btn-default" type="submit" onclick="formatButtonHandler('H2')">H2</button></li>
@@ -10,7 +8,8 @@
     <li><button class="btn btn-default" type="submit" onclick="previewCMSContent(1)">Preview</button></li>
     <li><button class="btn btn-default" type="submit" onclick="updateCMSContents(1)">Update</button></li>
 </ul>
-<textarea id="markup"></textarea>
-
+<div id="editor-pane">
+    <textarea id="markup"></textarea>
+</div>
 
 

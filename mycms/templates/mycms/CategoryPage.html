@@ -207,6 +207,27 @@ var view_json = {{view_object.json_data | safe }}
 {% block PAGE_BOTTOM %}
 
 
+{% if view_object.request.user.username == "admin" %}
+    <script type="text/javascript" src="/static/mycms/editor/category.editor.js"></script>
+    <script type="text/javascript" src="/static/mycms/dustjs/dust-full.js"></script>
+    <script type="text/javascript" src="https://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+    <script type="text/javascript" src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+    <script type="text/javascript" src="https://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+    <script type="text/javascript" src="https://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-image.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-audio.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-video.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-validate.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-ui.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/jquery.fileupload-jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/mycms/file-upload/js/main.js"></script>
+    <script type="text/javascript" src="/static/mycms/templates.js"></script>
+ {%endif%}
+
+
 
     <script type="text/javascript">
 

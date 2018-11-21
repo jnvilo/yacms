@@ -7,6 +7,16 @@ function on() {
     
     //here we should also load up the content of the editor data.
     readCMSContents(1); //The parameter is no longer used. Its a dummy param
+    
+    //Update the dynamic toggleable publisher or frontpage checkbox
+    
+    published_checkbox = document.getElementById('published_checkbox');
+    published_checkbox.checked = view_json["published"];
+    
+    frontpage_checkbox = document.getElementById('frontpage_checkbox');
+    frontpage_checkbox.checked = view_json["frontpage"];
+    
+    
  }
 
 function close_admin_overlay() {
@@ -106,6 +116,24 @@ function updateCMSContents(content_id){
             
         }
     });
+
+}
+
+
+
+function togglePublishedStatus(){
+
+    published_check_box_status = view_json["published"];
+    console.log(published_check_box_status);
+    
+   
+    
+}
+
+
+function toggleFrontPageStatus(){
+
+
 
 }
 
@@ -285,3 +313,81 @@ function showEditor(){
         window.editor_window = true;
     }
 }
+
+$(document).ready(function(){ 
+
+    $('#published_checkbox').click(function() {
+        var self = this;        
+        console.log("Published Status:", self.checked);
+        
+        //update the view_json because it is used by the editor
+    
+        view_json["published"] = self.checked;    
+        console.log(view_json["published"]);
+        console.log(view_json["frontpage"]);
+        
+        published_check_box_status = view_json["published"];
+        console.log(published_check_box_status);
+        
+        //Do a PUT to set the published status
+        
+        url = "/cms/api/v2/cmsentries/" + view_json["id"] + "/";
+        
+        console.log("togglePublishedStatus: partial_update PATCH :  " + url);
+    
+        $.ajax({
+            url: url,
+            type: 'PATCH',
+            data: { published : self.checked },
+    
+            error: function(data){ 
+                console.log("Publish Failed with error", data); 
+            },
+            success: function(data){
+                console.log("got Formatted content");
+                //document.getElementById('page_preview').innerHTML = data["content"];
+               // close_admin_overlay()
+            }
+        });
+        
+    });
+    
+    $('#frontpage_checkbox').click(function() {
+        var self = this;        
+        console.log("Frontpage Status:", self.checked);
+         //update the view_json because it is used by the editor
+    
+        view_json["frontpage"] = self.checked;    
+        console.log(view_json["published"]);
+        console.log(view_json["frontpage"]);
+        
+        published_check_box_status = view_json["frontpage"];
+        console.log(published_check_box_status);
+        
+        //Do a PUT to set the published status
+        
+        url = "/cms/api/v2/cmsentries/" + view_json["id"] + "/";
+        
+        console.log("togglePublishedStatus: partial_update PATCH :  " + url);
+    
+        $.ajax({
+            url: url,
+            type: 'PATCH',
+            data: { frontpage : self.checked },
+    
+            error: function(data){ 
+                console.log("Set FrontPage failed.", data); 
+            },
+            success: function(data){
+                console.log("Set frontpage ");
+                //document.getElementById('page_preview').innerHTML = data["content"];
+               // close_admin_overlay()
+            }
+        });
+
+
+
+        
+    });
+    
+});

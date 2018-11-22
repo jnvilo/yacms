@@ -285,7 +285,7 @@ class CMSLoginView(View):
 
     def get(self, request, **kwargs):
         template_name = "mycms/Login.html"
-        return render_to_response(template_name,context_instance=RequestContext(request))
+        return render_to_response(template_name)
 
 
     def post(self, request, **kwargs):

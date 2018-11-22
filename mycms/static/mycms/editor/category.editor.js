@@ -92,7 +92,13 @@ function string_to_slug (str) {
     return str;
 }
 
-$(document).ready(function(){ getCMSCategories(); });
+$(document).ready(function(){ 
+    
+    getCMSCategories(); 
+    
+    
+    
+});
 
 $("#create_page_button").click(function(){
     console.log("yhou want to create a category");

@@ -24,10 +24,10 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django import forms
 from django.forms.models import model_to_dict
 from django.http import Http404
 from django.core.files.uploadedfile import UploadedFile
-from django.forms.models import model_to_dict
 from django.utils.text import slugify
 from django.views.generic.base import View
 from django.utils.decorators import method_decorator
@@ -280,19 +280,29 @@ class CMSSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.date_modified
 
+#Django 
+
+ 
+class CMSLoginForm(forms.Form):
+    username = forms.CharField(max_length=100, label="Username")
+    password = forms.CharField(max_length=32, widget=forms.PasswordInput)
 
 class CMSLoginView(View):
 
     def get(self, request, **kwargs):
         template_name = "mycms/Login.html"
-        return render_to_response(template_name)
+
+        context = {"form": CMSLoginForm()}
+        return render(request, template_name, context)
 
 
     def post(self, request, **kwargs):
 
         username = request.POST.get("username", None)
         password = request.POST.get("password", None)
-        next_page = request.GET.get("next")
+        
+        #Set the next page to a default if not given. 
+        next_page = request.GET.get("next", "/cms/user/articles")
 
         from django.contrib.auth import authenticate
         user = authenticate(username=username, password=password)
@@ -304,6 +314,9 @@ class CMSLoginView(View):
                 login(request, user)
                 if next_page is not None:
                     return HttpResponseRedirect(next_page)
+                else:
+                    #Go to the user's account page. 
+                    return HttpResponse(content=b'You are now logged in.')
             else:
                 print("The password is valid, but the account has been disabled!")
                 error_msg = "Account is disabled."
@@ -312,7 +325,14 @@ class CMSLoginView(View):
             error_msg = "The system was unable to verify the username and password."
 
         template_name = "mycms/Login.html"
-        return render_to_response(template_name,{ "error_msg": error_msg},context_instance=RequestContext(request))
+        return render(request, template_name,{ "error_msg": error_msg})
+
+
+
+class CMSUserAdminPagesView(View):
+    
+    def get(self, request, **kwargs):
+        pass
 
 
 
@@ -1272,5 +1292,20 @@ class CMSPreviewAPIView(View):
         #For now it is assumed this is Creole 
         pass
         
+    
+    
+class CMSEntriesContentAreaFilter(forms.Form):
+    pass
+    
+    
+class CMSUserContentArea(View):
+    """This is a list view with filter."""
+    
+    
+    def get(self, request):
+        
+    
+    
+        return render(request, "mycms/CMSUserContentArea.html")
     
     

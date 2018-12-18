@@ -81,7 +81,7 @@ class CMSEntryExpandedSerializer(serializers.ModelSerializer):
         model = CMSEntries
         fields = ('id','title','path','slug','content','date_created',
                   'page_type','template','frontpage','published',
-                   'page_number')
+                   'page_number', "date_modified")
 
 
 class EntryData(object):

@@ -58,16 +58,17 @@ server.
 - 
 
 
+
 Work In Progress
 -----------------
 
 
-
+this is a test.
 
 Code Documentation:
 
 
-Each page is loaded by its won page handler. 
+Each page is loaded by its own page handler. 
 
 
 SinglePage 

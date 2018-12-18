@@ -37,7 +37,7 @@ python-dateutil==2.7.0
 python-social-auth==0.3.6
 python3-openid==3.1.0
 pytz==2018.3
-requests==2.18.4
+requests
 requests-oauthlib==0.8.0
 sh==1.12.14
 simplegeneric==0.8.1

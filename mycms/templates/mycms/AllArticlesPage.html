@@ -22,13 +22,11 @@ var view_json = {{view_object.json_data | safe }}
 
 <div class="container">
     <div class="row-fluid">
-
-        <!-- Contents -->
-        <div class="col-md-12 page-content" id="page_content" >
+         <div class="col-md-12 page-content" id="page_content" >
             <div class="cmsentries">
                 {% for article in view_object.articles %}
                     <div class="cmsentry">
-                        <h2 class="cmsentry title" style="font-weight:bold;     margin-bottom: 0px;"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
+                        <h2 class="cmsentry title"><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
                         <span id="span_{{article.slug}}" onclick="datetime_editor_click_handler(this)" slug="{{article.slug}}" article_id={{article.page_object.id}}>{{article.created_timestamp_str}}</span>
                         <span id="{{article.slug}}" article_id={{article.id}}></span>
 
@@ -36,17 +34,21 @@ var view_json = {{view_object.json_data | safe }}
                     </div>
                 {% endfor %}
             </div> 
-            
+        </div>
+     </div>
+        
+        
+    <div class="row-fluid">    
+        <div class="col-md-12">
+        
             <ul class="pager">
-            
-            
-            
-        <li class="previous {% if not view_object.articles.has_newer %} disabled {% endif %}"><a href="#">← Newer </a></li>
-        <li class="next {% if not view_object.articles.has_older %} disabled {% endif %}"><a href="?limit={{view_object.articles.limit}}&offset={{view_object.articles.next_offset}}">Older →</a></li>
-</ul>
+                <li class="previous {% if not view_object.articles.has_newer %} disabled {% endif %}"><a href="#">← Newer </a></li>
+                <li class="next {% if not view_object.articles.has_older %} disabled {% endif %}"><a href="?limit={{view_object.articles.limit}}&offset={{view_object.articles.next_offset}}">Older →</a></li>
+            </ul>
         </div> 
         <!-- end of contents -->
     </div>
+    
     {% if view_object.request.user.username == "admin" %}
     <div id="overlay">    
         <div class="row-fluid">

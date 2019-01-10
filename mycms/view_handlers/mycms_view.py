@@ -10,7 +10,10 @@ from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils.text import slugify
 import simplejson as json
+import hashlib
+
 from bs4 import BeautifulSoup
+
 
 logger = logging.getLogger("mycms.view_handlers.ViewObject")
 
@@ -261,7 +264,7 @@ class ViewObject(object):
         html_content = self.html_content
         soup = BeautifulSoup(html_content)
         intro = soup.find("p")
-        return str(intro)
+        return str(intro.text)
 
     @property
     def template(self):
@@ -332,6 +335,14 @@ class ViewObject(object):
         #we assume here that self.path.path will always start with a /
         abs_url =  "{}{}".format(cms_base_path, self.page_object.path.path)
         return abs_url
+
+        
+    @property
+    def title_sha1sum(self):
+        #TODO: fix this so that it is cached.
+        hash_object = hashlib.md5(b'Hello World')
+        return hash_object.hexdigest()
+        
 
     @property
     def request(self):

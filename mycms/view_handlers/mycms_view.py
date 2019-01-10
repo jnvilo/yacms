@@ -340,7 +340,7 @@ class ViewObject(object):
     @property
     def title_sha1sum(self):
         #TODO: fix this so that it is cached.
-        hash_object = hashlib.md5(b'Hello World')
+        hash_object = hashlib.md5(self.title)
         return hash_object.hexdigest()
         
 

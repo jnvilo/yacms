@@ -200,16 +200,18 @@ def google_addsense_code(*args, **kwargs):
 
 
     code = """
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <ins class="adsbygoogle"
-        style="display:block; text-align:center;"
-        data-ad-layout="in-article"
-        data-ad-format="fluid"
-        data-ad-client="ca-pub-9449210019187312"
-        data-ad-slot="2038322863"></ins>
-     <script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-     </script>"""
+     
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 200x200 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:200px;height:200px"
+     data-ad-client="ca-pub-9449210019187312"
+     data-ad-slot="6494365200"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+	"""
     
    
     

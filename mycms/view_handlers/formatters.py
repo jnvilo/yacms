@@ -211,8 +211,9 @@ def google_addsense_code(*args, **kwargs):
      (adsbygoogle = window.adsbygoogle || []).push({});
      </script>"""
     
+   
     
-    frame = """<div class="frame_200x200">{}</div>""".format(code)
+    frame = """<div class="frame_200x200" style="float: right;width: 200px;height: 200px;>{}</div>""".format(code)
     
     
     return frame

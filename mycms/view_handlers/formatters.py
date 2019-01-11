@@ -213,7 +213,7 @@ def google_addsense_code(*args, **kwargs):
     
    
     
-    frame = """<div class="frame_200x200" style="float: right;width: 200px;height: 200px;>{}</div>""".format(code)
+    frame = """<div class="frame_200x200" style="float: right;width: 200px;height: 200px;">{}</div>""".format(code)
     
     
     return frame

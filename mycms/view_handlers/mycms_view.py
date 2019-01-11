@@ -241,7 +241,10 @@ class ViewObject(object):
 
         logger.debug("Call to YACMSObject.html_content returns: \n {}".format(_html_content))
         
+        
         return _html_content
+    
+    
     @property
     def meta_keywords(self):
         """Returns a string list of keywords."""

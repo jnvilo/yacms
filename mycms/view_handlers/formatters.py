@@ -42,10 +42,26 @@ def html(text):
     return text
 
 #----------------------------------------------------------------------
-def  HTML(text):
+def  HTML(*args, **kwargs):
     """"""
+    text = kwargs.get("text", None)
     return html(text)
 
+
+def NEWLINE(*args, **kwargs):
+    
+    text = kwargs.get("text",0)
+    
+    text_result = "</br>"
+    try:
+        numlines = int(text)
+        for i in range(numlines):
+            text_result += "</br>"
+        return text_result;
+       
+    except ValueError as e: 
+        return "[[ERROR: NEWLINE tag requires a number. {} was given".format(text)
+        
 def pre(text):
     """
     Macro tag <<pre>>...<</pre>>.
@@ -278,6 +294,7 @@ class  CreoleFormatter(object):
                                                    "image": image,
                                                    "debug":debug,
                                                    "google_addsense_code":google_addsense_code, 
+                                                   "NEWLINE": NEWLINE,
                                                   },
                                            verbose=None,
                                            stderr=None,

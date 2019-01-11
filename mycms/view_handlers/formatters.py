@@ -190,6 +190,33 @@ def  image(*args, **kwargs):
     return img
 
 
+def google_addsense_code(*args, **kwargs):
+    
+    """"""
+    text = kwargs.get("text", None)
+    #template = """<h2 class="multipage-submenu-h2">{}</h2><a name="{}"></a> """
+    #anchor_text_url = slugify(text)
+
+
+
+    code = """
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <ins class="adsbygoogle"
+        style="display:block; text-align:center;"
+        data-ad-layout="in-article"
+        data-ad-format="fluid"
+        data-ad-client="ca-pub-9449210019187312"
+        data-ad-slot="2038322863"></ins>
+     <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>"""
+    
+    
+    frame = """<div class="frame_200x200">{}</div>""".format(code)
+    
+    
+    return frame
+
 #----------------------------------------------------------------------
 def  debug(*args, **kwargs):
 
@@ -249,6 +276,7 @@ class  CreoleFormatter(object):
                                                    "infoblock":infoblock,
                                                    "image": image,
                                                    "debug":debug,
+                                                   "google_addsense_code":google_addsense_code, 
                                                   },
                                            verbose=None,
                                            stderr=None,

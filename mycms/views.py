@@ -351,7 +351,22 @@ class CMSFrontPage(View):
         #template_name = "mycms/Index.html"
         template_name = "mycms/index.html"
         #return render(template_name,context_instance=RequestContext(request) )
-        return render(request, template_name)
+        
+        #TODO: Fix this hack. We create a fake view_object for the frontpage
+        #so that we can pass a few template data. 
+        
+        class View_Object():
+            pass
+        
+        view_object = View_Object()
+        
+        if settings.FORCE_SHOW_ADVERTS or (settings.DEBUG == False):
+              
+            view_object.SHOW_ADDS = True
+        else:
+            view_object.SHOW_ADDS = False
+        
+        return render(request, template_name, { "view_object": view_object})
 
 
 class LoremIpsumAPIView(APIView):

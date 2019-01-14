@@ -131,7 +131,22 @@ class ViewObject(object):
         instance =  ViewClass(self.page_object, request=self.request)
         self.view_handler = instance
 
-
+    def DEBUG(self):
+        return settings.DEBUG
+    
+    def FORCE_SHOW_ADVERTS(self):    
+        return getattr(settings, "FORCE_SHOW_ADVERTS", False)
+    
+    def SHOW_ADVERTS(self):
+        
+        #We follow the settings on DEBUG unless a flag for 
+        #FORCE_SHOW_ADVERTS has been set. 
+        
+        if self.FORCE_SHOW_ADVERTS:
+            return True
+        else:
+            return self.DEBUG
+    
     def __getattr__(self, name):
         """Maps values to attributes.
         Only called if there *isn't* an attribute with this name

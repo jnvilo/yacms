@@ -1,14 +1,6 @@
-{% comment %} 
-
-    template context cotains cmsentry. cmsentry is a CMSEntries db instance.
-
-{% endcomment %}
-
-
 
 {% for cmsentry in cmsentries %}
-<article class="post clearfix">
-    
+<article class="post clearfix">    
     <div class="row">
         <section class="col-sm-11 col-xs-10 article-summary">
             <h2><a href="/cms/{{cmsentry.path}}">{{cmsentry.title}}</a></h2>

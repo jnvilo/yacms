@@ -213,9 +213,9 @@ def google_addsense_code(*args, **kwargs):
     #template = """<h2 class="multipage-submenu-h2">{}</h2><a name="{}"></a> """
     #anchor_text_url = slugify(text)
 
-
-
-    code = """
+    if settings.FORCE_SHOW_ADVERTS or (settings.DEBUG == False):
+    
+        code = """
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- 200x200 -->
 <ins class="adsbygoogle"
@@ -226,6 +226,8 @@ def google_addsense_code(*args, **kwargs):
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 	"""
+    else:
+        code = """<img src="/static/mycms/images/200x200.png">"""
     
     frame = """<div class="frame_200x200" style="float: right;width: 205px;height: 205px;">{}</div>""".format(code)
     

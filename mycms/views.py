@@ -361,11 +361,12 @@ class CMSFrontPage(View):
         view_object = View_Object()
         
         if settings.FORCE_SHOW_ADVERTS or (settings.DEBUG == False):
-              
-            view_object.SHOW_ADDS = True
+            view_object.SHOW_ADVERTS = True
         else:
-            view_object.SHOW_ADDS = False
-        
+            print("SHOW_ADDS_IS FALSE") 
+            view_object.SHOW_ADVERTS = False
+       	 
+        print("FORCE_SHOW_ADVERTS={},DEBUG={},SHOW_ADDS={}".format(settings.FORCE_SHOW_ADVERTS, settings.DEBUG, view_object.SHOW_ADVERTS) )
         return render(request, template_name, { "view_object": view_object})
 
 

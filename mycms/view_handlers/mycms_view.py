@@ -146,6 +146,7 @@ class ViewObject(object):
         #FORCE_SHOW_ADVERTS has been set. 
         
         if self.FORCE_SHOW_ADVERTS :
+            print("FORCE_SHOW_ADVERTS ")
             return True
         elif self.DEBUG == False:
             return True

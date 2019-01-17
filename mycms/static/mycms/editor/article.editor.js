@@ -14,10 +14,9 @@ function on() {
     published_checkbox.checked = view_json["published"];
     
     frontpage_checkbox = document.getElementById('frontpage_checkbox');
-    frontpage_checkbox.checked = view_json["frontpage"];
-    
-    
+    frontpage_checkbox.checked = view_json["frontpage"];  
  }
+
 
 function close_admin_overlay() {
     document.getElementById("overlay").style.display = "none";
@@ -27,6 +26,9 @@ $("#close-admin-overlay-button").click(function(){
         console.log("close-admin-overlay-button clicked");
         close_admin_overlay();
         });
+
+
+
 
 
 function formatButtonHandler(label){
@@ -124,17 +126,11 @@ function updateCMSContents(content_id){
 function togglePublishedStatus(){
 
     published_check_box_status = view_json["published"];
-    console.log(published_check_box_status);
-    
-   
-    
+    console.log(published_check_box_status);  
 }
 
 
 function toggleFrontPageStatus(){
-
-
-
 }
 
 

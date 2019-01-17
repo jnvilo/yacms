@@ -40,33 +40,25 @@ class MultiPage(object):
 
     @property
     def is_multipage(self):
-
         return True
 
 
     def articles(self):
-
         """Here we load all pages that says we are their parent."""
 
         obj_list = CMSEntries.objects.filter(page_type = self.memberpageview_pagetype_obj,
                                              path__parent__id = self.page_object.path.id)
-
         #wrap the entries of the obj_list into their view_handler representations
         view_list = []
         for obj in obj_list:
             view_list.append(ViewObject(page_object=obj))
-
         return view_list
 
-
-
     def page_types(self):
-
         """
         Refactor me into a parent class.
         returns a list fo page_types
         """
-
         pagetype_objs = CMSPageTypes.objects.filter(page_type="MEMBERPAGE")
 
         return pagetype_objs
@@ -94,9 +86,6 @@ class MultiPage(object):
         
         return self.page_object.parent
         
-        
-
-
     @property
     def first_page(self):
         #Legacy implementatin. THIS IS VERY MISLEADING. should be 
@@ -121,7 +110,7 @@ class MultiPage(object):
 
 class MemberPage(object):
 
-    def __init__(self, page_object):
+    def __init__(self, page_object, request=None):
 
         self.page_object = page_object
 
@@ -198,6 +187,7 @@ class MemberPage(object):
             return previous_pages[0]
         else:
             return None
+
 
 
     @property

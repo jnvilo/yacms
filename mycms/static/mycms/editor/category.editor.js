@@ -2,6 +2,7 @@
 function on() {
         console.log("Showing overlay");
     document.getElementById("overlay").style.display = "block";
+     getChildCMSEntries();
 }
 
 function close_admin_overlay() {

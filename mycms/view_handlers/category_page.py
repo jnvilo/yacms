@@ -56,7 +56,7 @@ class CategoryPage(object):
             
         
         obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | Q(page_type = multipageview_pagetype_obj)) &
-                                             Q(path__parent__id = self.page_object.path.id))[offset:offset+limit]
+                                             Q(path__parent__id = self.page_object.path.id) & Q(published=True) )[offset:offset+limit]
         #wrap the entries of the obj_list into their view_handler representations
         
         

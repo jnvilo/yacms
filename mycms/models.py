@@ -172,8 +172,11 @@ class CMSEntries(models.Model):
 
     def on_create(self):
 
-        if hasattr(self.view, "on_create"):
-            self.view.on_create()
+        view_object = self.view
+        
+
+        if hasattr(view_object, "on_create"):
+            view_object.on_create()
 
 
     def parent(self):
@@ -214,8 +217,9 @@ class CMSEntries(models.Model):
     @property
     def view(self):
         from mycms.view_handlers import ViewObject
-        return ViewObject(page_object=self)
-
+        view_object =  ViewObject(page_object=self)
+        return view_object
+    
     @property
     def view_object(self):
         return self.view
@@ -245,7 +249,6 @@ class CMSEntries(models.Model):
             return  self.get_parent_paths(path_str[:x]) + [path_str]
 
 
-
     def parents_list(self):
 
         path_str = self.path.path
@@ -260,15 +263,22 @@ class CMSEntries(models.Model):
         return pl
 
     def categories(self):
-        c = CMSEntries.objects.filter(path__parent=self.path, page_type__page_type="CATEGORY")
+        c = CMSEntries.objects.filter(path__parent=self.path, 
+                                      page_type__page_type="CATEGORY",
+                                      published=True)
         return c
+
+
 
 
     def save(self, *args, **kwargs):
         if self.pk is None:
             super(CMSEntries, self).save(*args, **kwargs)
+            
+            #Commenting out self.on_create() because we still do not have 
+            #a path yet and as a result we can not call self.on_create()
             #self.on_create()
-
+            
         else:
             super(CMSEntries, self).save(*args, **kwargs)
             

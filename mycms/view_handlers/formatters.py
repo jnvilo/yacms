@@ -229,7 +229,7 @@ def google_addsense_code(*args, **kwargs):
     else:
         code = """<img src="/static/mycms/images/200x200.png">"""
     
-    frame = """<div class="frame_200x200" style="float: right;width: 205px;height: 205px;">{}</div>""".format(code)
+    frame = """<div class="frame_200x200" style="float: right;width: 205px;height: 205px;padding-left:15px;">{}</div>""".format(code)
     
     
     return frame

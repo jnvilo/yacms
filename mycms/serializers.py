@@ -95,7 +95,8 @@ class EntryData(object):
 class CMSChildEntrySerializer(serializers.ModelSerializer):
 
     template = serializers.IntegerField(required=False)
-    content= CMSContentsSerializer(many=True)
+    content= CMSContentsSerializer(many=True, required=False)
+    
     class Meta:
         model = CMSEntries
 
@@ -126,7 +127,14 @@ class CMSChildEntrySerializer(serializers.ModelSerializer):
 
         title = validated_data["title"]
         slug = validated_data["slug"]
-        content = validated_data["content"]
+        try:
+            content = validated_data["content"]
+        except KeyError as e: 
+            #This means no content was provided. Previous versions of
+            #DRF would provide content = [] when no content was provided
+            #so this is just a hack!
+            content = []
+            
         template = validated_data.get("template", None)
         published = validated_data["published"]
         frontpage = validated_data["frontpage"]
@@ -136,17 +144,18 @@ class CMSChildEntrySerializer(serializers.ModelSerializer):
         #and instead we insist on getting or creating the CMSPaths object
         #which has the path corresponding to this CMSEntry.
 
-        path_obj = self.make_path(slug, parent_id)
 
         child = CMSEntries()
         child.title = title
         child.slug = slug
         child.frontpage = frontpage
         child.published = published
+        
+        #Need to call save before being able to add any reference
         child.save()
 
-        #make_path_obj.
-
+        path_obj = self.make_path(slug, parent_id)
+        
         child.path = path_obj
         child.template = template
 
@@ -161,6 +170,11 @@ class CMSChildEntrySerializer(serializers.ModelSerializer):
         child.page_type=page_type
         child.save()
 
+        #Now call the on_create() of the Child Entry
+        
+        child.on_create()
+        
+        
         return child
 
 

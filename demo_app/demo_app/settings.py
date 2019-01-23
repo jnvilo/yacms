@@ -149,3 +149,4 @@ REST_FRAMEWORK = {
     )
 }
 
+FORCE_SHOW_ADVERTS=False

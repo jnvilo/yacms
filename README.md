@@ -10,13 +10,16 @@ Build Requirements
 
 Centos: 
 
-	yum -y install npm gcc
+	dnf -y install npm gcc sqlite-devel openssl-devel libtiff-devel openjpeg-devel openjpeg2-devel libjpeg-turbo-devel  zlib-devel  freetype-devel lcms-devel lcms2-devel libkexif-devel 
+
 	make
 
 Windows/WSL 
 
 	Since this is a linux environment , we can work like in Linux 
-	apt-get install nmp gcc
+	apt-get install nmp gcc libtiff5-dev libjpeg8-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev \
+    tcl8.6-dev tk8.6-dev python-tk
 	make
 
 Windows:

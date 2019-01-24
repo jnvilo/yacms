@@ -10,7 +10,9 @@ Build Requirements
 
 Centos: 
 
-	dnf -y install npm gcc sqlite-devel openssl-devel libtiff-devel openjpeg-devel openjpeg2-devel libjpeg-turbo-devel  zlib-devel  freetype-devel lcms-devel lcms2-devel libkexif-devel 
+	dnf -y install npm gcc sqlite-devel openssl-devel libtiff-devel openjpeg-devel \
+	openjpeg2-devel libjpeg-turbo-devel  zlib-devel  freetype-devel lcms-devel \ 
+	lcms2-devel libkexif-devel 
 
 	make
 

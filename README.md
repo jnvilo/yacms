@@ -8,15 +8,15 @@ never versioned it until now. I am iteratively preparing it for public consumpti
 
 Build Requirements
 
-Centos: 
-
-	dnf -y install npm gcc sqlite-devel openssl-devel libtiff-devel openjpeg-devel \
-	openjpeg2-devel libjpeg-turbo-devel  zlib-devel  freetype-devel lcms-devel \ 
-	lcms2-devel libkexif-devel 
+Fedora / Centos / RHEL
+ 
+	yum -y install npm gcc sqlite-devel openssl-devel libtiff-devel openjpeg-devel \
+	openjpeg2-devel libjpeg-turbo-devel  zlib-devel  freetype-devel lcms-devel \
+	lcms2-devel libkexif-devel libffi-devel
 
 	make
 
-Windows/WSL 
+Ubuntu
 
 	Since this is a linux environment , we can work like in Linux 
 	apt-get install nmp gcc libtiff5-dev libjpeg8-dev zlib1g-dev \
@@ -24,6 +24,9 @@ Windows/WSL
     tcl8.6-dev tk8.6-dev python-tk
 	make
 
+WSL:
+    Assuming you are using Ubuntu on WSL then the above commands for Ubuntu should suffice. 
+    
 Windows:
 
 	TODO: Figure out how to install and develop on windows. 

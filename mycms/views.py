@@ -118,8 +118,11 @@ def  get_static_files_dir():
     else:
         raise Exception("""Static Files Dir Not Found. Please create a 'static' dir within the parent path.""")
 
-ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
 
+#ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
+ASSETS_DIR = pathlib.Path(settings.STATIC_ROOT, "assets").as_posix()
+
+#TODO: Check if we can remove this because it should be defined already in settings.py and created there too. 
 if not ASSETS_DIR.is_dir:
     ASSETS_DIR.mkdir()
 

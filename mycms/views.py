@@ -119,12 +119,6 @@ def  get_static_files_dir():
         raise Exception("""Static Files Dir Not Found. Please create a 'static' dir within the parent path.""")
 
 
-#ASSETS_DIR = pathlib.Path(get_static_files_dir(),"assets")
-ASSETS_DIR = pathlib.Path(settings.STATIC_ROOT, "assets").as_posix()
-
-#TODO: Check if we can remove this because it should be defined already in settings.py and created there too. 
-if not ASSETS_DIR.is_dir:
-    ASSETS_DIR.mkdir()
 
 
 class CMSFileUpload(View):
@@ -190,14 +184,26 @@ class CMSFileUpload(View):
         with mylock:
             from django.conf import settings
 
+            """
+            The files are uploaded to the assets directory. A directory is 
+            created with the same path as the article that the asset is 
+            uploaded to. For example an article at 
+            /foo/bar/baz will hvae all images uploaded to 
+            Path(settings.ASSETS_DIR, "foo/bar/baz/image)
+            """
+
             try:
-                assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+                #A sanity check to make sure the assets dir exists.
+                #TODO: Decide if this code should really be here. IMHO the 
+                #test to make sure it exists should be elsewhere. 
+                assets_dir = settings.ASSETS_DIR
+                
             except AttributeError as e: 
-                print("ARTICLE_IMAGES_DIR IS NOT CONFIGURED! Falling back to default.")
-                assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
+                print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
+                #TODO: Danger!! We assuming here that PARENT_DIR is defined. 
+                #What if the end user does not define it????
+                assets_dir = os.path.join(settings.PARENT_DIR, "assets/")
                         
-
-
             path = kwargs.get("path", None).lstrip("/")
 
             fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
@@ -1111,7 +1117,7 @@ class  AssetsUploaderView(View):
 
         with mylock:
             from django.conf import settings
-            assets_dir = ASSETS_DIR
+            assets_dir = settings.ASSETS_DIR
             path = kwargs.get("path", None).lstrip("/")
 
             fullpath = pathlib.Path(pathlib.Path(assets_dir), path)

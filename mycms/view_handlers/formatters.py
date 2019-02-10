@@ -198,10 +198,15 @@ def  image(*args, **kwargs):
     text = kwargs.get("text", None)
     name = kwargs.get("name", None)
     view = kwargs.get("view", None)
+    style = kwargs.get("style", "width:80%")
     path_str = view.path_str
 
-    img_url = "/images/{}/{}".format(view.path_str, name)
-    img = """<img src="{}" />""".format(img_url)
+
+
+    img_url = "/static/assets/{}/{}".format(view.path_str, name)
+    img = """<img src="{}" style="{}" />""".format(img_url, style)
+
+    
 
     return img
 

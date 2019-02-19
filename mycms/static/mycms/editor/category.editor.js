@@ -63,11 +63,11 @@ API Version 1 defines the endpoint as:
             console.log("DATA ", data);
             results = data["results"];
             console.log("RESULTS " + results );
-                dust.render("yacms\/templates\/yacms\/dustjs_templates\/category_editor"
-                            , { data: data }, function(err, out) {
-                  // `out` contains the rendered output.
-                  document.getElementById('category_editor').innerHTML= out;
-                });
+            
+            
+           
+           
+           
         }
     });
 
@@ -136,8 +136,14 @@ $("#create_page_button").click(function(){
         },
         success: function(data){
             /**Update the editor for the newly created pages.**/
-           console.log("Success");
-           getCMSCategories();
+           
+        getChildCMSEntries();
+          
+           
+           
+           
+           
+           
 
         }
     });

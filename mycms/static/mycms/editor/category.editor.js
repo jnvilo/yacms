@@ -270,6 +270,13 @@ function loadCMSContentToTextArea(){
 
 function getChildCMSEntries(){
 
+/** 
+
+This is used in the category editor to update and list all of the entries
+into a table.
+
+**/
+
     path_id = view_json.path;
     url = "/cms/api/v2/cmsentries/?limit=20&parent_path_id="+path_id;
 
@@ -291,12 +298,15 @@ function getChildCMSEntries(){
                  entry = results[i];
                  table_row = "<tr><td>" + entry.id + "</td>";
 
+                if (entry.published == true){ published_text = "Yes"; }else{ published_text = "No";}
+                if (entry.frontpage == true){ frontpage_text = "Yes"; }else{ frontpage_text = "No";}
+
                 title_link = "<a href=\"/cms"+ entry.path + "\">" + entry.title + "</a>"
 
                 table_row = table_row + "<td>" + title_link + "</td>";
                 table_row = table_row + "<td>" + entry.page_type + "</td>";
-                table_row = table_row + "<td>"+ entry.published +"</td>";
-                table_row = table_row + "<td>"+ entry.frontpage +"</td>";
+                table_row = table_row + "<td id=\"published_"+ entry.id +"\" onclick=\"update_published("+entry.id+")\">"+ published_text +"</td>";
+                table_row = table_row + "<td id=\"frontpage_"+ entry.id +"\" onclick=\"update_frontpage("+entry.id+")\">"+ frontpage_text +"</td>";
                 table_row = table_row + "<td>"+ entry.date_created +"</td></tr>";
 
                 console.log("Adding : " + table_row)
@@ -308,6 +318,53 @@ function getChildCMSEntries(){
         }
     });
 
+
+
+}
+
+
+function update_published(id){
+
+    var url = "/cms/api/v2/cmsentries/" + id + "/toggle_published/";    
+    $.ajax({
+        url: url,
+        type: 'GET',
+        error: function(){
+            console.log("Failed to update published attribute");
+        },
+        success: function(data){
+
+         console.log("update_published: ", data);
+         
+        if (data["published"] == true){
+            text = "Yes";
+        }else{
+            text = "No";
+        }
+         
+        $("#published_"+ id).html(text);
+        
+        }
+    });
+}
+
+function update_frontpage(id){
+      var url = "/cms/api/v2/cmsentries/" + id + "/toggle_frontpage/";    
+    $.ajax({
+        url: url,
+        type: 'GET',
+        error: function(){
+            console.log("Failed to update frontpage attribute");
+        },
+        success: function(data){
+
+         console.log("update_frontpage: ", data);
+        if (data["frontpage"] == true){ text = "Yes"; }else{ text = "No";}
+         
+        $("#frontpage_"+ id).html(text);
+         
+        }
+    });
 
 
 }

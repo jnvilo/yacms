@@ -119,10 +119,10 @@ def  alertblock(*args, **kwargs):
     return template.format(text)
 
 #----------------------------------------------------------------------
-def  alerterror(*args, **kwargs):
+def  alertwarning(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
-    template = """<div class="alert alert-error">{}</div>"""
+    template = """<div class="alert alert-warning">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------
@@ -198,15 +198,14 @@ def  image(*args, **kwargs):
     text = kwargs.get("text", None)
     name = kwargs.get("name", None)
     view = kwargs.get("view", None)
+    class_ = kwargs.get("class", "article-image")
     style = kwargs.get("style", "width:80%")
     path_str = view.path_str
 
 
 
     img_url = "/static/assets/{}/{}".format(view.path_str, name)
-    img = """<img src="{}" style="{}" />""".format(img_url, style)
-
-    
+    img = """<img src="{}" class="{}" style="{}" />""".format(img_url, class_, style)
 
     return img
 
@@ -294,7 +293,7 @@ class  CreoleFormatter(object):
                                                    "alertblock":alertblock,
                                                    "alertsuccess":alertsuccess,
                                                    "alertinfo":alertinfo,
-                                                   "alerterror":alerterror,
+                                                   "alerterror":alertwarning,
                                                    "infoblock":infoblock,
                                                    "image": image,
                                                    "debug":debug,

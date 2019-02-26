@@ -169,7 +169,20 @@ class CMSEntries(models.Model):
     logo_url = models.CharField(default="/static/mycms/images/png/default.png", 
                                 null=True,blank=True, 
                                 max_length=1024)
+    
+    def toggle_published(self):
+        if self.published:
+            self.published=False
+        else:
+            self.published=True
 
+    def toggle_frontpage(self):
+
+        if self.frontpage:
+            self.frontpage=False
+        else:
+            self.frontpage=True
+            
     def on_create(self):
 
         view_object = self.view

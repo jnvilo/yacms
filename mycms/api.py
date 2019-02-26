@@ -165,6 +165,38 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
             print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    
+    @detail_route(methods=["get"])
+    def toggle_published(self, request, *args, **kwargs):
+        
+        try:
+            pk = kwargs.get("pk", None)
+            
+            cms_entry = CMSEntries.objects.get(pk=pk)
+            cms_entry.toggle_published()
+            cms_entry.save()
+        except Exception as e:
+         
+            return Response({"error" : "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({ "published": cms_entry.published}, status=status.HTTP_202_ACCEPTED)
+    
+    @detail_route(methods=["get"])
+    def toggle_frontpage(self, request, *args, **kwargs):
+        
+        try:
+            pk = kwargs.get("pk", None)
+            
+            cms_entry = CMSEntries.objects.get(pk=pk)
+            cms_entry.toggle_frontpage()
+            cms_entry.save()
+        except Exception as e:
+         
+            return Response({"error" : "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({ "frontpage": cms_entry.frontpage}, status=status.HTTP_202_ACCEPTED)
+    
+        
 
 
 class CMSPathsViewSet(viewsets.ModelViewSet):

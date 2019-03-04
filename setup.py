@@ -15,7 +15,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.38"
+VERSION_STRING="0.0.39"
 URL = "https://github.com/jnvilo/mycms"
 DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))

@@ -1064,9 +1064,9 @@ class  AssetsUploaderView(View):
         """
 
         try:
-            assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
+            assets_dir = settings.get("ASSETS_DIR")
         except AttributeError as e: 
-            print("ARTICLE_IMAGES_DIR IS NOT CONFIGURED! Falling back to default.")
+            print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
             assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
     
         

@@ -182,7 +182,7 @@ def  infoblock(*args, **kwargs):
         author=""
 
     template = """
-<div class="boxinfo" style="{}">
+    <div class="boxinfo" style="{}">
         <div class="testimonials-user">{}<p>{}</p>{}</div>
 </div>""".format(style,image, text, author)
 
@@ -203,9 +203,13 @@ def  image(*args, **kwargs):
     path_str = view.path_str
 
 
-
+    
     img_url = "/static/assets/{}/{}".format(view.path_str, name)
-    img = """<img src="{}" class="{}" style="{}" />""".format(img_url, class_, style)
+    img = """<div class="image-holder">
+    <img src="{}" class="{}" style="{}" />
+    <p class="image-description">{}</p>
+    </div>""".format(img_url, class_, style,text)
+    
 
     return img
 

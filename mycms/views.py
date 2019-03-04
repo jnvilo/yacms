@@ -1064,7 +1064,7 @@ class  AssetsUploaderView(View):
         """
 
         try:
-            assets_dir = settings.get("ASSETS_DIR")
+            assets_dir = settings.ASSETS_DIR
         except AttributeError as e: 
             print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
             assets_dir = os.path.join(settings.BASE_DIR, "static/assets")

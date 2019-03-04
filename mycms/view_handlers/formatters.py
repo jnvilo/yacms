@@ -130,7 +130,7 @@ def  alertsuccess(*args, **kwargs):
     """"""
 
     text = kwargs.get("text", None)
-    template = """<div class="alert alert-success">{}</div>"""
+    template = """<div class="alert alert-success ">{}</div>"""
     return template.format(text)
 
 #----------------------------------------------------------------------

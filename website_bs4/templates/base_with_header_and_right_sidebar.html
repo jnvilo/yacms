@@ -1,0 +1,47 @@
+{% extends "base.html"%}
+
+
+{%block BASE_CONTAINER %}
+
+  {%block PAGE_HEADER %}
+  
+  <header class="page-header">
+                                 
+         <div class="container">
+         <div class="row">
+                 <div class="col-md-12">
+                         <h1> SysAdmin Notes</h1>
+                         <ul class="breadcrumb visible-md visible-lg">
+                                 <li><a href="/">Home</a> <span class="divider">/</span></li>
+                                              <li><a href="/cms/blog">Blogs</a><span class="divider">&nbsp;/</span></li>
+                         </ul>
+                 </div>
+         </div>
+         </div>
+         
+ </header>
+   
+  {%endblock PAGE_HEADER %}
+
+  {%block MAIN_CANVAS %}
+  <div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+        {%block PAGE_CONTENT%}
+    
+      
+        {%endblock PAGE_CONTENT%}
+        </div>    
+        <div class="col-lg-4">
+        {%block SIDEBAR %}
+        
+        {%endblock SIDEBAR %}
+        </div>
+    </div><!--end row-->
+  </div><!--end container-->
+  {%endblock MAIN_CANVAS%}
+  
+  
+
+{%endblock BASE_CONTAINER %}
+

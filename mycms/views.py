@@ -1063,11 +1063,7 @@ class  AssetsUploaderView(View):
         ]}
         """
 
-        try:
-            assets_dir = settings.ASSETS_DIR
-        except AttributeError as e: 
-            print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
-            assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
+        assets_dir = self.get_assets_dir()
     
         
         path = kwargs.get("path", None).lstrip("/")
@@ -1092,7 +1088,8 @@ class  AssetsUploaderView(View):
                 thumbnail_url = "/static/assets/{}/thumbnails/{}".format(path, filename)
                 delete_url = "/cms/{}/assets_manager/{}".format(path, filename)
 
-
+                print("*"*80)
+                print(filename)
                 file_dict = { "name": filename ,
                               "size": stat.st_size,
                               "url": image_url,
@@ -1100,9 +1097,18 @@ class  AssetsUploaderView(View):
                               "deleteUrl": delete_url,
                               "deleteType": "DELETE" }
 
+
                 files.append(file_dict)
 
         return JsonResponse({'files': files})
+
+    def get_assets_dir(self):
+        try:
+            assets_dir = settings.ASSETS_DIR
+        except AttributeError as e: 
+            print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
+            assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
+        return assets_dir
 
 
     #----------------------------------------------------------------------
@@ -1117,7 +1123,7 @@ class  AssetsUploaderView(View):
 
         with mylock:
             from django.conf import settings
-            assets_dir = settings.ASSETS_DIR
+            assets_dir = self.get_assets_dir()
             path = kwargs.get("path", None).lstrip("/")
 
             fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
@@ -1185,7 +1191,7 @@ class  AssetsUploaderView(View):
         """"""
         path = kwargs.get("path", None).lstrip("/")
         filename=kwargs.get("filename",None).lstrip("/")
-        fullpath = pathlib.Path(pathlib.Path(ASSETS_DIR), path)
+        fullpath = pathlib.Path(pathlib.Path(self.get_assets_dir()), path)
 
 
         p_filename = pathlib.Path(fullpath, filename)
@@ -1274,9 +1280,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 import os
+from django.template import loader, Context
 
 
-class TemplateSampleLoader(View):
+class MockupLoader(View):
 
     def get(self, request, **kwargs):
 
@@ -1287,16 +1294,17 @@ class TemplateSampleLoader(View):
         else:
             #Return a list of html files in bootstrap_templates
 
-            bootstrap_examples_dir = os.path.join(settings.BASE_DIR, "templates/")
-
+            mockups_dir= os.path.join(settings.BASE_DIR, "mockups/")
+         
             files = []
-            for filename in os.listdir(path=bootstrap_examples_dir):
+            for filename in os.listdir(path=mockups_dir):
                 if filename.endswith(".html"):
                     files.append(filename)
 
-            return render(request, "bootstrap_templates.html", { "files": files})
+                    
 
-
+            return render(request, "mockups_index.html", { "files": files})
+        
 
 class LogoViewer(View):
 

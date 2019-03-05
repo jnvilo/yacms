@@ -26,6 +26,7 @@
         <!-- Custom styles for this template -->
         <link href="/static/css/layout.css" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="/static/css/media.css">
+        <link type="text/css" rel="stylesheet" href="/static/css/site.css">
         <link type="text/css" rel="stylesheet" href="/static/css/custom.css">
        
        
@@ -55,16 +56,19 @@
         
         
         {% block NAVBAR %} 
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-inverse navbar-fixed-top navbar" role="navigation">
             <div class="container">
                     
+            
                 {% if view_object.show_toolbar %}
-                        <div id="admin-bar">
-                                <button id="edit" class="btn btn-default" 
-                                type="submit" onclick="on()">edit</button></a>
-                        </div>
-                {% endif %}
-                <div class="navbar-header">
+                <div id="admin-bar">
+                                {% if view_object.request.user.username == "admin" %}
+                                        <img id="edit_button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg" onclick="on()"></image>		
+                                {% else %}
+                                        <img id="edit_button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg" onclick="on()"></image>
+                                {%endif%}
+                </div>
+                {% endif %}                <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
@@ -194,9 +198,24 @@
          <script src="/static/bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/static/mycms/js/js.cookie.min.js"></script>
         <script type="text/javascript" src="/static/mycms/dustjs/dust-full.js"></script>
+        <script type="text/javascript" src="/static/mycms/csrf.js"></script>
+
         
         {# Load any scripts requested by other tags. #}
-        {% ScriptCollector %}	
-                
+        {# ScriptCollector #}	
+              
+        
+        {%block  PAGE_BOTTOM %}
+
+        {%endblock PAGE_BOTTOM %}
+
+
+
+        {% block PAGEADMIN %}
+
+        {% endblock PAGEADMIN %}
+
+
+    <!--DEMO -->
     </body>
 </html>

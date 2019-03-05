@@ -16,9 +16,14 @@ logger = logging.getLogger("mycms.page_handlers")
 # #####################
 
 
-from . page_types import singlepageview_pagetype_obj
-from . page_types import multipageview_pagetype_obj
-from . page_types import allarticles_pagetype_obj
+#Import page_types to ensure that the page_types are created in the database.
+
+#TODO: There should be a better way of doing this only once after startup.
+
+from mycms.view_handlers import page_types
+#from . page_types import singlepageview_pagetype_obj
+#from . page_types import multipageview_pagetype_obj
+#from . page_types import allarticles_pagetype_obj
 
 
 

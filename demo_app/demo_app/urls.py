@@ -19,6 +19,7 @@ from django.conf.urls import url, include
 
 from django.conf.urls import url,include
 from django.contrib import admin
+
 from mycms.views import CMSFrontPage
 from mycms.views import CMSLoginView
 from mycms.views import CMSLogoutView

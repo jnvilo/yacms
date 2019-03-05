@@ -8,6 +8,10 @@ from django.db.utils import OperationalError
 import logging
 logger = logging.getLogger("mycms.page_handlers")
 
+
+
+
+
 try:
 
     try:
@@ -114,5 +118,6 @@ try:
 
 except OperationalError as e:
     #This can happen only when the database is not yet initialized.
-    pass
+    logger.warn("Failed to create page types because database is probably not yet initialized.")
+    
 

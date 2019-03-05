@@ -1,0 +1,158 @@
+HowTo Create A Website with MYCMS
+
+1. Create a virtualenv
+virtualenv siteenv
+source siteenv/bin/activate
+pip install mycms  #this will install all the requiremetns including django
+
+django-admin startproject mywebsite
+mkdir -p mywebsite/{static,templates}  
+
+
+vi mywebsite/mywebsite/settings.py 
+
+#Add the following to INSTALLED_APPS
+
+'haystack', #YACMS requires this. 
+'mycms', #YACMS: The module itself.
+'rest_framework', 
+'rest_framework.authtoken'
+
+#Also add anywhere in settings.py
+
+# St atic files not tied to a particular app.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+
+import os
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication', 
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
+FORCE_SHOW_ADVERTS=False
+
+#Finaly also update TEMPLATES so that DIRS is
+ 'DIRS': [os.path.join(BASE_DIR,"templates")]
+
+
+
+vi mywebsite/urls.py
+
+from mycms.views import CMSFrontPage
+from mycms.views import CMSLoginView
+from mycms.views import CMSLogoutView
+from mycms.views import CMSSitemap
+
+from django.contrib.sitemaps.views import sitemap
+from .views import TemplateSampleLoader
+
+sitemaps = {
+    'sitemaps': CMSSitemap,
+}
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^cms/',include('mycms.urls')),
+    url(r'^$', CMSFrontPage.as_view()),
+    url(r'^login/', CMSLoginView.as_view()),
+    url(r'^logout/', CMSLogoutView.as_view()),
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
+    url(r'^templates/(?P<template>[-._\w\d]*.html)$', TemplateSampleLoader.as_view()),
+    url(r'^templates/?$', TemplateSampleLoader.as_view()),   
+]
+
+
+=======
+
+In this setup we shall use bootstrap and we shall put bootstrap and jquery in static dir as follows
+
+── static
+│   ├── css
+│   │   └── custom.css
+│   └── vendor
+│       ├── bootstrap
+│       │   ├── css
+│       │   │   ├── bootstrap.css
+│       │   │   ├── bootstrap.css.map
+│       │   │   ├── bootstrap.min.css
+│       │   │   └── bootstrap.min.css.map
+│       │   └── js
+│       │       ├── bootstrap.bundle.js
+│       │       ├── bootstrap.bundle.js.map
+│       │       ├── bootstrap.bundle.min.js
+│       │       ├── bootstrap.bundle.min.js.map
+│       │       ├── bootstrap.js
+│       │       ├── bootstrap.js.map
+│       │       ├── bootstrap.min.js
+│       │       └── bootstrap.min.js.map
+│       └── jquery
+│           ├── jquery.js
+│           ├── jquery.min.js
+│           ├── jquery.min.map
+│           ├── jquery.slim.js
+│           ├── jquery.slim.min.js
+│           └── jquery.slim.min.map
+
+
+Create base.html 
+
+All pages inheret from the base.html
+
+For this design we use a free bootstrap templates provided by https://startbootstrap.com/templates/
+
+Specifically for our index page we use: https://startbootstrap.com/templates/small-business/
+and for article pages we use: https://startbootstrap.com/templates/blog-post/
+
+Download https://startbootstrap.com/templates/small-business/ , unpack and copy the vendor and css directory to our static directory 
+
+Copy index.html into templates as base.html
+also create a directory inside templates called mycms
+
+create templates/mycms/index.html 
+
+{% extends base.html %}
+
+
+Starting the website should and visiting http://localhost:8000/ should give us 
+
+
+#Now we shall create the template for single page articles. This template is called SinglePage.hml template.
+
+For this we use the template from: https://startbootstrap.com/templates/blog-post/
+
+Download and unzip and copy the index.html to templates/mycms/SinglePage.html and templates/mycms/CategoryPage.html 
+
+adjust  <link href="/static/css/blog-post.css" rel="stylesheet">
+ and replace with  <link href="/static/css/custom.css" rel="stylesheet">
+
+#Font-Awesome 
+
+The page design uses font-awesome. This can be downloaded from https://fontawesome.com/v4.7.0/get-started/
+
+
+
+
+
+
+
+
+
+
+
+

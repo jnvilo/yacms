@@ -115,6 +115,7 @@ s.setAttribute('data-timestamp', +new Date());
 
 
 {% if view_object.request.user.username == "admin" %}
+    <script type="text/javascript" src="/static/mycms/notifications.js"></script>
     <script type="text/javascript" src="/static/mycms/editor/article.editor.js"></script>
     <script type="text/javascript" src="/static/mycms/dustjs/dust-full.js"></script>
     <script type="text/javascript" src="https://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>

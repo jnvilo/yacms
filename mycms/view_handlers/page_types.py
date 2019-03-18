@@ -9,6 +9,35 @@ import logging
 logger = logging.getLogger("mycms.page_handlers")
 
 
+class BasePage(object):
+    
+    def get_list_params(self):
+        
+        LIMIT = 10
+        if self.request: 
+            try: 
+                limit = int(self.request.GET.get("limit",LIMIT))
+            except Exception as e: 
+                #this can only happen if we got a bad limit value such as a non 
+                #integer value.Set limit to a sane value.
+                limit = LIMIT
+            
+            try: 
+                offset = int(self.request.GET.get("offset", 0))
+            except Exception as e: 
+                #same reason as above
+                offset = 0
+                
+            try:
+                page = int(self.request.GET.get("page",1))
+            except Exception as e:
+                page = 1
+        else:
+            limit = LIMIT
+            offset = 0
+            page = 1
+        
+        return limit, offset, page      
 
 
 

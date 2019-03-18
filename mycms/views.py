@@ -15,6 +15,7 @@ import simplejson as json
 import threading
 import arrow
 from pathlib import Path
+from django.conf import settings
 
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
@@ -985,13 +986,23 @@ class CMSPageView(View):
         
         
         template = obj.template
-        try:
+       
+        if settings.DEBUG:
             return render_to_response(template, {"view_object": obj})
-        except Exception as e:
-            # TODO: Make sure to log this
+        else:
+        
+            try:
+                return render_to_response(template, {"view_object": obj})
+                
+            except Exception as e:
+                
+                #if we are in debug mode then show then let django handle showing 
+                #the debug error:
+                msg = "Application Error {}".format(e)            
+                return HttpResponse(content=bytes(msg, 'utf-8'), status=500)
             
-            msg = "Application Error {}".format(e)            
-            return HttpResponse(content=bytes(msg, 'utf-8'), status=500)
+        
+    
     def post(self, request, **kwargs):
         print(request, kwargs)
         return HttpResponse("Not implemented")
@@ -1028,40 +1039,42 @@ class  AssetsUploaderView(View):
         else:
             head, tail = os.path.split(newdir)
             if head and not os.path.isdir(head):
-                self._mkdir(head)
+                try:
+                    self._mkdir(head)
+                except FileExistsError as e:
+                    pass
+                
             #print "_mkdir %s" % repr(newdir)
             if tail:
-                os.mkdir(newdir)
-
+                try:
+                    os.mkdir(newdir)
+                except FileExistsError as e:
+                    pass
+                
     #----------------------------------------------------------------------
     def  get(self, request, **kwargs):
 
         """
-        We assume we have a GET
-        According to https://github.com/blueimp/jQuery-File-Upload/wiki/Setup
-        we have to return a list of the images in the dir as follows:
-
-
-
-        {"files": [
-          {
-            "name": "picture1.jpg",
-            "size": 902604,
-            "url": "http:\/\/example.org\/files\/picture1.jpg",
-            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
-            "deleteUrl": "http:\/\/example.org\/files\/picture1.jpg",
-            "deleteType": "DELETE"
-          },
-          {
-            "name": "picture2.jpg",
-            "size": 841946,
-            "url": "http:\/\/example.org\/files\/picture2.jpg",
-            "thumbnailUrl": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
-            "deleteUrl": "http:\/\/example.org\/files\/picture2.jpg",
-            "deleteType": "DELETE"
-          }
-        ]}
+        Creates the javascript to load the Krajee file upload.
+        
+        This needs to return a configuration like
+        
+        
+        {
+            error: 'An error exception message if applicable',
+            errorkeys: [], // array of thumbnail keys/identifiers that have errored out (set via key property in initialPreviewConfig
+            initialPreview: [
+            ], // initial preview configuration 
+            initialPreviewConfig: [
+                // initial preview configuration if you directly want initial preview to be displayed with server upload data
+            ],
+            initialPreviewThumbTags: [
+                // initial preview thumbnail tags configuration that will be replaced dynamically while rendering
+            ],
+            append: true // whether to append content to the initial preview (or set false to overwrite)
+        }
         """
+        
 
         assets_dir = self.get_assets_dir()
     
@@ -1069,13 +1082,20 @@ class  AssetsUploaderView(View):
         path = kwargs.get("path", None).lstrip("/")
         fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
 
-        files = []
+
+        initialPreviewConfig = []
+        initialPreview = []
+        key = 0        
 
         print(fullpath.as_posix())
         try:
             filenames = os.listdir(fullpath.as_posix())
         except OSError as e:
-            return  JsonResponse({'files': []})
+            #This means that there is no directory yet. Nothing uploaded
+            #at all
+            return JsonResponse({'initialPreviewConfig': initialPreviewConfig,
+                                 "initialPreview": initialPreview})            
+
 
         for filename in filenames:
 
@@ -1089,18 +1109,23 @@ class  AssetsUploaderView(View):
                 delete_url = "/cms/{}/assets_manager/{}".format(path, filename)
 
                 print("*"*80)
-                print(filename)
-                file_dict = { "name": filename ,
-                              "size": stat.st_size,
-                              "url": image_url,
-                              "thumbnailUrl": thumbnail_url,
-                              "deleteUrl": delete_url,
-                              "deleteType": "DELETE" }
+               
+                initial_pconf_entry = {
+                    "caption": filename,
+                    "size": stat.st_size,
+                    "width":"512px",
+                    "url": request.path,
+                    "key": filename
+                }
+                              
+                key = key + 1
+                
+                initialPreviewConfig.append(initial_pconf_entry)
+                initialPreview.append(image_url)
+                
+        return JsonResponse({'initialPreviewConfig': initialPreviewConfig,
+                             "initialPreview": initialPreview})
 
-
-                files.append(file_dict)
-
-        return JsonResponse({'files': files})
 
     def get_assets_dir(self):
         try:
@@ -1112,14 +1137,44 @@ class  AssetsUploaderView(View):
 
 
     #----------------------------------------------------------------------
-    def  post(self, request, **kwargs):
+    def  post(self, request,*args, **kwargs):
         """"""
-        return self.fileupload(request, **kwargs)
+        
+        
+        filename = request.POST.get("key", None)
+    
+        if filename is not None:
+    
+            #if we are getting a "{'key': ['0']} in the request.POST then it 
+            #means the user wants to delete a file.             
+            return self.filedelete(kwargs, filename)
+
+        else:    
+        #if we are getting a {'file_id': ['0']}> then it means its a fileupload
+            return self.fileupload(request, *args,**kwargs)
+
+    def filedelete(self, kwargs, filename):
+        path = kwargs.get("path", None).lstrip("/")
+        fullpath = pathlib.Path(pathlib.Path(self.get_assets_dir()), path)
+    
+        p_filename = pathlib.Path(fullpath, filename)
+    
+        logger.debug("Going to delete, {}".format(p_filename.as_posix()))
+    
+        try:
+            os.remove(p_filename.as_posix())
+            return JsonResponse({ } )
+    
+        except Exception as e:
+        
+            return JsonResponse({"error":"Failed to delete"}, status=status.HTTP_410_GONE)            
 
 
-    def fileupload(self,request, **kwargs):
+    def fileupload(self,request, *args,**kwargs):
 
         mylock = threading.Lock()
+        print(request.GET)
+        print(request.POST)
 
         with mylock:
             from django.conf import settings
@@ -1137,13 +1192,17 @@ class  AssetsUploaderView(View):
             thumbnailpath = pathlib.Path(fullpath, "thumbnails")
 
             if not thumbnailpath.exists():
-                os.makedirs(thumbnailpath.as_posix())
+                try:
+                    os.makedirs(thumbnailpath.as_posix())
+                except FileExistsError as e:
+                    #It must have been created by another thread. 
+                    pass
             elif not thumbnailpath.is_dir():
                 #Fix this to return a proper json response.
                 return HttpResponse("Error. Not full dir")
 
             if request.method == "POST":
-                uploaded_file = request.FILES.get("files[]")
+                uploaded_file = request.FILES.get("file_data")
 
                 filename = uploaded_file.name
 
@@ -1182,10 +1241,25 @@ class  AssetsUploaderView(View):
                                   "deleteUrl": delete_url,
                                   "deleteType": "DELETE" }
 
+                
+                initial_pconf_entry = {
+                    "caption": filename,
+                    "size": 1024,
+                    "width":"512px",
+                    "url": image_url,
+                    "key": filename
+                }
+                
+                
+                initialPreviewConfig = []
+                
+                
+
+
                 files.append(file_dict)
                 
-                return JsonResponse({'files': files})
-
+                #return JsonResponse({'files': files})
+                return self.get(request,*args, **kwargs)
     #----------------------------------------------------------------------
     def  delete(self,request, **kwargs):
         """"""

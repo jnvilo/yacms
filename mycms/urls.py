@@ -59,6 +59,7 @@ router.register(r'api/v2/cmscontents', api.CMSContentsViewSet, base_name='cmscon
 router.register(r'api/v2/cmsentries', api.CMSEntriesViewSet, base_name='cmsentries')
 router.register(r'api/v2/cmspaths', api.CMSPathsViewSet, base_name='cmspaths')
 router.register(r'api/v2/cmspages', api.CMSPagesViewSet, base_name='cmspages')
+router.register(r'api/v2/cmspagetypes', api.CMSPageTypeViewSet, base_name='cmspagetypes')
 #router.register(r'api/v2/cmspreview', api.CMSContentPreview, base_name='cmspreview')
 #router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, base_name='cmsauthtoken')
 #router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')

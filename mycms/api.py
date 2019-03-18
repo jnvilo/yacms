@@ -149,7 +149,27 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
         """
         A utility function to create an article including path information.
         """
-
+        print(request.data)
+        fake_flag = request.GET.get("fake", False)
+        request.POST._mutable = True
+        title = request.data.get("title", None)
+        slug = request.data.get("slug", None)
+        
+        
+        if fake_flag:
+            from faker import Faker
+            import random
+            from django.utils.text import slugify
+            fake_factory = Faker()
+            
+            fake_title = " ".join(fake_factory.words(random.randint(3,7)))
+            
+            if (title is None) or (len(title) ==0):
+                request.data["title"] = fake_title.capitalize()
+                request.data["slug"] = slugify(fake_title)
+            
+            request.data["published"] = True
+        
         serializer = CMSChildEntrySerializer(data=request.data)
 
         if serializer.is_valid():
@@ -163,6 +183,9 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
+            
+        
+            
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
@@ -197,6 +220,14 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
         return Response({ "frontpage": cms_entry.frontpage}, status=status.HTTP_202_ACCEPTED)
     
         
+class CMSPageTypeViewSet(viewsets.ModelViewSet):
+
+    permission_classes = (IsAuthenticated,)
+    queryset = CMSPageTypes.objects.all()
+    serializer_class =  CMSPageTypesSerializer
+
+
+
 
 
 class CMSPathsViewSet(viewsets.ModelViewSet):

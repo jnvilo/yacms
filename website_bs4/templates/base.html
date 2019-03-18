@@ -11,16 +11,27 @@
   <title>MYCMS Demo Website</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/mycms/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome css-->
-  <link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
+  <link href="/static/mycms/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  
+  <link href="/static/mycms/vendor/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
+  <link href="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
+    
   <!-- Custom styles for this template -->
-  <link href="/static/css/custom.css" rel="stylesheet">
+  <link href="/static/mycms/css/custom.css" rel="stylesheet">
+  <link href="/static/mycms/css/editors.css" rel="stylesheet">
   
   {%block EXTRA_HEADER_CONTENT %}
 
   {%endblock EXTRA_HEADER_CONTENT %}
+
+  {%if view_object.json_data %}
+  <script>
+    var view_json = {{view_object.json_data | safe }}
+  </script>
+  {%endif%}
 </head>
 
 <body>
@@ -40,13 +51,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" href="/cms/about">About</a>
           </li>
         </ul>
       </div>
@@ -60,6 +65,8 @@
     {%endblock PAGE_HEADER %}
 
     {%block MAIN_CANVAS %}  
+    
+    {%block PAGE_CONTENT %}
     <div class="container">
       <div class="row">
         <div class="col-lg-12 text-center">
@@ -72,10 +79,39 @@
         </div>
       </div>
     </div>
+    {%endblock PAGE_CONTENT %}
+    
   {%endblock MAIN_CANVAS %}
   
   
 {%endblock BASE_CONTAINER %}
+
+{% if view_object.show_toolbar %}
+  <div id="admin-bar">
+    {% if view_object.request.user.username == "admin" %}
+            <img id="show-admin-overlay-button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>		
+    {% else %}
+            <img id="show_admin_overlay" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>
+    {%endif%}
+  </div>
+{% endif %}
+
+
+<!-- Core JavaScript Requirements -->
+  <script src="/static/mycms/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/mycms/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> 
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+  <script src="/static/mycms/js/js.cookie.js"></script>
+  <script src="/static/mycms/js/csrf.js"></script>
+  <script src="/static/mycms/js/loglevel.min.js"></script>
+ 
+{%block BOTTOM_HTML %}
+
+
+
+  
+
+{%endblock BOTTOM_HTML %}
   
   <!-- /.container -->
 
@@ -87,9 +123,8 @@
     <!-- /.container -->
   </footer>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="/static/vendor/jquery/jquery.min.js"></script>
-  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
 
 </body>
 

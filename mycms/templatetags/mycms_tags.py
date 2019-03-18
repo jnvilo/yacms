@@ -35,36 +35,55 @@ class NullNode(template.Node):
     def render(self, context):
         return ""
 
+class ScriptEntry(object):
+    
+    def __init__(self, src, script_type, priority):
+        self.src = src
+        self.script_type = script_type
+        self.priority = priority
+    
+    def __lt__(self, other):
+        return self.priority < other.priority
+    
+    def __eq__(self, other):
+        return self.priority == other.priority
+    
+    def __str__(self):
+        
+        return """<script src="{}"></script>  """.format(self.src)
+
 @register.simple_tag(takes_context=True)
 def Script(context, *args, **kwargs):
-
-    #TODO: Currently we only support isLoggedIn=True or False
-    isLoggedIn = kwargs.get('isLoggedIn', False)
-    src = kwargs.get("src", None);
     
-    if kwargs.get("src", None) is not None: 
-        #We need at minimum src
-        if isLoggedIn: 
-            #the isLoggedIn flag is used to know if we need to check whether
-            #the user is logged in or not. If he is not logged in , then 
-            #there is nothing to do and we just return an empty string. 
-            #Needs to check if the user is logged in. 
-            view_object = context["view_object"]
-            
-            if not view_object.request.user.is_authenticated(): 
-                #If user is not authenticated then we should not add
-                #this script. 
-                return ""
+    script_list = context.get("script_list", None)
+    if not script_list:
+        script_list = []
+        context["script_list"] = script_list
+     
+    if kwargs.get("src") is not None:
         
-        registry.register(src=kwargs.get("src","/dummy/path"),
-                                  type=kwargs.get("type", "text/javascript"),
-                                  priority=kwargs.get("priority", 9999))
-                
-    else: 
-        print("skipped {}".format(token_str))
-        return ""
+        context["script_list"].append(ScriptEntry(src=kwargs.get("src","/dummy/path"),
+                                        script_type=kwargs.get("type", "text/javascript"),
+                                        priority=kwargs.get("priority", 9999)))
+    #print(context["script_list"])
+    print("script_list: {}".format(len(script_list)))
+    print("Adding {}".format(kwargs.get("src")))   
+    return ""
+        
+@register.simple_tag(takes_context=True)
+def CollectedScripts(context, *args, **kwargs):
     
-   
+    
+    result_str = ""
+    script_list = context.get("script_list",None)
+    if script_list:
+        for script in context["script_list"]:
+            result_str += "{}\n".format(str(script))
+        return result_str  
+    else:
+        return """<!-- no scripts to display>"""
+    
+    
 class ScriptCollectorNode(template.Node):
     def __init__(self):
         
@@ -75,6 +94,9 @@ class ScriptCollectorNode(template.Node):
 
     def render(self, context):
        
+        self.request = template.Variable('request')
+        j = self.request.jason
+        
         return registry.html()
     
 @register.tag
@@ -89,7 +111,6 @@ class NullNode(template.Node):
     
     def render(self, context):
         return ""
-
 
 
 @register.tag

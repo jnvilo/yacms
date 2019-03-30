@@ -233,13 +233,14 @@ class CMSEditorWidget extends AdminWidget{
     
     updateContentEditor(id){
     
+        log.debug("updateContentEditor: this = ", this);
         url = "/cms/api/v2/cmscontents/" + this.content_id + "/";
         log.debug("updateContentEditor fetching: ", url);
         $.ajax({
             url: url,
             type: 'GET',
             error: function(){
-                log.debug("Failed to get cmscontent object");
+                log.debug("updateContentEditor: Failed to get cmscontent object from:", url);
             },
             success: function(data){
              log.debug("updateContentEditor success:", data);
@@ -475,12 +476,12 @@ class CMSFileUploaderAdmin{
         var self=this;
         self.cmsentry = cmsentry;
         
-        self.url = "/cms"+ cmsentry.path + "/assets_manager/";
+        self.url = "/cms"+ cmsentry.path + "assets_manager/";
         $.ajax({
             url: url,
             type: 'GET',
             error: function(){
-              log.warn("Failed to get cmscontent object");
+              log.warn("Failed to get assets manager API endpoint", self.url);
             },
             success: function(data){
                 log.debug(data);
@@ -528,7 +529,7 @@ $(document).ready(function () {
         url: url,
         type: 'GET',
         error: function(){
-            log.error("Failed to get cmscontent object");
+            log.error("Failed to get cmscontent object from: ", url);
         },
         success: function(data){
             log.info("Created instance of Admin with cmsentry: ", data)

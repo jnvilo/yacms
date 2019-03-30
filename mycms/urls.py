@@ -31,8 +31,11 @@ urlpatterns = [
 
     url(r'^search/', include('haystack.urls')),
         
+        
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/(?P<filename>[-/\.a-z\d_A-Z]*)$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
+    url(r'assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
+    url(r'assets_manager/(?P<filename>[-/\.a-z\d_A-Z]*)$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),    
     url(r'^mockups/(?P<template>[-._\w\W\d]*.html)$', MockupLoader.as_view()),
     url(r'^mockups/?$', MockupLoader.as_view()),    
     url(r'^user/admin/articles/?$', CMSUserContentArea.as_view()),    

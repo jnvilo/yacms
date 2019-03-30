@@ -947,6 +947,26 @@ class CMSPageView(View):
                     entry_obj, c= CMSEntries.objects.get_or_create(page_type=pagetype_obj,
                                                                  path=path_obj,
                                                                  title="Yet Another CMS.")
+
+
+                    if c:
+                        #We also need to create a content object to attach to entry_obj
+                        content_object = CMSContents()
+                        content_object.content = "myCMS content placeholder."
+                        content_object.meta_description = "myCMS - A django based cms"
+                        
+                        markup_obj, c = CMSMarkUps.objects.get_or_create(markup="Creole")
+                        content_object.markup = markup_obj
+                        
+                        content_object.save()
+                        entry_obj.content.add(content_object)
+                        entry_obj.save()
+
+                        
+
+
+
+
                 except MultipleObjectsReturned as e:
                     msg = "Multiple CMSEntries for /cms found. Database is inconsistent. Using the first one found. "
                     logger.warn(msg)
@@ -1079,7 +1099,7 @@ class  AssetsUploaderView(View):
         assets_dir = self.get_assets_dir()
     
         
-        path = kwargs.get("path", None).lstrip("/")
+        path = kwargs.get("path", "").lstrip("/")
         fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
 
 

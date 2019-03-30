@@ -23,7 +23,7 @@ PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 def get_authors():
     try:
-        with open("AUTHORS.txt", "r") as f: 
+        with open(os.path.join(PACKAGE_ROOT,"AUTHORS.txt"), "r") as f: 
             authors = [l.strip(" *\r\n") for l in f if l.strip().startswith("*")]
     except Exception:
         evalue = sys.exc_info()[1]
@@ -35,7 +35,7 @@ def get_authors():
 def get_requirements():
     reqs = []
     try:
-        f = file("requirements.txt", "r")
+        f = file(os.path.join(PACKAGE_ROOT,"requirements.txt"), "r")
         l = f.readlines()
         for e in l:
             reqs.append(e.strip("\n"))
@@ -46,7 +46,7 @@ def get_requirements():
 
 def get_long_description():
     
-    with open("README.md") as f:
+    with open(os.path.join(PACKAGE_ROOT,"README.md")) as f:
         long_description = f.read()
         
     return long_description

@@ -970,6 +970,8 @@ class CMSPageView(View):
     
         get = request.GET
         
+        #Whenever ?toolbar is added to the get parameter, we save it to the session
+        #This is used as a flag to show the files. 
         toolbar = request.GET.get("toolbar", None)
         if toolbar and toolbar.upper() == "TRUE":
             request.session["show_toolbar"] = True
@@ -980,6 +982,9 @@ class CMSPageView(View):
         #which encapsulates the CMSEntry and all other operations on it. 
         obj = self.get_object(request, **kwargs)
         obj.request = request
+        
+        #Save the toolbar value in the session in the show_toolbar member variable so 
+        #that it can be accessible in the web page template code. 
         obj.show_toolbar = request.session.get("show_toolbar", False) 
         
         

@@ -20,7 +20,7 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.schemas import get_schema_view
 from rest_framework.authtoken import views as authtoken_views
 
-from mycms.views import MockupLoader
+from mycms.views import TemplateSampleLoader
 from mycms.views import CMSUserContentArea
 from rest_framework import routers
 
@@ -33,8 +33,8 @@ urlpatterns = [
         
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/(?P<filename>[-/\.a-z\d_A-Z]*)$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
-    url(r'^mockups/(?P<template>[-._\w\W\d]*.html)$', MockupLoader.as_view()),
-    url(r'^mockups/?$', MockupLoader.as_view()),    
+    url(r'^templates/(?P<template>[-._\w\W\d]*.html)$', TemplateSampleLoader.as_view()),
+    url(r'^templates/?$', TemplateSampleLoader.as_view()),    
     url(r'^user/admin/articles/?$', CMSUserContentArea.as_view()),    
  
     url(r'^(?P<path>[-/\.a-z\d_]*)/$', CMSPageView.as_view(), name="cms_page"),

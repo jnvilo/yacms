@@ -14,10 +14,10 @@ logger = logging.getLogger("mycms.page_handlers")
 # We ensure that the base page types are already created.
 # #####################
 
-from mycms.view_handlers import page_types
-#from . page_types import singlepageview_pagetype_obj
-#from . page_types import multipageview_pagetype_obj
-#from . page_types import allarticles_pagetype_obj
+
+from . page_types import singlepageview_pagetype_obj
+from . page_types import multipageview_pagetype_obj
+from . page_types import allarticles_pagetype_obj
 
 class AllArticlesPage(object):
 

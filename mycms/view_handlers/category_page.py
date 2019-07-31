@@ -16,11 +16,11 @@ logger = logging.getLogger("mycms.page_handlers")
 # #####################
 
 
-#Import page_types to ensure that the page_types are created in the database.
+from . page_types import singlepageview_pagetype_obj
+from . page_types import multipageview_pagetype_obj
+from . page_types import allarticles_pagetype_obj
 
-#TODO: There should be a better way of doing this only once after startup.
 
-from mycms.view_handlers import page_types
 
     
 class CategoryPage(object):
@@ -54,13 +54,9 @@ class CategoryPage(object):
             
         
             
-        try:
-            obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
+        
+        obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | Q(page_type = multipageview_pagetype_obj)) &
                                              Q(path__parent__id = self.page_object.path.id) & Q(published=True) )[offset:offset+limit]
-        except Exception as e:
-            print(e)
-            print(e)
-            pass
         #wrap the entries of the obj_list into their view_handler representations
         
         

@@ -11,7 +11,7 @@
                     <h2>Admin Login</h2>
                     <p>Please enter your email and password</p>
                </div>
-                <form id="Login" action="/login/" method="post">
+                <form id="Login" action="/login/?next={{next}}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
                         <input type="username" class="form-control" id="inputUsername" placeholder="username" name="username">    

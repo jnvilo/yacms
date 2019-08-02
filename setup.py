@@ -15,15 +15,15 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.0.42"
+VERSION_STRING = "0.0.42"
 URL = "https://github.com/jnvilo/mycms"
-DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
+DOWNLOAD_URL = "{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_authors():
     try:
-        with open("AUTHORS.txt", "r") as f: 
+        with open("AUTHORS.txt", "r") as f:
             authors = [l.strip(" *\r\n") for l in f if l.strip().startswith("*")]
     except Exception:
         evalue = sys.exc_info()[1]
@@ -40,45 +40,45 @@ def get_requirements():
         for e in l:
             reqs.append(e.strip("\n"))
     except Exception:
-        print("Failed to install requirements") 
+        print("Failed to install requirements")
 
     return reqs
 
+
 def get_long_description():
-    
+
     with open("README.md") as f:
         long_description = f.read()
-        
+
     return long_description
 
-	
-    
+
 setup(
-    name='mycms',
+    name="mycms",
     version=VERSION_STRING,
-    description='Yet another CMS. This one for django.',
-    long_description=get_long_description(), 
+    description="Yet another CMS. This one for django.",
+    long_description=get_long_description(),
     author=get_authors(),
     author_email="jnvilo@gmail.com",
     maintainer="Jason Viloria",
     url=URL,
-    download_url = DOWNLOAD_URL, 
+    download_url=DOWNLOAD_URL,
     packages=find_packages(),
-    install_requires=get_requirements(), 
-    include_package_data=True, # include package data under svn source control
-    #entry_points={
+    install_requires=get_requirements(),
+    include_package_data=True,  # include package data under svn source control
+    # entry_points={
     #    "console_scripts": [
     #        "creole2html = creole.cmdline:cli_creole2html",
     #        "html2creole = creole.cmdline:cli_html2creole
     #        "html2rest = creole.cmdline:cli_html2rest",
     #        "html2textile = creole.cmdline:cli_html2textile",
     #    ],
-    #},
-    #zip_safe=True, # http://packages.python.org/distribute/setuptools.html#setting-the-zip-safe-flag
-    keywords=["django","cms","blog"] ,
+    # },
+    # zip_safe=True, # http://packages.python.org/distribute/setuptools.html#setting-the-zip-safe-flag
+    keywords=["django", "cms", "blog"],
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        #"Development Status :: 5 - Production/Stable",
+        # "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)",
@@ -89,5 +89,5 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    #test_suite="yacms.tests.get_test_suite",
+    # test_suite="yacms.tests.get_test_suite",
 )

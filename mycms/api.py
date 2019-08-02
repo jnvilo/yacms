@@ -84,53 +84,51 @@ import coreschema
 
 
 from django_filters.rest_framework import DjangoFilterBackend
-__all__ = [ "CMSContentsViewSet",
-            "CMSFormatterContent",
-            "CMSEntriesViewSet"]
 
+__all__ = ["CMSContentsViewSet", "CMSFormatterContent", "CMSEntriesViewSet"]
 
 
 class CMSContentsViewSet(viewsets.ModelViewSet):
     """
     A viewset that allows
     """
+
     permission_classes = (IsAuthenticated,)
 
     queryset = CMSContents.objects.all()
-    serializer_class =  CMSContentsSerializer
+    serializer_class = CMSContentsSerializer
 
     @detail_route(methods=["get"])
     def html(self, request, pk=None):
 
-        content_obj =CMSContents.objects.get(id=pk)
-        data = { "html": content_obj.html}
-        return Response( data, status=status.HTTP_200_OK)
+        content_obj = CMSContents.objects.get(id=pk)
+        data = {"html": content_obj.html}
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class CMSFormatterContent(APIView):
-
     def get(self, request, **kwargs):
 
         content_id = kwargs.get("content_id")
 
-        content_obj =CMSContents.objects.get(id=content_id)
-        data = { "html": content_obj.html}
-        data = { "html": "Use the new html action of CMSContents."}
-        return Response( data, status=status.HTTP_200_OK)
+        content_obj = CMSContents.objects.get(id=content_id)
+        data = {"html": content_obj.html}
+        data = {"html": "Use the new html action of CMSContents."}
+        return Response(data, status=status.HTTP_200_OK)
+
 
 class CMSEntriesViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
-
-    serializer_class =  CMSEntrySerializer
+    serializer_class = CMSEntrySerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('page_type',"frontpage","published")
+    filter_fields = ("page_type", "frontpage", "published")
 
     def get_queryset(self):
 
         queryset = CMSEntries.objects.all()
 
-        parent_path_id = self.request.query_params.get('parent_path_id', None)
+        parent_path_id = self.request.query_params.get("parent_path_id", None)
 
         if parent_path_id is not None:
             queryset = queryset.filter(path__parent=parent_path_id)
@@ -140,8 +138,10 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
     def get_categories(self, request, pk=None):
         parent_obj = CMSEntries.objects.get(id=pk)
         print(parent_obj)
-        c = CMSEntries.objects.filter(path__parent=parent_obj.path, page_type__page_type="CATEGORY")
-        serializer =  CMSEntrySerializer(c, many=True)
+        c = CMSEntries.objects.filter(
+            path__parent=parent_obj.path, page_type__page_type="CATEGORY"
+        )
+        serializer = CMSEntrySerializer(c, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @detail_route(methods=["post"])
@@ -156,141 +156,149 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
             print(serializer.data)
             vd = serializer.validated_data
 
-
-            #The CMSChildEntrySerializer expects to get the pk of
-            #the parent.
+            # The CMSChildEntrySerializer expects to get the pk of
+            # the parent.
             child_obj = serializer.create(vd, pk)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
     @detail_route(methods=["get"])
     def toggle_published(self, request, *args, **kwargs):
-        
+
         try:
             pk = kwargs.get("pk", None)
-            
+
             cms_entry = CMSEntries.objects.get(pk=pk)
             cms_entry.toggle_published()
             cms_entry.save()
         except Exception as e:
-         
-            return Response({"error" : "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response({ "published": cms_entry.published}, status=status.HTTP_202_ACCEPTED)
-    
+
+            return Response(
+                {"error": "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {"published": cms_entry.published}, status=status.HTTP_202_ACCEPTED
+        )
+
     @detail_route(methods=["get"])
     def toggle_frontpage(self, request, *args, **kwargs):
-        
+
         try:
             pk = kwargs.get("pk", None)
-            
+
             cms_entry = CMSEntries.objects.get(pk=pk)
             cms_entry.toggle_frontpage()
             cms_entry.save()
         except Exception as e:
-         
-            return Response({"error" : "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response({ "frontpage": cms_entry.frontpage}, status=status.HTTP_202_ACCEPTED)
-    
-        
+
+            return Response(
+                {"error": "{}".format(e)}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {"frontpage": cms_entry.frontpage}, status=status.HTTP_202_ACCEPTED
+        )
 
 
 class CMSPathsViewSet(viewsets.ModelViewSet):
 
     permission_classes = (IsAuthenticated,)
     queryset = CMSPaths.objects.all()
-    serializer_class =  CMSPathsSerializer
-
+    serializer_class = CMSPathsSerializer
 
 
 class CMSPagesViewSet(viewsets.ModelViewSet):
 
     permission_classes = (IsAuthenticated,)
     queryset = CMSEntries.objects.all()
-    serializer_class =  mycmsserializers.CMSPageSerializer
+    serializer_class = mycmsserializers.CMSPageSerializer
 
 
 class CMSContentPreview(viewsets.GenericViewSet):
     """Implements API endpoint to preview a page."""
 
-    #from rest_framework.schemas.inspectors import AuthoSchema
-    schema = ManualSchema(fields=[
-           coreapi.Field(
-               "content",
-               required=True,
-               location="form",
-               schema=coreschema.String(description= "The raw content that needs to be formatted."),
+    # from rest_framework.schemas.inspectors import AuthoSchema
+    schema = ManualSchema(
+        fields=[
+            coreapi.Field(
+                "content",
+                required=True,
+                location="form",
+                schema=coreschema.String(
+                    description="The raw content that needs to be formatted."
+                ),
+            )
+        ],
+        description="Retrieves the Creole formatted content of what is posted.",
+    )
 
-           )
-           
-       ], description="Retrieves the Creole formatted content of what is posted.")
+    # def get(self, request):
 
+    # if request.user.is_authenticated:
 
-    #def get(self, request):
-
-        #if request.user.is_authenticated:
-
-            #token =
-
+    # token =
 
     def retrieve(self, request, **kwargs):
 
         content = request.data.get("content", None)
-       
+
         if content:
             from mycms.view_handlers.formatters import CreoleFormatter
-            content =  CreoleFormatter(content).html()
-            return Response(data={"content" : content},\
-                            status=status.HTTP_200_OK)
+
+            content = CreoleFormatter(content).html()
+            return Response(data={"content": content}, status=status.HTTP_200_OK)
 
         else:
-            return Response(data={"error": "No Content"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                data={"error": "No Content"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-
-
-    
 
 class CMSAuthToken(viewsets.GenericViewSet):
     """Implements retrieving of Token."""
 
-    #permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
-    #from rest_framework.schemas.inspectors import AuthoSchema
-    schema = ManualSchema(fields=[
-           coreapi.Field(
-               "username",
-               required=True,
-               location="form",
-               schema=coreschema.String(description= "username required to create or retrieve token"),
+    # from rest_framework.schemas.inspectors import AuthoSchema
+    schema = ManualSchema(
+        fields=[
+            coreapi.Field(
+                "username",
+                required=True,
+                location="form",
+                schema=coreschema.String(
+                    description="username required to create or retrieve token"
+                ),
+            ),
+            coreapi.Field(
+                "password",
+                required=True,
+                location="form",
+                schema=coreschema.String(
+                    description="password required to create or retrieve token"
+                ),
+            ),
+            coreapi.Field(
+                "renew",
+                required=False,
+                location="query",
+                schema=coreschema.Boolean(
+                    description="set to true to retrieve a new token invalidating old one if it exists."
+                ),
+                description="password required to create or retrieve token",
+            ),
+        ],
+        description="Gets or Creates a Token for the given user.",
+    )
 
-           ),
-           coreapi.Field(
-               "password",
-               required=True,
-               location="form",
-               schema=coreschema.String(description="password required to create or retrieve token"),
-           ),
-           coreapi.Field(
-               "renew",
-               required=False,
-               location="query",
-               schema=coreschema.Boolean(description= "set to true to retrieve a new token invalidating old one if it exists."),
-               description="password required to create or retrieve token"
+    # def get(self, request):
 
-           )
-       ], description="Gets or Creates a Token for the given user.")
+    # if request.user.is_authenticated:
 
-
-    #def get(self, request):
-
-        #if request.user.is_authenticated:
-
-            #token =
-
+    # token =
 
     def retrieve(self, request, **kwargs):
 
@@ -299,19 +307,19 @@ class CMSAuthToken(viewsets.GenericViewSet):
         renew = request.data.get("renew", False)
         """Returns token for logged in user."""
 
-
         if request.user.is_authenticated:
             if renew:
                 try:
                     token = Token.objects.get(user=request.user)
                     token.delete()
                 except ObjectDoesNotExist as e:
-                    #Nothing to renew
+                    # Nothing to renew
                     pass
 
             token, created = Token.objects.get_or_create(user=request.user)
-            return Response(data={"token" : token.key},\
-                            status=status.HTTP_200_OK)
+            return Response(data={"token": token.key}, status=status.HTTP_200_OK)
 
         else:
-            return Response(data={"error": "Not Authorized"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                data={"error": "Not Authorized"}, status=status.HTTP_401_UNAUTHORIZED
+            )

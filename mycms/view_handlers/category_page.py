@@ -112,8 +112,8 @@ class CategoryPage(object):
         
        
         
-        obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | 
-                                              Q(page_type = multipageview_pagetype_obj)) &
+        obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | 
+                                              Q(page_type = page_types.multipageview_pagetype_obj)) &
                                              Q(path__path__startswith =  self.page_object.path.path))               
                 
 

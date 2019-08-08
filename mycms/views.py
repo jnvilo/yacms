@@ -17,6 +17,7 @@ import arrow
 from pathlib import Path
 from django.conf import settings
 
+from django.contrib.auth import logout
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from django.contrib.sitemaps import Sitemap
@@ -298,12 +299,16 @@ class CMSLoginForm(forms.Form):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput)
 
 class CMSLoginView(View):
-
+    
     def get(self, request, **kwargs):
-        template_name = "mycms/Login.html"
-
-        context = {"form": CMSLoginForm()}
-        return render(request, template_name, context)
+        
+        if not request.user.is_authenticated:
+            template_name = "mycms/Login.html"
+    
+            context = {"form": CMSLoginForm()}
+            return render(request, template_name, context)
+        else:
+            return HttpResponseRedirect("/profile")
 
 
     def post(self, request, **kwargs):
@@ -314,6 +319,15 @@ class CMSLoginView(View):
         #Set the next page to a default if not given. 
         next_page = request.GET.get("next", "/cms/user/articles")
 
+        #sanitize next_page
+        
+        if len(next_page) == 0:
+            next_page = "/profile"
+        
+        if not ( (next_page=="/") or next_page.startswith("/cms") or (next_page=="/profile")):
+            #We only allow redirects to cms contents or to /profile
+            self.log.info("redirect after login denied to: {}".format(next_page))
+        
         from django.contrib.auth import authenticate
         user = authenticate(username=username, password=password)
 
@@ -338,6 +352,15 @@ class CMSLoginView(View):
         return render(request, template_name,{ "error_msg": error_msg})
 
 
+class CMSUserProfileView(View):
+    
+    def get(self, request, **kwargs):
+        template_name = "mycms/Profile.html"
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect("/login")
+        else:
+            return render(request, template_name)
+    
 
 class CMSUserAdminPagesView(View):
     
@@ -350,17 +373,21 @@ class CMSLogoutView(View):
 
     def get(self, request, **kwargs):
         logout(request)
-        #template_name = "mycms/Login.html"
-        #return render_to_response(template_name,context_instance=RequestContext(request))
+        template_name = "mycms/Logout.html"
+     
+        #So lets log the user out.
+        
+        if request.user.is_active:
+            logout(request)
+            
         return HttpResponseRedirect("/login/")
+        
 
 class CMSFrontPage(View):
 
     def get(self, request, **kwargs):
 
-        #template_name = "mycms/Index.html"
-        template_name = "mycms/index.html"
-        #return render(template_name,context_instance=RequestContext(request) )
+        template_name = "mycms/Index.html"
         
         #TODO: Fix this hack. We create a fake view_object for the frontpage
         #so that we can pass a few template data. 

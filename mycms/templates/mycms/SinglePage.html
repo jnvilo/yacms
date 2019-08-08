@@ -1,5 +1,4 @@
-{% extends "base_with_header_and_right_sidebar.html"%}
-  {% load mycms_tags%}
+{% extends "base_with_header.html"%}
   
 {%block PAGE_CONTENT%}
      {{view_object.html_content | safe }}      
@@ -12,7 +11,7 @@
 {% if view_object.request.user.username == "admin" %}
 
     {% load pageadmin_tags %}
-    
+    {# PageAdmin will load the admin html which is usually hidden. #}
     {% PageAdmin %}
 
     <!--Required JavaScript for PageAdmin -->

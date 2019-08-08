@@ -4,8 +4,7 @@ class BaseAdmin{
     constructor(data){    
         this.cmsentry = data;
         this.cmsentry_id = data["id"];
-       
-            
+          
     }
     
    
@@ -351,10 +350,14 @@ class CMSEntriesWidget extends AdminWidget{
     **/
     update(){
             
-        var path_id = this.cmsentry.id;
+        var path_id = view_json["path"];
+        
+    
+    
         var url = "/cms/api/v2/cmsentries/?limit=100&parent_path_id="+path_id;
-    
-    
+        console.log("GOING TO FETCH", url);
+       
+        console.log(this.cmsentry);
         $.ajax({
             url: url,
             type: 'GET',
@@ -366,6 +369,8 @@ class CMSEntriesWidget extends AdminWidget{
     
                 var cmsentries_list = cmsentries["results"];
                 /**We also want to get the CMSPageTypes to use in our display **/
+                
+                console.log("GOT RESILTS", cmsentries_list);
                 $.ajax({
                     url: "/cms/api/v2/cmspagetypes/",
                     type: 'GET',
@@ -459,7 +464,6 @@ class CMSEntriesWidget extends AdminWidget{
             },
             success: (data) =>{
                 
-                //alert("Create results", data);                
                 this.update();
             
             }

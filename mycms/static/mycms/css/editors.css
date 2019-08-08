@@ -24,11 +24,11 @@
 }
 
 #admin-tabs{
-    background-color:white;
-        border: 1px solid transparent;
+    background-color:#555;
+    border: 1px solid transparent;
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
-
+    
 }
 
 #admin-pane{
@@ -36,11 +36,12 @@
     padding-left: 15px;
     padding-right: 15px;
     height:90%;
+    margin-top:10px;
 
 }
 
 #admin-pane ul {
-    background-color: #ddd;
+    background-color: #grey;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;    
 }
@@ -55,6 +56,27 @@
 #creole-editor-pane{
     height:100%;
 }
+
+
+#creole-editor-icons button {
+background: #ddd;
+font-color:black;
+color:black;
+}
+
+.nav-tabs {
+ border-bottom: #fff;
+}
+
+
+.grey-background {
+    background-color:#ccc;
+}
+
+#creole-editor-icons{
+    background-color:#FFF;
+}
+
 
 #editor-container{
     height:100%;
@@ -77,9 +99,7 @@
 }
 
 
-#creole-editor-icons ul{
-    background-color:#fff;
-}
+
 #close-admin-overlay-button {
     position: relative;
     margin-right: 5px;
@@ -95,16 +115,17 @@
     margin-top:3px;
     margin-bottom:3px;
     width:32px;
-    color:white;
+    color:#ddd;
     margin-left:5px;
     background-color:#adb5bd;
+    height: 35px;
 }
 
 .editor-icon-checkbox{
     width:72px;
     font-size:9px;
     background-color:#5385A1;
-    height:27px;
+    
 }
 
 

@@ -328,18 +328,14 @@ class CMSEntriesWidget extends AdminWidget{
             url: url,
             type: 'PATCH',
             data: { frontpage : bool_status },
-    
             error: function(data){ 
                 log.debug("CMSEntryWidget frontpage toggle failed.", data);  
-            },
-            
+            },            
             success: (data) => {
                 log.debug("CMSEntry Set frontpage to :" ,data);
                 element.textContent=data["frontpage"] ;
             }
         });
-        
-    
     }
     
     
@@ -410,20 +406,12 @@ class CMSEntriesWidget extends AdminWidget{
                             var table_row = "<tr id=\"" + entry.id + "\"><td>" + entry.id + "</td>";
             
                             var title_link = "<a href=\"/cms"+ entry.path + "\">" + entry.title + "</a>"
-            
-            
-                          
-                            
-            
                             table_row = table_row + "<td>" + title_link + "</td>";
                             table_row = table_row + "<td>" + pagetype_dict[entry.page_type] + "</td>";
                             table_row = table_row + "<td class=\"table_entry_published\">"+ entry.published +"</td>";
                             table_row = table_row + "<td class=\"table_entry_frontpage\">"+ entry.frontpage +"</td>";
-                            table_row = table_row + "<td>"+ entry.date_created +"</td></tr>";
-            
+                            table_row = table_row + "<td>"+ entry.date_created +"</td></tr>";            
                             //log.debug("Adding : " + table_row)
-                            
-            
                             $('#CMSEntriesTable tbody:last-child').append(table_row);
                         }
                     }

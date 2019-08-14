@@ -25,7 +25,7 @@ make_published.short_description= "Publish Selected CMSEntries"
 class CMSEntries(admin.ModelAdmin):
     list_display = ['id', 'title', 'slug', 'path', 'page_type', 'published', 'frontpage']
     list_filter =["page_type", "template"]
-
+    search_fields = ('title',)
     actions = [make_published]
 
 @admin.register(CMSMarkUps)

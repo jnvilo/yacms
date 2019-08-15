@@ -18,7 +18,6 @@ from django.dispatch import receiver
 
 from mycms.creole import creole2html
 
-
 from rest_framework.authtoken.models import Token
 
 from loremipsum import generate_paragraphs

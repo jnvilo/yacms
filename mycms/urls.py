@@ -31,8 +31,11 @@ urlpatterns = [
 
     url(r'^search/', include('haystack.urls')),
         
+        
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/(?P<filename>[-/\.a-z\d_A-Z]*)$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
+    url(r'assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
+    url(r'assets_manager/(?P<filename>[-/\.a-z\d_A-Z]*)$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),    
     url(r'^mockups/(?P<template>[-._\w\W\d]*.html)$', MockupLoader.as_view()),
     url(r'^mockups/?$', MockupLoader.as_view()),    
     url(r'^user/admin/articles/?$', CMSUserContentArea.as_view()),    
@@ -59,6 +62,7 @@ router.register(r'api/v2/cmscontents', api.CMSContentsViewSet, base_name='cmscon
 router.register(r'api/v2/cmsentries', api.CMSEntriesViewSet, base_name='cmsentries')
 router.register(r'api/v2/cmspaths', api.CMSPathsViewSet, base_name='cmspaths')
 router.register(r'api/v2/cmspages', api.CMSPagesViewSet, base_name='cmspages')
+router.register(r'api/v2/cmspagetypes', api.CMSPageTypeViewSet, base_name='cmspagetypes')
 #router.register(r'api/v2/cmspreview', api.CMSContentPreview, base_name='cmspreview')
 #router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, base_name='cmsauthtoken')
 #router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')

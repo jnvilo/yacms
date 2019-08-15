@@ -23,7 +23,7 @@ logger = logging.getLogger("mycms.page_handlers")
 from mycms.view_handlers import page_types
 
     
-class CategoryPage(object):
+class CategoryPage(page_types.BasePage):
 
     def __init__(self, page_object, request=None):
         self.page_object = page_object
@@ -37,8 +37,7 @@ class CategoryPage(object):
 
         from django.db.models import Q
         
-        article_list = ArticleList()
-
+       
         # ######################################################################
         # This loads up all the articles that are 
         # of type single_page or multipage and has the provided parent. 
@@ -48,22 +47,27 @@ class CategoryPage(object):
         # paginate_by = 10
         # page = 2
         
-        if self.request: 
-            limit = int(self.request.GET.get("limit",10))
-            offset = int(self.request.GET.get("offset", 0))
+        limit, offset, page = self.get_list_params()
             
         
+<<<<<<< HEAD
             
         try:
             obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
+=======
+        obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
+>>>>>>> 0.1.1
                                              Q(path__parent__id = self.page_object.path.id) & Q(published=True) )[offset:offset+limit]
         except Exception as e:
             print(e)
             print(e)
             pass
         #wrap the entries of the obj_list into their view_handler representations
+        obj_list_count  = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
+                                             Q(path__parent__id = self.page_object.path.id) & Q(published=True) )[offset:offset+limit].count()        
         
-        
+      
+        article_list = ArticleList(obj_list_count, page)        
         
         for obj in obj_list:
             article_list.append(ViewObject(page_object=obj))
@@ -112,8 +116,8 @@ class CategoryPage(object):
         
        
         
-        obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | 
-                                              Q(page_type = multipageview_pagetype_obj)) &
+        obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | 
+                                              Q(page_type = page_types.multipageview_pagetype_obj)) &
                                              Q(path__path__startswith =  self.page_object.path.path))               
                 
 

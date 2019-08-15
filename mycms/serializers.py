@@ -15,6 +15,8 @@ from mycms.models import CMSEntries
 from mycms.models import CMSPaths
 
 import os
+import random
+from faker import Faker
 
 class LoremIpsumSerializer(serializers.Serializer):
 
@@ -160,7 +162,7 @@ class CMSChildEntrySerializer(serializers.ModelSerializer):
         child.template = template
 
         if len(content) == 0:
-            content_entry = CMSContents(content="New Page. Please Edit Me!!!")
+            content_entry = CMSContents(content=self.fake_content())
             content_entry.save()
             child.content.add(content_entry)
         else:
@@ -177,7 +179,25 @@ class CMSChildEntrySerializer(serializers.ModelSerializer):
         
         return child
 
-
+    def fake_content(self):
+        
+        fake = Faker()
+        
+        num_paragraphs = random.randint(3,5)
+        
+        paragraphs = []
+        for c in range(num_paragraphs):
+            num_sentences = random.randint(5,10)
+            paragraphs.append(" ".join(fake.paragraphs(num_sentences)))
+            
+        return "\n\n".join(paragraphs)
+            
+        
+            
+            
+            
+        
+        
 
 class CMSPathFullSerializer(serializers.ModelSerializer):
 

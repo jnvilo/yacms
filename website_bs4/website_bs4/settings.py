@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PARENT_DIR = Path(BASE_DIR).parent.as_posix()
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +27,7 @@ SECRET_KEY = 'ihyb&o^=fe0vw0&t0d-p__p3gflcss_+n6%gn2m8klv91ttvid'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,7 +42,8 @@ INSTALLED_APPS = [
     'haystack', #mycms uses this for search functionality. 
     'mycms', #the mycms itself.
     'rest_framework', #required for the mycms REST api
-    'rest_framework.authtoken'  #required for the mycms REST API
+    'rest_framework.authtoken',  #required for the mycms REST API
+      'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -127,7 +130,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-
+STATIC_ROOT = os.path.join(PARENT_DIR, "static_root")
 
 import os
 HAYSTACK_CONNECTIONS = {
@@ -146,7 +149,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication', 
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),   
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    
+    
 }
 
 FORCE_SHOW_ADVERTS = False

@@ -107,6 +107,9 @@ class MultiPage(object):
             return False
         else:
             return True
+        
+        
+        
 
 class MemberPage(object):
 

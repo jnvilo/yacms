@@ -1,0 +1,265 @@
+/*!
+ * Start Bootstrap - Small Business (https://startbootstrap.com/template-overviews/small-business)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-small-business/blob/master/LICENSE)
+ */
+body {
+  padding-top: 56px;
+}
+
+/**
+Color definitions
+**/
+
+.bg-dark{
+     background-color: #1E2E5D!important;
+}
+
+.bg-light { 
+    background-color: #3B6BA1!important;
+}
+
+
+#page-content{
+margin-top:20px;
+}
+
+#page-content h2{
+ font-size:20px;
+ margin: 0 0 10px 0;
+}
+
+
+
+/**
+Blog Post Styles
+**/
+
+
+.blog-post-item { 
+    margin-top: 1.5rem!important;
+}
+
+.blog-post-item h2 {
+    letter-spacing: 0;
+    font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+ul.blog-post-info {
+    display: block;
+    border-bottom: #eaeaea 1px dotted;
+    padding-bottom: 5px;
+    font-size: 14px;
+}
+
+ul.blog-post-info li i {
+    color: #888;
+    margin-right: 5px;
+}
+
+ul.list-inline>li {
+    display: inline-block;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.list-inline {
+    padding-left: 0;
+    list-style: none;
+}
+
+/**
+READ More Button
+**/
+
+.btn.btn-reveal {
+    padding-left: 28px;
+    padding-right: 28px;
+    overflow: hidden;
+    position: relative;
+}
+
+.btn-default {
+    color: #FFF;
+    background-color: #3B6BA1;
+    border-color: #ccc;
+    padding: 6px 12px;
+    line-height: 26px;
+}
+
+
+/**
+Global Settings
+**/
+
+a {
+    color: #1E2E5D;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+h2 {
+    font-size: 30px;
+    margin: 0 0 32px 0;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+    font-weight: 600;
+    color: #1E2E5D;
+    margin: 0 0 30px 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/**Footer styles**/
+
+footer {
+    margin-top:20px;
+
+}
+
+
+/**
+MAIN Header 
+**/
+
+#mainHeader {
+    background: url(../images/theme-pics/header-line.png) repeat-x bottom #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.54);
+}
+
+/**Page Content Header**/
+
+.page-header {
+    border-bottom: 1px solid rgba(1,1,1,0.075);
+    background: #0A549F;
+}
+
+.breadcrumb{
+    color:#fff;
+}
+
+.page-header h1 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0;
+    font-weight: 700;
+    font-size: 22px;
+    color:#fff;
+}
+
+ul.breadcrumb {
+    padding: 0;
+    margin-bottom: 0;
+    background: none;
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    right: 15px;
+   
+}
+
+ul.breadcrumb li {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    
+}
+
+ul.breadcrumb li a{
+    color:#fff;
+}
+
+
+pre {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-form {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    margin-top:50px;
+}}
+
+
+.dropdown-main-link{
+    cursor: pointer;
+
+}
+
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+
+.image-holder {
+    text-align: center;
+
+}

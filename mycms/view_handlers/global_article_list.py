@@ -15,17 +15,18 @@ logger = logging.getLogger("mycms.page_handlers")
 # #####################
 
 from mycms.view_handlers import page_types
-#from . page_types import singlepageview_pagetype_obj
-#from . page_types import multipageview_pagetype_obj
-#from . page_types import allarticles_pagetype_obj
 
-class AllArticlesPage(object):
+
+class AllArticlesPage(page_types.BasePage):
+    
 
     def __init__(self, page_object, request=None):
         self.page_object = page_object
         self.request = request
         self._article_list = None
 
+    #TODO: Refactor the code so that there is only one articles() method used 
+    #by all and just control by a flag whether we want to recursively or not.
 
     def articles(self):
 
@@ -33,37 +34,17 @@ class AllArticlesPage(object):
 
         from django.db.models import Q
 
-        
         # ######################################################################
         # This loads up all the articles that are 
         # of type single_page or multipage and has the provided parent. 
        
-        if self.request: 
-            try: 
-                limit = int(self.request.GET.get("limit",10))
-            except Exception as e: 
-                #this can only happen if we got a bad limit value such as a non 
-                #integer value.Set limit to a sane value.
-                limit = 10
-            
-            try: 
-                offset = int(self.request.GET.get("offset", 0))
-            except Exception as e: 
-                #same reason as above
-                offset = 0
-                
-        else:
-            limit = 10
-            offset = 0
-        
-        #We only recalculate if the limit and offset has changed. 
-        
-        
-        # prepare the article list. 
-        
+        limit, offset, page = self.get_list_params()
+       
         if  ((self._article_list is None) or 
              (limit != self._article_list.limit) or
-             (offset != self._article_list.offset)):
+             (offset != self._article_list.offset) or
+             (page != self._article_list.page)
+             ):
         
             # the above "if" works because the first boolean tests if 
             #self._article_list is None and the rest are not evaluated further. 
@@ -72,34 +53,51 @@ class AllArticlesPage(object):
             #is avoided by caching the results so that when processing the 
             #template we do not need to execute this code any further. 
             
-            self._article_list = ArticleList()
-            self._article_list.limit = limit
-            self._article_list.offset = offset
             
-            obj_list = CMSEntries.objects.filter(
-                                                 (Q(page_type = singlepageview_pagetype_obj ) | 
-                                                  Q(page_type = multipageview_pagetype_obj)
-                                                  ) &
-                                                  Q( lists_include = True)
-                                                 )[offset:offset+limit + 1]
-            
-            num_results = obj_list.count()
-            if num_results > limit: 
-                #this mean we have more. 
-                self._article_list.has_older = True
-            else:
-                self._article_list.has_older = False
+            offset = page*limit - limit
                 
-            if offset == 0 : 
-                self._article_list.has_newer = False
-            else:
-                self._article_list.has_newer = True
+            
+            #Get the results via offset and limit.
+            obj_list = CMSEntries.objects.filter(
+                                                 (Q(page_type = page_types.singlepageview_pagetype_obj ) | 
+                                                  Q(page_type = page_types.multipageview_pagetype_obj)
+                                                  ) & Q( lists_include = True)
+                                                 ) [offset:offset+limit]
+            
+            
+            num_entries = CMSEntries.objects.filter(
+                                        (Q(page_type = page_types.singlepageview_pagetype_obj ) | 
+                                         Q(page_type = page_types.multipageview_pagetype_obj)
+                                         ) &
+                                         Q( lists_include = True)
+                                        ) [offset:offset+limit].count()
+            
+            num_total_cmsentries = CMSEntries.objects.filter(
+                                                 (Q(page_type = page_types.singlepageview_pagetype_obj ) | 
+                                                  Q(page_type = page_types.multipageview_pagetype_obj)
+                                                  ) &
+                                                  Q( lists_include = True)).count()
+            
+            
+            
+            self._article_list = ArticleList(num_total_cmsentries, page)
+            self._article_list.limit = limit
+            self._article_list.offset = offset                        
+            self._article_list.num_total_cmsentries = num_total_cmsentries
+            
+            
+            
+        
+        
+        
             
             for obj in obj_list:
                 self._article_list.append(ViewObject(page_object=obj))
 
         
         return self._article_list
+
+
 
     def get_categories(self):
         """Returns a list of all child categories of type: CATEGORY"""

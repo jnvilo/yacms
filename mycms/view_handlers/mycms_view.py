@@ -11,6 +11,7 @@ from django.forms.models import model_to_dict
 from django.utils.text import slugify
 import simplejson as json
 import hashlib
+import math
 
 from bs4 import BeautifulSoup
 
@@ -20,52 +21,64 @@ logger = logging.getLogger("mycms.view_handlers.ViewObject")
 from . formatters import CreoleFormatter
 
 class ArticleList(list):
+    """
+    Encapsulates a list of CMSEntries to provide helpful properties needed
+    by the template to properly show and manage a list. 
     
-    def __init__(self):
+    This is used by view_object.articles() which returns an Articles List.
+    
+    This is just a reimplementation of the django Paginator because when I first
+    wrote this, I did not know about the paginator.
+    
+    """
+    
+    def __init__(self, total_entries,page):
         super().__init__(self)
-    
-        self._next = None
-        self._total_articles = None
-        self._limit = 10
-        self._offset = 0 
-        self.has_newer = False
-        self.has_older = False
-        self.processed = False 
-    @property
-    def next_offset(self):
-        return self.limit + self.offset
+        
+        self.limit = 2
+        self.total_entries = total_entries
+        self.page  = page  #The current page we are on.
         
     @property
-    def next(self):
-        return self._next
+    def show_pagination(self):
+        """
+        Returns a boolean whether we should show the pagination or not. This 
+        is True when limit is less than the total number of CMSEntries that
+        can be shown.
+        """
+        if (self.total_entries >  self.limit):
+            return True
+        else:
+            return False
+        
+    def total_pages(self):
+        """
+        Returns the total number of pages. 
+        """
+        return math.ceil(self.total_entries / self.limit)
+        
+    def page_range(self):
+        return range(1,self.total_pages() +1)
+        
     
-    @next.setter
-    def next(self, value):
-        self._next = value
+    def has_previous(self):
+        return  self.page > 1
+        
+    def has_next(self):
+        total_pages = self.total_pages()
+        return self.page < total_pages
     
-    @property 
-    def total_articles(self):
-        return self._total_articles
+        
+    def has_other_pages(self):
+        return self.has_previous() or self.has_next()
     
-    @total_articles.setter
-    def total_articles(self, value):
-        self._total_articles = value
     
-    @property 
-    def limit(self):
-        return self._limit 
-    
-    @limit.setter
-    def limit(self,value):
-        self._limit = value
-    
-    @property 
-    def offset(self):
-        return self._offset
-    
-    @offset.setter
-    def offset(self, value):
-        self._offset = value
+        
+        
+        
+        
+        
+
 
 
 class ContentTopicsContainer(object):
@@ -166,6 +179,12 @@ class ViewObject(object):
         except AttributeError as e:
             return None
 
+    @property
+    def author(self):
+        a = self.page_object.created_by
+        if a is None:
+            a= "admin"
+        return a
     @property
     def page_object(self, reload=False):
         """

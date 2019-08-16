@@ -1,4 +1,6 @@
 
+Version 0.1.2
+
 # MyCMS - Yet Another Django Based CMS. 
 
 This is a cms that I have been using as a development playground to test out 

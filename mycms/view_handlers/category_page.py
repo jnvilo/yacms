@@ -49,14 +49,9 @@ class CategoryPage(page_types.BasePage):
         
         limit, offset, page = self.get_list_params()
             
-        
-<<<<<<< HEAD
             
         try:
             obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
-=======
-        obj_list = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
->>>>>>> 0.1.1
                                              Q(path__parent__id = self.page_object.path.id) & Q(published=True) )[offset:offset+limit]
         except Exception as e:
             print(e)

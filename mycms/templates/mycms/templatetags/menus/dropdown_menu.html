@@ -24,7 +24,6 @@
     </div>        
     {% else %}
         {% comment %}This is for the case when the current menu has NO children.{% endcomment %}
-        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-        <li class="dropdown-item"><a href="#">{{child.title}}</a></li>
+         <a class="nav-link" href="/cms/{{parent.path}}">{{parent.title}}</a>
     {% endif %}
 </li>

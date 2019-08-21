@@ -22,6 +22,10 @@ from rest_framework.authtoken import views as authtoken_views
 
 from mycms.views import MockupLoader
 from mycms.views import CMSUserContentArea
+from mycms.views import CMSLoginView
+from mycms.views import CMSLogoutView
+from mycms.views import CMSUserProfileView
+
 from rest_framework import routers
 
 from mycms import api
@@ -30,8 +34,10 @@ from mycms.views import CMSFormatterContent
 urlpatterns = [
 
     url(r'^search/', include('haystack.urls')),
+    url(r'^logout/$', CMSLogoutView.as_view()),
+    url(r'^profile/$', CMSUserProfileView.as_view()),
         
-        
+    url(r'^login/$', CMSLoginView.as_view()),    
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
     url(r'^(?P<path>[-/\.a-z\d_]*)/assets_manager/(?P<filename>[-/\.a-z\d_A-Z]*)$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),
     url(r'assets_manager/$', csrf_exempt(AssetsUploaderView.as_view()), name="assets_manager_get"),

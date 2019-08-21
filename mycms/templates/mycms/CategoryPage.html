@@ -1,91 +1,37 @@
 {% extends "base_with_header_and_right_sidebar.html"%}
+  {
+  
+  
 {%block PAGE_CONTENT%}
 
-  {%for article in view_object.articles %}
-
-        <!--Start Blog Post Item -->
-        <div class="blog-post-item">
-          <h2><a href="/cms/{{article.path}}">{{article.title}}</a></h2>
-          <ul class="blog-post-info list-inline">
-                  <li><a href="#"><i class="fa fa-clock-o"></i><span class="font-lato">June 29, 2017</span></a></li>
-                  <!-- li><a href="#"><i class="fa fa-comment-o"></i> <span class="font-lato">28 Comments</span></a></li-->
-                  <li><i class="fa fa-folder-open-o"></i> <a class="category" href="/cms/{{article.parent.path}}"><span class="font-lato"></span></a>
-                      <a class="category" href="{{article.parent.path}}"><span class="font-lato">{{article.page_object.parent.title}}</span></a>
-                  </li>
-                  <li><a href="#"><i class="fa fa-user"></i> <span class="font-lato">{{article.author}}</span></a></li>
-          </ul>
-          <p>{{ article.introduction|safe|truncatewords_html:50 }}</p>
-          <a href="/cms{{article.path}}" class="font-light btn btn-reveal btn-default bg-light">
-            <i class="fa fa-plus"></i><span>Read More</span>
-          </a>
-        </div>
-        <!-- End blog post Item-->
-  {%endfor%}
+  <article>
+            {% for article in view_object.articles %}
+                 <article class="post clearfix">
+                     <div class="row">
+                         <section class="col-sm-11 col-xs-10 article-summary">
+                             <h2><a href="/cms{{article.path}}">{{article.title}}</a></h2>
+                                 <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
+                                 
+                                 <ul class="list-inline entry-meta">
+                                     <li class="entry-date"><a href="#"><i class="far fa-calendar-alt"></i>&nbsp;{{article.created_timestamp_str}}</a></li>
+                                     <li class="entry-category"><a href="/cms{{article.page_object.parent.path}}"><i class="far fa-folder"></i>&nbsp;{{article.page_object.parent.title}}</a></li>
+                                     <li class="entry-author"><a href="#"><i class="far fa-user"></i>&nbsp;Admin</a></li>
+                                     <li class="entry-date"><a href="/cms/{{article.page_object.parent.path}}" class="readMore">read more</a></li>
+                                     <!-- li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li -->
+                                 </ul>
+                         </section>
+                     </div>
+                 </article>
+             {% endfor %}
+    
+     </article>
     
    {% load pagecontents_tags%}
+   
    {% PageNavigation %}
             
 {%endblock PAGE_CONTENT%}
       
-{%block SIDEBAR %}
-
-        <!-- Search Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Search</h5>
-          <div class="card-body">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for...">
-              <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Go!</button>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Categories Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Categories</h5>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-lg-6">
-                <ul class="list-unstyled mb-0">
-                  <li>
-                    <a href="#">Web Design</a>
-                  </li>
-                  <li>
-                    <a href="#">HTML</a>
-                  </li>
-                  <li>
-                    <a href="#">Freebies</a>
-                  </li>
-                </ul>
-              </div>
-              <div class="col-lg-6">
-                <ul class="list-unstyled mb-0">
-                  <li>
-                    <a href="#">JavaScript</a>
-                  </li>
-                  <li>
-                    <a href="#">CSS</a>
-                  </li>
-                  <li>
-                    <a href="#">Tutorials</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Side Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Side Widget</h5>
-          <div class="card-body">
-            You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
-          </div>
-        </div>
-
-{%endblock SIDEBAR %}
 
  
 {%block BOTTOM_HTML %}
@@ -93,8 +39,7 @@
 
 {% if view_object.request.user.username == "admin" %}
 
-    {% load pageadmin_tags %}
-    
+    {% load pageadmin_tags %}   
     {% PageAdmin %}
 
     <!--Required JavaScript for PageAdmin -->
@@ -106,21 +51,16 @@
     <script src="/static/mycms/vendor/fileinput/js/plugins/piexif.js" type="text/javascript"></script>
     <script src="/static/mycms/vendor/fileinput/themes/fas/theme.js" type="text/javascript"></script>
     <script src="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.js" type="text/javascript"></script>
- 
- 
- 
-    <script type="text/javascript" src="/static/mycms/dustjs/dust-full.js"></script>
+
     <script type="text/javascript" src="/static/mycms/js/admin.js"></script>
 
 <script>
-
-
-
 $(document).ready(function () {
   
     log.setLevel(log.levels.DEBUG);
     log.debug("Entered Document.ready");
-    //log.debug("document.ready on page reached.");
+    log.debug("document.ready on page reached.");
+    alert("log");
     //log.info("This is an info");
     //log.warn("This is a warning");
     //log.error("This is a fatal error");
@@ -141,21 +81,11 @@ $(document).ready(function () {
             
             initialPreviewConfigData = data["initialPreviewConfig"];
             initialPreviewData = data["initialPreview"];
-            
-            update_file_uploader(initialPreviewData, initialPreviewConfigData);
-            
-           
-        }
-
+            update_file_uploader(initialPreviewData, initialPreviewConfigData);           
+        },
   });
 
-  function update_file_uploader(initialPreviewData, initialPreviewConfigData){
-      
-});
-    
-  
-</script -->
-
+</script>
 {%endif%}
 
 

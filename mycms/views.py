@@ -302,10 +302,14 @@ class CMSLoginView(View):
     
     def get(self, request, **kwargs):
         
+        next_page = request.GET.get("next", "")
+        
         if not request.user.is_authenticated:
             template_name = "mycms/Login.html"
-    
-            context = {"form": CMSLoginForm()}
+            
+            #also set a session variable to show the toolbar
+            request.session["show_toolbar"] = True
+            context = {"form": CMSLoginForm(), "next":next_page }
             return render(request, template_name, context)
         else:
             return HttpResponseRedirect("/profile")
@@ -927,8 +931,6 @@ class CMSPageView(View):
         CMSArticleListsView.    
         CMSIndexView
         CMSFrontPage
-        
-        
     """
 
     def get_object(self,request, **kwargs):
@@ -1018,14 +1020,47 @@ class CMSPageView(View):
     
         get = request.GET
         
-        #Whenever ?toolbar is added to the get parameter, we save it to the session
-        #This is used as a flag to show the files. 
+        """
+        Whenever ?toolbar is added to the get parameter, we save it to the session
+        This is used as a flag to show the files. 
+        """
         toolbar = request.GET.get("toolbar", None)
         if toolbar and toolbar.upper() == "TRUE":
             request.session["show_toolbar"] = True
         elif toolbar and toolbar.upper() == "FALSE":
             request.session["show_toolbar"] = False
         
+        login = request.GET.get("login", None)
+        logout = request.GET.get("logout", None)
+        
+        if login:
+            """
+            When a page is requested with ?login=X where X can be anything, we 
+            redirect them to the login page which will send it back to this 
+            page once logged in. 
+            """
+            
+            #But only do it if user is not yet logged in
+            if not request.user.is_authenticated:
+                #so redirecto user to log in page and give our path to come back to
+                return HttpResponseRedirect("/cms/login/?next={}".format(request.path))
+        
+            else:
+                """
+                The user is not logged in. 
+                """
+                
+                ###
+                #TODO: Implement a message to the user that he is already logged in.
+                ###
+                
+                #For now do dnothing
+                pass
+            
+        if logout and request.user.is_authenticated:
+            #jist logout the current user and send him to the logout. 
+                return HttpResponseRedirect("/cms/logout/")
+            
         #get object will load return an instance of mycms.view_handlers.ViewObject
         #which encapsulates the CMSEntry and all other operations on it. 
         obj = self.get_object(request, **kwargs)

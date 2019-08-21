@@ -61,7 +61,7 @@ class AllArticlesPage(page_types.BasePage):
             obj_list = CMSEntries.objects.filter(
                                                  (Q(page_type = page_types.singlepageview_pagetype_obj ) | 
                                                   Q(page_type = page_types.multipageview_pagetype_obj)
-                                                  ) & Q( lists_include = True)
+                                                  ) & Q( lists_include = True)  & Q(published=True)
                                                  ) [offset:offset+limit]
             
             
@@ -69,27 +69,22 @@ class AllArticlesPage(page_types.BasePage):
                                         (Q(page_type = page_types.singlepageview_pagetype_obj ) | 
                                          Q(page_type = page_types.multipageview_pagetype_obj)
                                          ) &
-                                         Q( lists_include = True)
+                                         Q( lists_include = True)  & Q(published=True)
                                         ) [offset:offset+limit].count()
             
             num_total_cmsentries = CMSEntries.objects.filter(
                                                  (Q(page_type = page_types.singlepageview_pagetype_obj ) | 
                                                   Q(page_type = page_types.multipageview_pagetype_obj)
                                                   ) &
-                                                  Q( lists_include = True)).count()
+                                                  Q( lists_include = True)  & Q(published=True) ).count()
             
             
             
-            self._article_list = ArticleList(num_total_cmsentries, page)
+            self._article_list = ArticleList(obj_list, num_total_cmsentries, page)
             self._article_list.limit = limit
             self._article_list.offset = offset                        
             self._article_list.num_total_cmsentries = num_total_cmsentries
             
-            
-            
-        
-        
-        
             
             for obj in obj_list:
                 self._article_list.append(ViewObject(page_object=obj))

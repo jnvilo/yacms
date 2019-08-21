@@ -21,17 +21,19 @@ class BasePage(object):
                 #this can only happen if we got a bad limit value such as a non 
                 #integer value.Set limit to a sane value.
                 limit = LIMIT
-            
-            try: 
-                offset = int(self.request.GET.get("offset", 0))
-            except Exception as e: 
-                #same reason as above
-                offset = 0
-                
+
             try:
                 page = int(self.request.GET.get("page",1))
             except Exception as e:
-                page = 1
+                page = 1 
+                
+            try: 
+                offset = int(self.request.GET.get("offset"))
+            except Exception as e: 
+                #same reason as above
+                offset = (page - 1)*limit
+                
+           
         else:
             limit = LIMIT
             offset = 0

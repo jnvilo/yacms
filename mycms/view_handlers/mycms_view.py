@@ -32,10 +32,10 @@ class ArticleList(list):
     
     """
     
-    def __init__(self, total_entries,page):
+    def __init__(self, page_cmsentries,total_entries,page,limit=2):
         super().__init__(self)
         
-        self.limit = 2
+        self.limit = limit
         self.total_entries = total_entries
         self.page  = page  #The current page we are on.
         
@@ -73,6 +73,12 @@ class ArticleList(list):
         return self.has_previous() or self.has_next()
     
     
+    def next_page(self):
+        
+        return self.page + 1
+    
+    def previous_page(self):
+        return self.page - 1
         
         
         

@@ -37,4 +37,7 @@ def google_adds():
     return { "width": 300, "height": 600, "add-client": "data=ca-pub-9449210019187312", "data-ad-slot":"6783855847"}
 
 
+@register.inclusion_tag('mycms/templatetags/widgets/search.html')
+def search():
+    return {}
 

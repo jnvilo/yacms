@@ -4,27 +4,26 @@
   
 {%block PAGE_CONTENT%}
 
-  <article>
-            {% for article in view_object.articles %}
-                 <article class="post clearfix">
-                     <div class="row">
-                         <section class="col-sm-11 col-xs-10 article-summary">
-                             <h2><a href="/cms{{article.path}}">{{article.title}}</a></h2>
-                                 <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
-                                 
-                                 <ul class="list-inline entry-meta">
-                                     <li class="entry-date"><a href="#"><i class="far fa-calendar-alt"></i>&nbsp;{{article.created_timestamp_str}}</a></li>
-                                     <li class="entry-category"><a href="/cms{{article.page_object.parent.path}}"><i class="far fa-folder"></i>&nbsp;{{article.page_object.parent.title}}</a></li>
-                                     <li class="entry-author"><a href="#"><i class="far fa-user"></i>&nbsp;Admin</a></li>
-                                     <li class="entry-date"><a href="/cms/{{article.page_object.parent.path}}" class="readMore">read more</a></li>
-                                     <!-- li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li -->
-                                 </ul>
-                         </section>
-                     </div>
-                 </article>
-             {% endfor %}
-    
-     </article>
+<article>
+    {% for article in view_object.articles %}
+         <article class="post clearfix">
+             <div class="row">
+                 <section class="col-sm-11 col-xs-10 article-summary">
+                     <h2><a href="/cms{{article.path}}">{{article.title}}</a></h2>
+                         <p style="display: inline">{{ article.introduction|safe|truncatewords_html:50 }}</p>
+                         
+                         <ul class="list-inline entry-meta">
+                             <li class="entry-date"><a href="#"><i class="far fa-calendar-alt"></i>&nbsp;{{article.created_timestamp_str}}</a></li>
+                             <li class="entry-category"><a href="/cms{{article.page_object.parent.path}}"><i class="far fa-folder"></i>&nbsp;{{article.page_object.parent.title}}</a></li>
+                             <li class="entry-author"><a href="#"><i class="far fa-user"></i>&nbsp;Admin</a></li>
+                             <li class="entry-date"><a href="/cms/{{article.page_object.parent.path}}" class="readMore">read more</a></li>
+                             <!-- li class="entry-comments"><a href="#"><i class="icon-comment-1"></i>&nbsp;12 comments</a></li -->
+                         </ul>
+                 </section>
+             </div>
+         </article>
+     {% endfor %}
+</article>
     
    {% load pagecontents_tags%}
    

@@ -1,9 +1,13 @@
 
 {% extends "base_with_header_and_right_sidebar.html"%}
+{%block PAGE_HEADER_TITLE%}All Articles{%endblock PAGE_HEADER_TITLE%}
+
 {%block PAGE_CONTENT%}
 
-  {%for article in view_object.articles %}
+  <h1>This is a test</h1>
 
+  {%for article in view_object.articles %}
+  
         <!--Start Blog Post Item -->
         <div class="blog-post-item">
           <h2><a href="/cms/{{article.path}}">{{article.title}}</a></h2>

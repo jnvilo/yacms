@@ -935,34 +935,50 @@ class CMSPageView(View):
 
     def get_object(self,request, **kwargs):
         """
-        returns a ViewObject
+        This method gets the cmsentries object from the database. 
         """
+        
+        
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
 
+        
+        """
+        We use the path to search for the object if it is provided. Otherwise
+        we can also load the page via page_id. If none is provided then 
+        we just want to load the root. 
+        """
+        
         try: 
-            if path:
+            if path:    
                 obj = ViewObject(path=path, request=request)
             
             elif page_id:
                 obj = ViewObject(page_id=page_id, request=request)
             else:
-                #Lets make path = "/" as default.
+                """
+                Load the /. This is the global cmsentries list which is 
+                the root of the CMS. This root is created by default on 
+                first access.  It is created as ALLARTICLES page_type.
+                """
                 obj = ViewObject(path=u"/", request=request)
-                
             return obj
 
         except ObjectDoesNotExist as e:
 
+            """
+            Handle special case where we are in the root of the 
+            """
             if (path is None) or (path == u"/"):
-                #we are in /cms and it does not exist. We create it!!
-
+                """
+                C
+                """
 
                 path_obj,_ = CMSPaths.objects.get_or_create(path="/")
 
                 try:
-                    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="CATEGORY",
-                                                                      text = "Category Page",
+                    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="ALLARTICLES",
+                                                                      text = "All Articles",
                                                                       view_class = "CategoryPage",
                                                                       view_template = "CategoryPage.html"
                                                                       )

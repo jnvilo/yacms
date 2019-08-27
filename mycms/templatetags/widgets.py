@@ -41,3 +41,12 @@ def google_adds():
 def search():
     return {}
 
+@register.inclusion_tag('mycms/templatetags/widgets/google_adds.html')
+def addsbygoogle():
+    
+    return { "width": 300, "height": 600, 
+             "add-client": 
+             "data=ca-pub-9449210019187312", 
+             "data-ad-slot":"6783855847",
+             "data-ad-format":"auto",
+             "data-full-width-responsive":"true"}

@@ -38,24 +38,25 @@ The adds class then provides a dictionary to the template.
 
 
 class BaseAdds(object):
-    
+
     def __init__(self, dataadclient, dataadslot):
         self.dataadclient = dataadclient
         self.dataadslot = dataadslot
-        
+
     def html(self):
         raise NotImplementedError("Implement in child class")
-        
+
     def __str__(self):   
         raise NotImplementedError("Implement this in chlid class")
-    
- 
- 
+
+
+
 class MyCMSGoogleAdds(BaseAdds):
-    
-    def __init__(self, dataadclient, dataadslot):)
-     
+
+    def __init__(self, dataadclient, dataadslot):
+        pass
+
     def html(self):
         pass
-     
-     
+
+

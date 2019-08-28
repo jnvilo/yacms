@@ -1,0 +1,4 @@
+jnvilo-backend: 
+    image:  r.cfcr.io/jnvilo/jnvilo/mycms:latest
+    ports:
+        - "8000:8000"

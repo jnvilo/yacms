@@ -1,0 +1,14 @@
+steps:
+   test_the_code:
+     image: python:slim
+     working_directory: /website/demo_app
+     commands:
+       - test.sh
+     
+   build_the_image:
+     type: build
+     image_name: jnvilo/mycms
+   
+   launch_the_composition:
+     type: launch-composition
+     composition: docker-compose.yml

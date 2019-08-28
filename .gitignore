@@ -10,5 +10,6 @@ build/
 node_modules/
 requirements.txt.old
 virtualenv
+static_root
 dist/
 

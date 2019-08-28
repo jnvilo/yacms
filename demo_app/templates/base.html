@@ -1,218 +1,152 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
 
-        <title>{% block TITLE %}Jumbotron Template for Bootstrap 3.0.3 Documentation - BootstrapDocs {% endblock %}</title>
+<head>
 
-        <!-- Bootstrap core CSS -->
-        <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
-       
-        <link type="text/css" rel="stylesheet" href="/static/mycms/file-upload/css/jquery.fileupload.css">
-        <link type="text/css" rel="stylesheet" href="/static/mycms/file-upload/css/jquery.fileupload-ui.css">
-        <link type="text/css" rel="stylesheet" href="/static/mycms/file-upload/css/jquery-ui.css">
-       
-       
-       
-        <!-- Custom styles for this template -->
-        <link href="/static/css/layout.css" rel="stylesheet">
-        <link type="text/css" rel="stylesheet" href="/static/css/media.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/site.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/custom.css">
-       
-       
-       
-       
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
+  <title>MYCMS Demo Website</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/static/mycms/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome css-->
+  <link href="/static/mycms/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  
+  <link href="/static/mycms/vendor/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="/static/mycms/vendor/pygments-css/colorful.css" media="all" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
+ 
+  
+    
+  <!-- MyCMS default styles -->
+  <link href="/static/mycms/css/custom.css" rel="stylesheet">
+  <link href="/static/mycms/css/editors.css" rel="stylesheet">
+  
+  <!-- Override styles defined by mycms -->
+  <link href="/static/css/site.css" rel="stylesheet">
+  {%comment%}
+  WARNING:The following HEADER_CONTENT can be overrided in child templates. This means 
+  it is not advisable to override these here in the main base template because you 
+  can be guaranteed to loose any overrides you put in here.
+  {%endcomment%}
+  {%block HEADER_CONTENT %}
+   
+    {%block EXTRA_HEADER_CONTENT %}
+  
+    {%endblock EXTRA_HEADER_CONTENT %}
+  
+  {%endblock HEADER_CONTENT %}
+  
+  
+  {%if view_object.json_data %}
+  <script>
+    var view_json = {{view_object.json_data | safe }}
+  </script>
+  {%endif%}
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav id="mainHeader" class="navbar navbar-expand-lg bg-grey fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Fedora Install Howto</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          
+           {% load menus %}
+          {% dropdown_menu "/howtos" %}
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/cms/about">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+{%block BASE_CONTAINER %}
+    {%block PAGE_HEADER %}
+    
+    {%endblock PAGE_HEADER %}
+
+    {%block MAIN_CANVAS %}  
+    
+        {%block PAGE_CONTENT %}
         
-        {%block HEAD_BOTTOM %}
-        
-        
-        {%endblock HEAD_BOTTOM %}
-
-        {%block PAGE_HEADER %}
-
-        {% endblock PAGE_HEADER %}
-
-
-    </head>
-
-    <body>
-    {% block BODY %}
-        
-        
-        {% block NAVBAR %} 
-        <div class="navbar-inverse navbar-fixed-top navbar" role="navigation">
-            <div class="container">
-                    
-            
-                {% if view_object.show_toolbar %}
-                <div id="admin-bar">
-                                {% if view_object.request.user.username == "admin" %}
-                                        <img id="edit_button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg" onclick="on()"></image>		
-                                {% else %}
-                                        <img id="edit_button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg" onclick="on()"></image>
-                                {%endif%}
-                </div>
-                {% endif %}                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">{% block PROJECT_NAME %}Project name{%endblock PROJECT_NAME %}</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <form class="navbar-form navbar-right" role="form">
-                        <div class="form-group">
-                            <input type="text" placeholder="Email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" placeholder="Password" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-success">Sign in</button>
-                    </form>
-                </div><!--/.navbar-collapse -->
-            </div><!-- container-->
-        </div> <!-- navbar -->
-        {% endblock NAVBAR %}
-        <!-- Main jumbotron for a primary marketing message or call to action -->
-
-
-        <section id="page">
-            <header class="page-header padding-top-30">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <h1>{% block BODY_TITLE%} BodyTitle {% endblock %}</h1>
-
-                            <div class="row">
-                            <ul class="breadcrumb">
-                                {% block BREADCRUMBS_LIST_ENTRIES %}
-
-                                    <li><a href="/">Home</a> <span class="divider">/</span></li>
-                                    {% for p in view_object.parent_entries_list %}
-
-
-                                        {% if forloop.last %}
-                                        <li><a href="{{p.get_absolute_url}}">{{p.title}}</a></li>
-                                        {% else %}
-
-                                            <li><a href="{{p.get_absolute_url}}">{{p.title}}</a><span class="divider">/</span></li>
-                                        {%endif%}
-
-
-                                    {% endfor %}
-
-                                    <!-- li><a href="/">Home</a> <span class="divider">/</span></li>
-
-                                    <li><a href="/cms/sysadmin">SysAdmin/DevOps</a><span class="divider">/</span></li>
-
-                                    <li><a href="/cms/sysadmin/linux">Linux</a><span class="divider">/</span></li>
-
-                                    <li><a href="/cms/sysadmin/linux/mail-server-administration">Mail Server Administration</a><span class="divider">/</span></li -->
-
-
-
-                                    {% endblock BREADCRUMBS_LIST_ENTRIES %}
-
-
-                            </ul></div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-        <section id="content" class="mt30 pb30 margin10" >                
-        {%block PAGE_CONTENT %}                 
-
-            <div class="jumbotron">
-            <div class="container">
-                <h1>Hello, world!</h1>
-                <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-                <p><a class="btn btn-primary btn-lg" role="button">Read more &raquo;</a></p>
-            </div>
-        </div>
-
+          {# This is just an example. It is overriden already in the other templates. #}
         <div class="container">
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="col-md-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-                </div>
-                <div class="col-md-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <div class="row">
+            <div class="col-lg-12 text-center">
+              <h1 class="mt-5">A Bootstrap 4 Starter Template</h1>
+              <p class="lead">Complete with pre-defined file paths and responsive navigation!</p>
+              <ul class="list-unstyled">
+                <li>Bootstrap 4.2.1</li>
+                <li>jQuery 3.3.1</li>
+              </ul>
             </div>
-                <div class="col-md-4">
-                    <h2>Heading</h2>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-                </div>
-            </div>
+          </div>
         </div>
-        <!-- sample page_content-->
-
-        </section>
-
         {%endblock PAGE_CONTENT %}
-        </section>
-
-
-            {%block FOOTER %}
-            <div class="container">
-                <hr>
-                <footer>
-                    <p>&copy; Company 2013</p>
-                </footer>
-            {% endblock FOOTER%}
-
-        </div> <!-- /container -->
-
-        {% endblock BODY %}
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-     
-       
-        <script src="/static/mycms/js/jquery-3.3.1.js"></script>
-        <script src="/static/mycms/jquery-ui/jquery-ui.js"></script>
-         <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/static/mycms/js/js.cookie.min.js"></script>
-        <script type="text/javascript" src="/static/mycms/dustjs/dust-full.js"></script>
-        <script type="text/javascript" src="/static/mycms/csrf.js"></script>
-
         
-        {# Load any scripts requested by other tags. #}
-        {# ScriptCollector #}	
-              
-        
-        {%block  PAGE_BOTTOM %}
+      {%endblock MAIN_CANVAS %}
+  
+  
+{%endblock BASE_CONTAINER %}
 
-        {%endblock PAGE_BOTTOM %}
+{% if view_object.show_toolbar %}
+  <div id="admin-bar">
+    {% if view_object.request.user.username == "admin" %}
+            <img id="show-admin-overlay-button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>		
+    {% else %}
+            <img id="show_admin_overlay" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>
+    {%endif%}
+  </div>
+{% endif %}
+
+
+<!-- Core JavaScript Requirements -->
+  <script src="/static/mycms/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/mycms/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> 
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+  <script src="/static/mycms/js/js.cookie.js"></script>
+  <script src="/static/mycms/js/csrf.js"></script>
+  <script src="/static/mycms/js/loglevel.min.js"></script>
+ 
+{%block BOTTOM_HTML %}
 
 
 
-        {% block PAGEADMIN %}
+  
 
-        {% endblock PAGEADMIN %}
+{%endblock BOTTOM_HTML %}
+  
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; www.fedora-install-howto.com 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
 
 
-    <!--DEMO -->
-    </body>
+
+
+</body>
+
 </html>

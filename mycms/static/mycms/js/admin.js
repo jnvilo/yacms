@@ -468,17 +468,18 @@ class CMSFileUploaderAdmin{
         var self=this;
         self.cmsentry = cmsentry;
         
-        self.url = "/cms"+ cmsentry.path + "assets_manager/";
+        self.url = "/cms"+ cmsentry.path + "/assets_manager/";
         $.ajax({
-            url: url,
+            url: self.url,
             type: 'GET',
             error: function(){
-              log.warn("Failed to get assets manager API endpoint", self.url);
+              console.log("Failed to get assets manager API endpoint", self.url);
             },
             success: function(data){
-                log.debug(data);
+               
                 var content = data["categories"];
-                //console.log("DATA ", data);
+                
+                console.log("DATA ", data);
                 
                 self.initialPreviewConfigData = data["initialPreviewConfig"];
                 self.initialPreviewData = data["initialPreview"];
@@ -492,7 +493,7 @@ class CMSFileUploaderAdmin{
     
         $("#kv-explorer").fileinput({
             'theme': 'explorer-fas',
-            'uploadUrl': 'category_editor.html/assets_manager/',
+            'uploadUrl': 'assets_manager/',
             overwriteInitial: false,
             initialPreviewAsData: true,
             initialPreview: this.initialPreviewData,

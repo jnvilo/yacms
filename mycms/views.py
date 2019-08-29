@@ -9,6 +9,8 @@ import os
 from PIL import Image
 import threading
 import datetime
+import faker
+import random
 
 from bs4 import BeautifulSoup
 import simplejson as json
@@ -29,6 +31,7 @@ from django.views.generic import View
 from django import forms
 from django.forms.models import model_to_dict
 from django.http import Http404
+from django.http import HttpResponseServerError
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.text import slugify
 from django.views.generic.base import View
@@ -94,13 +97,14 @@ from mycms.models import CMSMarkUps
 from mycms.models import CMSTemplates
 from mycms.models import CMSPaths
 
+
 from mycms.view_handlers import ViewObject
 
 
 
 from mycms.api import CMSContentsViewSet
 from mycms.api import CMSFormatterContent
-
+from mycms import funclib
 
 logger = logging.getLogger(name="mycms.views")
 
@@ -957,47 +961,63 @@ class CMSPageView(View):
                 obj = ViewObject(page_id=page_id, request=request)
             else:
                 """
-                Load the /. This is the global cmsentries list which is 
+                If no path or page_id is given then we just load /
+                The path /  is the global cmsentries list which is 
                 the root of the CMS. This root is created by default on 
                 first access.  It is created as ALLARTICLES page_type.
                 """
-                obj = ViewObject(path=u"/", request=request)
+                obj = ViewObject(path="/", request=request)
+                
             return obj
 
         except ObjectDoesNotExist as e:
-
             """
-            Handle special case where we are in the root of the 
+            Handle special case where we are in the root of the CMS i.e. /cms/
             """
-            if (path is None) or (path == u"/"):
+            if path in [None , "/", "about"]:
                 """
-                C
+                / and /about are special pages in that they shoud be created
+                if they do not yet exist. 
                 """
+                if path is None:
+                    path = "/"
+                elif not path.startswith("/"):
+                    path = "/"+path
 
-                path_obj,_ = CMSPaths.objects.get_or_create(path="/")
+                """This code is obsolete. we are now creating all the 
+                required pagetypes on first import of mycms.view_handlers.page_types"""
 
+                #"""
+                path_obj,_ = CMSPaths.objects.get_or_create(path=path)
+
+                if path == "/about":
+                    page_type = "SINGLEPAGE"
+                    title = "About"
+                    text = funclib.get_fake_contents(random.randint(3,5))
+                    slug = "about"
+                else:
+                    page_type ="ALLARTICLES"
+                    title = "MyCMS - Yet Another CMS"
+                    text = "MYCMS Main Page Content. This is not shown in a default Category Page Template"
+                    slug = ""
                 try:
-                    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type="ALLARTICLES",
-                                                                      text = "All Articles",
-                                                                      view_class = "CategoryPage",
-                                                                      view_template = "CategoryPage.html"
-                                                                      )
-                except MultipleObjectsReturned as e:
-
-                    logger.warn("Multiple PageType: CATEGORY found. Database is inconsistent. Returning the first one found.")
-                    pagetype_obj = CMSPageTypes.objects.filter(page_type="CATEGORY")[0]
-
-
+                    pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type=page_type)
+                
+                except Exception as e: 
+                   
+                    logger.warn("Multiple PageType {} found in database")
+                    return HttpResponseServerError("Server Error: Your favourite devops is getting woken up.")
+         
                 try:
                     entry_obj, c= CMSEntries.objects.get_or_create(page_type=pagetype_obj,
                                                                  path=path_obj,
-                                                                 title="Yet Another CMS.")
-
+                                                                 title=title,
+                                                                 slug = slug)
 
                     if c:
                         #We also need to create a content object to attach to entry_obj
                         content_object = CMSContents()
-                        content_object.content = "myCMS content placeholder."
+                        content_object.content = text
                         content_object.meta_description = "myCMS - A django based cms"
                         
                         markup_obj, c = CMSMarkUps.objects.get_or_create(markup="Creole")
@@ -1007,20 +1027,12 @@ class CMSPageView(View):
                         entry_obj.content.add(content_object)
                         entry_obj.save()
 
-                        
-
-
-
-
                 except MultipleObjectsReturned as e:
                     msg = "Multiple CMSEntries for /cms found. Database is inconsistent. Using the first one found. "
                     logger.warn(msg)
 
                     entry_obj = CMSEntries.objects.filter(path=path_obj)[0]
-
-
-
-                obj = ViewObject(path=u"/")
+                obj = ViewObject(path=path)
                 return obj
             else:
                 
@@ -1245,6 +1257,9 @@ class  AssetsUploaderView(View):
         
         
         filename = request.POST.get("key", None)
+        print(request.GET)
+        print(request.POST)
+        
     
         if filename is not None:
     
@@ -1283,7 +1298,8 @@ class  AssetsUploaderView(View):
             from django.conf import settings
             assets_dir = self.get_assets_dir()
             path = kwargs.get("path", None).lstrip("/")
-
+            
+            
             fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
 
             if not fullpath.exists():

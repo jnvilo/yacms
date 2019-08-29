@@ -53,7 +53,7 @@ class CategoryPage(page_types.BasePage):
         #Get CMS entries starting at offset and give limit number results
         try:
             page_cmsentries  = CMSEntries.objects.filter((Q(page_type = page_types.singlepageview_pagetype_obj) | Q(page_type = page_types.multipageview_pagetype_obj)) &
-                                             Q(path__parent__id = self.page_object.path.id) & Q(published=True) )[offset:offset+limit]
+                                             Q(path__parent__id = self.page_object.path.id) & Q(published=True) & Q(lists_include=True) )[offset:offset+limit]
         except Exception as e:
             print(e)
             print(e)

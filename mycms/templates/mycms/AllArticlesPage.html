@@ -4,7 +4,7 @@
 
 {%block PAGE_CONTENT%}
 
-  <h1>This is a test</h1>
+
 
   {%for article in view_object.articles %}
   
@@ -79,10 +79,7 @@
     <script src="/static/mycms/vendor/fileinput/js/locales/es.js" type="text/javascript"></script>
     <script src="/static/mycms/vendor/fileinput/js/plugins/piexif.js" type="text/javascript"></script>
     <script src="/static/mycms/vendor/fileinput/themes/fas/theme.js" type="text/javascript"></script>
-    <script src="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.js" type="text/javascript"></script>
- 
- 
- 
+    <script src="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.js" type="text/javascript"></script> 
     <script type="text/javascript" src="/static/mycms/dustjs/dust-full.js"></script>
     <script type="text/javascript" src="/static/mycms/js/admin.js"></script>
 
@@ -93,6 +90,7 @@
 $(document).ready(function () {
   
     log.setLevel(log.levels.DEBUG);
+    console.log("Loaded Page")
     
       
 });

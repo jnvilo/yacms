@@ -1239,7 +1239,8 @@ class  AssetsUploaderView(View):
                 initialPreview.append(image_url)
                 
         return JsonResponse({'initialPreviewConfig': initialPreviewConfig,
-                             "initialPreview": initialPreview})
+                             "initialPreview": initialPreview,
+                             "append":False})
 
 
     def get_assets_dir(self):

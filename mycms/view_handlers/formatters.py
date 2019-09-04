@@ -210,9 +210,61 @@ def  image(*args, **kwargs):
     <p class="image-description">{}</p>
     </div>""".format(img_url, class_, style,text)
     
-
     return img
 
+
+def imagelist(*args, **kwargs):
+    
+    text = kwargs.get("text", None)
+    names_str = kwargs.get("names", None)
+    class_ = kwargs.get("class", "article-image")
+    style = kwargs.get("style", "width:80%")
+
+    html = ""
+    names_str = names_str.replace(","," ")
+    names = names_str.split(" ")
+    view = kwargs.get("view", None)
+    path_str = view.path_str
+
+
+    
+    if names != None:
+            
+        
+        start = """
+        <div>
+        <div class="container" id="imagelist">
+          <div class="row">
+        """
+        
+        html = html + start    
+        
+        for name in names:
+    
+            img_url = "/static/assets/{}/{}".format(view.path_str, name)            
+            content =  """
+                 <div class="col-sm image-holder">
+                  <img src="{}" class="article-image clickable-image" style="width:80%" onclick="show_images_overlay(this)">
+                </div>
+            """
+            html= html + content.format(img_url)
+       
+        end = """
+            </div>
+          </div>
+        </div>   
+        """
+        
+        html = html + end
+    else:
+        html = "Warning: No images were provided."
+        
+    return html
+    
+
+    
+    
+    
 
 def google_addsense_code(*args, **kwargs):
     
@@ -302,7 +354,9 @@ class  CreoleFormatter(object):
                                                    "image": image,
                                                    "debug":debug,
                                                    "google_addsense_code":google_addsense_code, 
+                                                   "imagelist":imagelist,
                                                    "NEWLINE": NEWLINE,
+                                                   
                                                   },
                                            verbose=None,
                                            stderr=None,

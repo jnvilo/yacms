@@ -80,12 +80,6 @@ class ArticleList(list):
     def previous_page(self):
         return self.page - 1
         
-        
-        
-        
-        
-
-
 
 class ContentTopicsContainer(object):
 

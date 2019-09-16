@@ -139,13 +139,13 @@ class CMSFileUpload(View):
             pass
 
         from django.conf import settings
-        
+
         try:
             assets_dir = settings.YACMS_SETTINGS.get("ARTICLE_IMAGES_DIR")
-        except AttributeError as e: 
+        except AttributeError as e:
             print("ARTICLE_IMAGES_DIR IS NOT CONFIGURED! Falling back to default.")
             assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
-        
+
         path = kwargs.get("path", None).lstrip("/")
         fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
         print(path)
@@ -191,25 +191,25 @@ class CMSFileUpload(View):
             from django.conf import settings
 
             """
-            The files are uploaded to the assets directory. A directory is 
-            created with the same path as the article that the asset is 
-            uploaded to. For example an article at 
-            /foo/bar/baz will hvae all images uploaded to 
+            The files are uploaded to the assets directory. A directory is
+            created with the same path as the article that the asset is
+            uploaded to. For example an article at
+            /foo/bar/baz will hvae all images uploaded to
             Path(settings.ASSETS_DIR, "foo/bar/baz/image)
             """
 
             try:
                 #A sanity check to make sure the assets dir exists.
-                #TODO: Decide if this code should really be here. IMHO the 
-                #test to make sure it exists should be elsewhere. 
+                #TODO: Decide if this code should really be here. IMHO the
+                #test to make sure it exists should be elsewhere.
                 assets_dir = settings.ASSETS_DIR
-                
-            except AttributeError as e: 
+
+            except AttributeError as e:
                 print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
-                #TODO: Danger!! We assuming here that PARENT_DIR is defined. 
+                #TODO: Danger!! We assuming here that PARENT_DIR is defined.
                 #What if the end user does not define it????
                 assets_dir = os.path.join(settings.PARENT_DIR, "assets/")
-                        
+
             path = kwargs.get("path", None).lstrip("/")
 
             fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
@@ -234,8 +234,8 @@ class CMSFileUpload(View):
                 return HttpResponse("Error. Not full dir")
 
             if request.method == "POST":
-    
-                
+
+
                 uploaded_file = request.FILES.get("files[]")
 
                 filename = uploaded_file.name
@@ -295,22 +295,22 @@ class CMSSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.date_modified
 
-#Django 
+#Django
 
- 
+
 class CMSLoginForm(forms.Form):
     username = forms.CharField(max_length=100, label="Username")
     password = forms.CharField(max_length=32, widget=forms.PasswordInput)
 
 class CMSLoginView(View):
-    
+
     def get(self, request, **kwargs):
-        
+
         next_page = request.GET.get("next", "")
-        
+
         if not request.user.is_authenticated:
             template_name = "mycms/Login.html"
-            
+
             #also set a session variable to show the toolbar
             request.session["show_toolbar"] = True
             context = {"form": CMSLoginForm(), "next":next_page }
@@ -323,19 +323,19 @@ class CMSLoginView(View):
 
         username = request.POST.get("username", None)
         password = request.POST.get("password", None)
-        
-        #Set the next page to a default if not given. 
+
+        #Set the next page to a default if not given.
         next_page = request.GET.get("next", "/cms/user/articles")
 
         #sanitize next_page
-        
+
         if len(next_page) == 0:
             next_page = "/profile"
-        
+
         if not ( (next_page=="/") or next_page.startswith("/cms") or (next_page=="/profile")):
             #We only allow redirects to cms contents or to /profile
             self.log.info("redirect after login denied to: {}".format(next_page))
-        
+
         from django.contrib.auth import authenticate
         user = authenticate(username=username, password=password)
 
@@ -347,7 +347,7 @@ class CMSLoginView(View):
                 if next_page is not None:
                     return HttpResponseRedirect(next_page)
                 else:
-                    #Go to the user's account page. 
+                    #Go to the user's account page.
                     return HttpResponse(content=b'You are now logged in.')
             else:
                 print("The password is valid, but the account has been disabled!")
@@ -361,17 +361,17 @@ class CMSLoginView(View):
 
 
 class CMSUserProfileView(View):
-    
+
     def get(self, request, **kwargs):
         template_name = "mycms/Profile.html"
         if not request.user.is_authenticated:
             return HttpResponseRedirect("/login")
         else:
             return render(request, template_name)
-    
+
 
 class CMSUserAdminPagesView(View):
-    
+
     def get(self, request, **kwargs):
         pass
 
@@ -382,35 +382,35 @@ class CMSLogoutView(View):
     def get(self, request, **kwargs):
         logout(request)
         template_name = "mycms/Logout.html"
-     
+
         #So lets log the user out.
-        
+
         if request.user.is_active:
             logout(request)
-            
+
         return HttpResponseRedirect("/login/")
-        
+
 
 class CMSFrontPage(View):
 
     def get(self, request, **kwargs):
 
         template_name = "mycms/Index.html"
-        
+
         #TODO: Fix this hack. We create a fake view_object for the frontpage
-        #so that we can pass a few template data. 
-        
+        #so that we can pass a few template data.
+
         class View_Object():
             pass
-        
+
         view_object = View_Object()
-        
+
         if settings.FORCE_SHOW_ADVERTS or (settings.DEBUG == False):
             view_object.SHOW_ADVERTS = True
         else:
-            print("SHOW_ADDS_IS FALSE") 
+            print("SHOW_ADDS_IS FALSE")
             view_object.SHOW_ADVERTS = False
-       	 
+
         print("FORCE_SHOW_ADVERTS={},DEBUG={},SHOW_ADDS={}".format(settings.FORCE_SHOW_ADVERTS, settings.DEBUG, view_object.SHOW_ADVERTS) )
         return render(request, template_name, { "view_object": view_object})
 
@@ -908,64 +908,64 @@ class CMSIndexView(APIView):
 
 class CMSArticleListsView(View):
     """
-    Implements a paginated list view of all published articles. 
+    Implements a paginated list view of all published articles.
     """
     from django.db.models import Q
-    
+
     def get(self,request, **kwargs):
-        
+
         obj_list = CMSEntries.objects.filter((Q(page_type = singlepageview_pagetype_obj) | Q(page_type = multipageview_pagetype_obj)) &
                                              Q(path__parent__id = self.page_object.path.id))[start: start+page_size]
         #wrap the entries of the obj_list into their view_handler representations
         view_list = []
-        
-        
+
+
         for obj in obj_list:
             view_list.append(ViewObject(page_object=obj))
 
         return view_list
-    
-    
+
+
 
 class CMSPageView(View):
     """
     The main interface to the website. This view serves all of the web pages
     except pages served by:
-    
-        CMSArticleListsView.    
+
+        CMSArticleListsView.
         CMSIndexView
         CMSFrontPage
     """
 
     def get_object(self,request, **kwargs):
         """
-        This method gets the cmsentries object from the database. 
+        This method gets the cmsentries object from the database.
         """
-        
+
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
 
         """
         We use the path to search for the object if it is provided. Otherwise
-        we can also load the page via page_id. If none is provided then 
-        we just want to load the root. 
+        we can also load the page via page_id. If none is provided then
+        we just want to load the root.
         """
-        
-        try: 
-            if path:    
+
+        try:
+            if path:
                 obj = ViewObject(path=path, request=request)
-            
+
             elif page_id:
                 obj = ViewObject(page_id=page_id, request=request)
             else:
                 """
                 If no path or page_id is given then we just load /
-                The path /  is the global cmsentries list which is 
-                the root of the CMS. This root is created by default on 
+                The path /  is the global cmsentries list which is
+                the root of the CMS. This root is created by default on
                 first access.  It is created as ALLARTICLES page_type.
                 """
                 obj = ViewObject(path="/", request=request)
-                
+
             return obj
 
         except ObjectDoesNotExist as e:
@@ -976,14 +976,14 @@ class CMSPageView(View):
             if path in [None , "/", "about"]:
                 """
                 / and /about are special pages in that they shoud be created
-                if they do not yet exist. 
+                if they do not yet exist.
                 """
                 if path is None:
                     path = "/"
                 elif not path.startswith("/"):
                     path = "/"+path
 
-                """This code is obsolete. we are now creating all the 
+                """This code is obsolete. we are now creating all the
                 required pagetypes on first import of mycms.view_handlers.page_types"""
 
                 #"""
@@ -1001,12 +1001,12 @@ class CMSPageView(View):
                     slug = ""
                 try:
                     pagetype_obj, _ = CMSPageTypes.objects.get_or_create(page_type=page_type)
-                
-                except Exception as e: 
-                   
+
+                except Exception as e:
+
                     logger.warn("Multiple PageType {} found in database")
                     return HttpResponseServerError("Server Error: Your favourite devops is getting woken up.")
-         
+
                 try:
                     entry_obj, c= CMSEntries.objects.get_or_create(page_type=pagetype_obj,
                                                                  path=path_obj,
@@ -1018,10 +1018,10 @@ class CMSPageView(View):
                         content_object = CMSContents()
                         content_object.content = text
                         content_object.meta_description = "myCMS - A django based cms"
-                        
+
                         markup_obj, c = CMSMarkUps.objects.get_or_create(markup="Creole")
                         content_object.markup = markup_obj
-                        
+
                         content_object.save()
                         entry_obj.content.add(content_object)
                         entry_obj.save()
@@ -1034,34 +1034,34 @@ class CMSPageView(View):
                 obj = ViewObject(path=path)
                 return obj
             else:
-                
+
                 #Send the request to CMSView() The new kid on the block
                 #which ultimately everything will be migrated to.
                 return None
-            
+
 
     def get(self,request, **kwargs):
         """
-        The main entry point to the frontend of the CMS. 
+        The main entry point to the frontend of the CMS.
         All website user pages are obtained through this method."""
-    
+
         get = request.GET
-        
-    
+
+
         """Whenever ?toolbar is added to the get parameter, we save it to the session
-        This is used as a flag to show the files. 
+        This is used as a flag to show the files.
         """
         toolbar = request.GET.get("toolbar", None)
         if toolbar and toolbar.upper() == "TRUE":
             request.session["show_toolbar"] = True
         elif toolbar and toolbar.upper() == "FALSE":
             request.session["show_toolbar"] = False
-        
-        
-        
+
+
+
         """
-        Handle login/logout page attributes. This is to handle the feature of 
-        MyCMS where we want to be able to redirect a user to the login page 
+        Handle login/logout page attributes. This is to handle the feature of
+        MyCMS where we want to be able to redirect a user to the login page
         and then return them back to the current page. All that is needed to be
         done is to append ?login=True, or ?logout=True
         """
@@ -1069,94 +1069,94 @@ class CMSPageView(View):
         logout = request.GET.get("logout", None)
         if login:
             """
-            When a page is requested with ?login=X where X can be anything, we 
-            redirect them to the login page which will send it back to this 
-            page once logged in. 
+            When a page is requested with ?login=X where X can be anything, we
+            redirect them to the login page which will send it back to this
+            page once logged in.
             """
-            
+
             #But only do it if user is not yet logged in
             if not request.user.is_authenticated:
                 #so redirecto user to log in page and give our path to come back to
                 return HttpResponseRedirect("/cms/login/?next={}".format(request.path))
-        
+
             else:
                 """
-                The user is not logged in. 
+                The user is not logged in.
                 """
-                
+
                 ###
                 #TODO: Implement a message to the user that he is already logged in.
                 ###
-                
+
                 #For now do dnothing
                 pass
-            
+
         if logout and request.user.is_authenticated:
-            #jist logout the current user and send him to the logout. 
+            #jist logout the current user and send him to the logout.
                 return HttpResponseRedirect("/cms/logout/")
-        
-            
+
+
         """
         get object will load return an instance of mycms.view_handlers.ViewObject
-        which encapsulates the CMSEntry and all other operations on it. 
+        which encapsulates the CMSEntry and all other operations on it.
         """
-        
-        
+
+
         obj = self.get_object(request, **kwargs)
-        
+
         if obj:
-            
+
             obj.request = request
-            
-            #Save the toolbar value in the session in the show_toolbar 
-            #member variable so that it can be accessible in the web page 
-            ##template code. 
-            obj.show_toolbar = request.session.get("show_toolbar", False) 
-            
+
+            #Save the toolbar value in the session in the show_toolbar
+            #member variable so that it can be accessible in the web page
+            ##template code.
+            obj.show_toolbar = request.session.get("show_toolbar", False)
+
             template = obj.template
-               
+
             try:
                 return render_to_response(template, {"view_object": obj})
             except Exception as e:
                 flag = getattr(setting, "DEBUG",False)
                 if flag:
-                    #if settings.DEBUG is not set, then we just re raise an 
+                    #if settings.DEBUG is not set, then we just re raise an
                     #the exception
                     raise
                 else:
-                    #must be running in production. Just say a generic 
+                    #must be running in production. Just say a generic
                     #Application error message.
-                
-                    msg = "Application Error {}".format(e)            
+
+                    msg = "Application Error {}".format(e)
                     return HttpResponse(content=bytes(msg, 'utf-8'), status=500)
-                
+
         else:
-            #Did not find any path in the cms. 
-            
+            #Did not find any path in the cms.
+
             pathname = kwargs.get("path",None)
-            
+
             if pathname is None:
-                pathname = "/"            
+                pathname = "/"
             elif not pathname.startswith("/"):
                 pathname = Path("/",pathname).as_posix()
-            
+
             pathname = os.path.normpath(pathname)
-            
+
             try:
                 node = CMSNode.objects.get(path=pathname,)
-                #The node takes care of loading the correct CMSApp 
-                #and all we need to do is call the cmsapp method 
+                #The node takes care of loading the correct CMSApp
+                #and all we need to do is call the cmsapp method
                 #which will return a cmsapp. CMSApp has a render method
                 #hence django will call it to create the html output.
-                
+
                 pageview = node.get_pageview(request)
                 return pageview
-            
+
             except ObjectDoesNotExist as e:
-                return HttpResponseNotFound(content=b'Page not found')           
-            
-            
-    
+                return HttpResponseNotFound(content=b'Page not found')
+
+
+
     def post(self, request, **kwargs):
         print(request, kwargs)
         return HttpResponse("Not implemented")
@@ -1197,28 +1197,28 @@ class  AssetsUploaderView(View):
                     self._mkdir(head)
                 except FileExistsError as e:
                     pass
-                
+
             #print "_mkdir %s" % repr(newdir)
             if tail:
                 try:
                     os.mkdir(newdir)
                 except FileExistsError as e:
                     pass
-                
+
     #----------------------------------------------------------------------
     def  get(self, request, **kwargs):
 
         """
         Creates the javascript to load the Krajee file upload.
-        
+
         This needs to return a configuration like
-        
-        
+
+
         {
             error: 'An error exception message if applicable',
             errorkeys: [], // array of thumbnail keys/identifiers that have errored out (set via key property in initialPreviewConfig
             initialPreview: [
-            ], // initial preview configuration 
+            ], // initial preview configuration
             initialPreviewConfig: [
                 // initial preview configuration if you directly want initial preview to be displayed with server upload data
             ],
@@ -1228,18 +1228,18 @@ class  AssetsUploaderView(View):
             append: true // whether to append content to the initial preview (or set false to overwrite)
         }
         """
-        
+
 
         assets_dir = self.get_assets_dir()
-    
-        
+
+
         path = kwargs.get("path", "").lstrip("/")
         fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
 
 
         initialPreviewConfig = []
         initialPreview = []
-        key = 0        
+        key = 0
 
         print(fullpath.as_posix())
         try:
@@ -1248,7 +1248,7 @@ class  AssetsUploaderView(View):
             #This means that there is no directory yet. Nothing uploaded
             #at all
             return JsonResponse({'initialPreviewConfig': initialPreviewConfig,
-                                 "initialPreview": initialPreview})            
+                                 "initialPreview": initialPreview})
 
 
         for filename in filenames:
@@ -1263,7 +1263,7 @@ class  AssetsUploaderView(View):
                 delete_url = "/cms/{}/assets_manager/{}".format(path, filename)
 
                 print("*"*80)
-               
+
                 initial_pconf_entry = {
                     "caption": filename,
                     "size": stat.st_size,
@@ -1271,12 +1271,12 @@ class  AssetsUploaderView(View):
                     "url": request.path,
                     "key": filename
                 }
-                              
+
                 key = key + 1
-                
+
                 initialPreviewConfig.append(initial_pconf_entry)
                 initialPreview.append(image_url)
-                
+
         return JsonResponse({'initialPreviewConfig': initialPreviewConfig,
                              "initialPreview": initialPreview,
                              "append":False})
@@ -1285,7 +1285,7 @@ class  AssetsUploaderView(View):
     def get_assets_dir(self):
         try:
             assets_dir = settings.ASSETS_DIR
-        except AttributeError as e: 
+        except AttributeError as e:
             print("ASSETS_DIR IS NOT CONFIGURED! Falling back to default.")
             assets_dir = os.path.join(settings.BASE_DIR, "static/assets")
         return assets_dir
@@ -1294,38 +1294,38 @@ class  AssetsUploaderView(View):
     #----------------------------------------------------------------------
     def  post(self, request,*args, **kwargs):
         """"""
-        
-        
+
+
         filename = request.POST.get("key", None)
         print(request.GET)
         print(request.POST)
-        
-    
+
+
         if filename is not None:
-    
-            #if we are getting a "{'key': ['0']} in the request.POST then it 
-            #means the user wants to delete a file.             
+
+            #if we are getting a "{'key': ['0']} in the request.POST then it
+            #means the user wants to delete a file.
             return self.filedelete(kwargs, filename)
 
-        else:    
+        else:
         #if we are getting a {'file_id': ['0']}> then it means its a fileupload
             return self.fileupload(request, *args,**kwargs)
 
     def filedelete(self, kwargs, filename):
         path = kwargs.get("path", None).lstrip("/")
         fullpath = pathlib.Path(pathlib.Path(self.get_assets_dir()), path)
-    
+
         p_filename = pathlib.Path(fullpath, filename)
-    
+
         logger.debug("Going to delete, {}".format(p_filename.as_posix()))
-    
+
         try:
             os.remove(p_filename.as_posix())
             return JsonResponse({ } )
-    
+
         except Exception as e:
-        
-            return JsonResponse({"error":"Failed to delete"}, status=status.HTTP_410_GONE)            
+
+            return JsonResponse({"error":"Failed to delete"}, status=status.HTTP_410_GONE)
 
 
     def fileupload(self,request, *args,**kwargs):
@@ -1338,8 +1338,8 @@ class  AssetsUploaderView(View):
             from django.conf import settings
             assets_dir = self.get_assets_dir()
             path = kwargs.get("path", None).lstrip("/")
-            
-            
+
+
             fullpath = pathlib.Path(pathlib.Path(assets_dir), path)
 
             if not fullpath.exists():
@@ -1354,7 +1354,7 @@ class  AssetsUploaderView(View):
                 try:
                     os.makedirs(thumbnailpath.as_posix())
                 except FileExistsError as e:
-                    #It must have been created by another thread. 
+                    #It must have been created by another thread.
                     pass
             elif not thumbnailpath.is_dir():
                 #Fix this to return a proper json response.
@@ -1400,7 +1400,7 @@ class  AssetsUploaderView(View):
                                   "deleteUrl": delete_url,
                                   "deleteType": "DELETE" }
 
-                
+
                 initial_pconf_entry = {
                     "caption": filename,
                     "size": 1024,
@@ -1408,15 +1408,15 @@ class  AssetsUploaderView(View):
                     "url": image_url,
                     "key": filename
                 }
-                
-                
+
+
                 initialPreviewConfig = []
-                
-                
+
+
 
 
                 files.append(file_dict)
-                
+
                 #return JsonResponse({'files': files})
                 return self.get(request,*args, **kwargs)
     #----------------------------------------------------------------------
@@ -1528,52 +1528,52 @@ class MockupLoader(View):
             #Return a list of html files in bootstrap_templates
 
             mockups_dir= os.path.join(settings.BASE_DIR, "mockups/")
-         
+
             files = []
             for filename in os.listdir(path=mockups_dir):
                 if filename.endswith(".html"):
                     files.append(filename)
 
-                    
+
 
             return render(request, "mockups_index.html", { "files": files})
-        
+
 
 class LogoViewer(View):
 
-    
+
     pass
 
 
 
 class CMSPreviewAPIView(View):
-    
+
     def get(self, request):
         raise NotImplementedError("This method is not supported")
-        
+
     def post(self, request):
-        #We expect to recieve unformatted text and we shall 
+        #We expect to recieve unformatted text and we shall
         #return it formatted.
-        
-        #For now it is assumed this is Creole 
+
+        #For now it is assumed this is Creole
         pass
-        
-    
-    
+
+
+
 class CMSEntriesContentAreaFilter(forms.Form):
     pass
-    
-    
+
+
 class CMSUserContentArea(View):
     """This is a list view with filter."""
-    
-    
+
+
     def get(self, request):
-        
-    
-    
+
+
+
         return render(request, "mycms/CMSUserContentArea.html")
-    
+
 
 # ------------------
 
@@ -1582,26 +1582,28 @@ import os
 
 class CMSView(View):
     """
-    The entry point for every page in the website. 
+    The entry point for every page in the website.
     """
-    
-    
+
+
     def get(self, request, **kwargs):
-        
+
         #get the path from the database
         pathname = kwargs.get("path",None)
-        
+
         if pathname is None:
             pathname = "/"
         pathname = os.path.normpath(pathname)
-        
+
         try:
+
+            #Warning: THIS IS NOT USED. Look at CMSPageView
+            #Currenty using old CMS style and new cmsapps.
             node = CMSNode.objects.get(path=pathname,)
-            #The node takes care of loading the correct CMSApp 
-            #and all we need to do is call the render method on it 
-            #to get the required html page.
-            
-            return node.render(request)
-        
+            pageview = node.get_pageview(request)
+            return pageview
+
+
+
         except ObjectDoesNotExist as e:
             return Http404("Page not found.")

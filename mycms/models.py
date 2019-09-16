@@ -30,11 +30,11 @@ from loremipsum import generate_paragraphs
 
 class CMSPaths(models.Model):
 
-    #class Meta: 
-    #    db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents. 
+    #class Meta:
+    #    db_table = "yacms_cmspaths" #To remove when we no longer need to actuall db contents.
 
     path = models.CharField(max_length=2000, null=True)
-    parent = models.ForeignKey("CMSPaths", null=True, blank=True, 
+    parent = models.ForeignKey("CMSPaths", null=True, blank=True,
                                on_delete=models.DO_NOTHING)
 
     def __str__(self):
@@ -59,12 +59,12 @@ class CMSMarkUps(models.Model):
 
     def __str__(self):
         return self.markup
-                
+
 class CMSContents(models.Model):
-    
+
     #class Meta:
-    #    db_table = "yacms_cmscontents" 
-    
+    #    db_table = "yacms_cmscontents"
+
     title = models.CharField(max_length=1024, null=True, blank=True)
     content = models.TextField(max_length=20480, default="Empty")
     timestamp = models.DateTimeField(auto_now=True)
@@ -87,7 +87,7 @@ class CMSContents(models.Model):
 
 class CMSTemplates(models.Model):
 
-    #class Meta: 
+    #class Meta:
     #    db_table = "yacms_cmstemplates"
 
     name = models.CharField(max_length=1024, default="page.html")
@@ -132,12 +132,12 @@ def get_admin_user():
 
 class CMSEntries(models.Model):
 
-    #class Meta: 
+    #class Meta:
     #    db_table = "yacms_cmsentries"
 
     title = models.CharField(max_length=1024, default=None)
-    path = models.ForeignKey(CMSPaths, 
-                             null=True, 
+    path = models.ForeignKey(CMSPaths,
+                             null=True,
                              on_delete=models.DO_NOTHING)
     slug = models.SlugField(max_length=1024, unique=True)
 
@@ -147,12 +147,12 @@ class CMSEntries(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now_add=True)
 
-    page_type = models.ForeignKey("CMSPageTypes", 
-                                  null=True, 
+    page_type = models.ForeignKey("CMSPageTypes",
+                                  null=True,
                                   on_delete=models.DO_NOTHING)
-    template = models.ForeignKey(CMSTemplates, 
-                                 null=True, 
-                                 blank=True, 
+    template = models.ForeignKey(CMSTemplates,
+                                 null=True,
+                                 blank=True,
                                   on_delete=models.DO_NOTHING)
 
     frontpage = models.BooleanField(default=False)
@@ -160,16 +160,16 @@ class CMSEntries(models.Model):
     lists_include = models.BooleanField(default=True)
 
     page_number = models.IntegerField(default=1)
-    created_by = models.ForeignKey(User, 
-                                   #default=get_admin_user().pk, 
-                                   null=True, 
-                                   blank=True,                                   
+    created_by = models.ForeignKey(User,
+                                   #default=get_admin_user().pk,
+                                   null=True,
+                                   blank=True,
                                   on_delete=models.DO_NOTHING)
 
-    logo_url = models.CharField(default="/static/mycms/images/png/default.png", 
-                                null=True,blank=True, 
+    logo_url = models.CharField(default="/static/mycms/images/png/default.png",
+                                null=True,blank=True,
                                 max_length=1024)
-    
+
     def toggle_published(self):
         if self.published:
             self.published=False
@@ -182,11 +182,11 @@ class CMSEntries(models.Model):
             self.frontpage=False
         else:
             self.frontpage=True
-            
+
     def on_create(self):
 
         view_object = self.view
-        
+
 
         if hasattr(view_object, "on_create"):
             view_object.on_create()
@@ -200,18 +200,18 @@ class CMSEntries(models.Model):
 
 
     def html_content(self):
-        # We are going to index the parsed content of the CMSEntries 
+        # We are going to index the parsed content of the CMSEntries
         # so we are going to ask our view to give that to us.
-        
+
         #Fortunately the view for this CMSEntrie should alread
-        #implement html_content so we let it handle it. 
+        #implement html_content so we let it handle it.
         return self.view.html_content
 
 
     def __str__(self):
         return self.title
 
- 
+
     #----------------------------------------------------------------------
     @property
     def  date_created_str(self):
@@ -232,7 +232,7 @@ class CMSEntries(models.Model):
         from mycms.view_handlers import ViewObject
         view_object =  ViewObject(page_object=self)
         return view_object
-    
+
     @property
     def view_object(self):
         return self.view
@@ -276,7 +276,7 @@ class CMSEntries(models.Model):
         return pl
 
     def categories(self):
-        c = CMSEntries.objects.filter(path__parent=self.path, 
+        c = CMSEntries.objects.filter(path__parent=self.path,
                                       page_type__page_type="CATEGORY",
                                       published=True)
         return c
@@ -285,14 +285,14 @@ class CMSEntries(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is None:
             super(CMSEntries, self).save(*args, **kwargs)
-            
-            #Commenting out self.on_create() because we still do not have 
+
+            #Commenting out self.on_create() because we still do not have
             #a path yet and as a result we can not call self.on_create()
             #self.on_create()
-            
+
         else:
             super(CMSEntries, self).save(*args, **kwargs)
-            
+
 
     #def save(self, *args, **kwargs):
 
@@ -320,7 +320,7 @@ class CMSEntries(models.Model):
         #else:
             #super(CMSEntries, self).save(*args, **kwargs)
 
-            
+
 
 ## method for updating
 #def create_default_content(sender, instance, created, **kwargs):
@@ -338,11 +338,11 @@ class CMSEntries(models.Model):
 #post_save.connect(create_default_content, sender=CMSEntries, dispatch_uid="CREATE_CONTENT")
 
 class CMSArchivesIndex(models.Model):
-    
+
     month = models.IntegerField(default=0)
     year = models.IntegerField(default=1975)
     entries = models.ManyToManyField(CMSEntries, blank=True)
-    
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -350,42 +350,47 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
-    
+
 class CMSPageDataStore(object):
     """
-    Base class for all classes that implements access to 
+    Base class for all classes that implements access to
     a data store. The CMSPageDBBackend inherets this class
-    and abstracts away the database read and writes 
+    and abstracts away the database read and writes
     """
- 
+
     @property
     def path(self):
         return self._path
-    
+
     @path.setter
-    def path(self, param): 
+    def path(self, param):
         self._path = param
-        
-        
-    @property 
+
+
+    @property
     def parent(self):
         return self._parent
-    
+
     @path.getter
     def parent(self, param):
         self._parent = param
-        
- 
+
+
 # ##############################################################################
 
 #Import all CMSApps
 
 try:
-    
+
     CMSAPPS = settings.MYCMS_CONFIGS["CMSAPPS"]
 except KeyError as e:
     print("MYCMS_CONFIGS does not have any CMSAPPS listed. Please add a CMSAPPS section")
     sys.exit(1)
 
 
-from mycms.cmsapps.models import * 
+from mycms.cmsapps.models import *
+
+
+#How do we mport the models from within the cmsapps? We can not do that
+#because the first time this is imported the models do not exist yet!!
+

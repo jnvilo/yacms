@@ -9,10 +9,4 @@ def logged(func):
 
 
 def cms_attribute(*segments):
-    def applies(func):
-        func.func_dict["segments"] = list(segments)
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            return func(*args, **kwargs)
-        return wrapper
-    return applies
+    pass

@@ -1,0 +1,881 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mycms.models &mdash; MyCMS 0.0.1-poc documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> MyCMS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cmsapps.html">CMSApps Internals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#the-structure-of-a-mycms-website">The Structure of a MyCMS Website</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#from-request-to-django-view-to-a-cmsapp-view">From request to django view to a cmsapp view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#what-is-a-cmsapp">What is a CMSApp?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#a-cmsapp-skeleton">A CMSApp Skeleton.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#dynamic-loading-of-cmsapp">Dynamic Loading of CMSApp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cmsapps.html#cmsappregistry">CMSAppRegistry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cmsapps.html#cmsnode">CMSNode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devup.html">Development Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devup.html#build-requirements">Build Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../devup.html#building-templates">Building templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devup.html#overrides">Overrides</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../editors.html">Development Notes:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../editors.html#writing-page-editors">Writing Page Editors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../rest_api.html">Rest API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../rest_api.html#tutorials">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../rest_api.html#create-a-new-cmsentry-using-javascript">Create a new CMSEntry using javascript</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MyCMS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>mycms.models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mycms.models</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="k">import</span> <span class="n">post_save</span>
+<span class="kn">from</span> <span class="nn">django.db.utils</span> <span class="k">import</span> <span class="n">OperationalError</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">django.core.cache</span> <span class="k">import</span> <span class="n">cache</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.template.defaultfilters</span> <span class="k">import</span> <span class="n">slugify</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="k">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="k">import</span> <span class="n">post_save</span>
+<span class="kn">from</span> <span class="nn">django.dispatch</span> <span class="k">import</span> <span class="n">receiver</span>
+
+
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="k">import</span> <span class="n">viewsets</span> <span class="c1">#added for use in CMSAppRegistry</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="k">import</span> <span class="n">routers</span>  <span class="c1">#added for use in CMSAppRegistry</span>
+
+<span class="kn">from</span> <span class="nn">mycms.creole</span> <span class="k">import</span> <span class="n">creole2html</span>
+<span class="kn">from</span> <span class="nn">mycms.funclib</span> <span class="k">import</span> <span class="n">raw</span> <span class="c1">#added for use in CMSAppRegistry</span>
+
+<span class="kn">from</span> <span class="nn">rest_framework.authtoken.models</span> <span class="k">import</span> <span class="n">Token</span>
+
+<span class="kn">from</span> <span class="nn">loremipsum</span> <span class="k">import</span> <span class="n">generate_paragraphs</span>
+
+<span class="k">class</span> <span class="nc">CMSPaths</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="c1">#class Meta: </span>
+    <span class="c1">#    db_table = &quot;yacms_cmspaths&quot; #To remove when we no longer need to actuall db contents. </span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;CMSPaths&quot;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                               <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+
+
+<span class="k">class</span> <span class="nc">CMSTags</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="c1">#class Meta:</span>
+    <span class="c1">#    db_table = &quot;yacms_cmstags&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;NotSet&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+<span class="k">class</span> <span class="nc">CMSMarkUps</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="c1">#class Meta:</span>
+    <span class="c1">#    db_table = &quot;yacms_cmsmarkups&quot;</span>
+
+    <span class="n">markup</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Creole&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">markup</span>
+                
+<span class="k">class</span> <span class="nc">CMSContents</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    
+    <span class="c1">#class Meta:</span>
+    <span class="c1">#    db_table = &quot;yacms_cmscontents&quot; </span>
+    
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20480</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Empty&quot;</span><span class="p">)</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">markup</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">CMSMarkUps</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">meta_description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20480</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">CMSTags</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1">#Lazy import is needed because the mycms.view_handlers requires to import</span>
+        <span class="c1">#mycms.models.CMSEntries, but unfortunately the models will not yet</span>
+        <span class="c1">#be available during the django startup and causes an exception.</span>
+        <span class="kn">from</span> <span class="nn">mycms.view_handlers.formatters</span> <span class="k">import</span> <span class="n">CreoleFormatter</span>
+        <span class="k">return</span> <span class="n">CreoleFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">html</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">CMSTemplates</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="c1">#class Meta: </span>
+    <span class="c1">#    db_table = &quot;yacms_cmstemplates&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;page.html&quot;</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10240</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;empty template&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+<span class="k">class</span> <span class="nc">CMSPageTypes</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="c1">#class Meta:</span>
+    <span class="c1">#    db_table = &quot;yacms_cmspagetypes&quot;</span>
+
+    <span class="n">page_type</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;DefaultType&quot;</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;default class&quot;</span><span class="p">)</span>
+    <span class="n">view_class</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;DefaultView&quot;</span><span class="p">)</span>
+    <span class="n">view_template</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#if (self.pk is None) and (self.view_template is None):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view_template</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="c1">#We only care to put the view template as the name of the view_class</span>
+            <span class="c1">#during the creation.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view_template</span> <span class="o">=</span> <span class="s2">&quot;DefaultView.html&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CMSPageTypes</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span>
+
+
+<span class="k">def</span> <span class="nf">get_admin_user</span><span class="p">():</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">admin</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">admin</span>
+    <span class="k">except</span> <span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+
+<span class="k">class</span> <span class="nc">CMSEntries</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="c1">#class Meta: </span>
+    <span class="c1">#    db_table = &quot;yacms_cmsentries&quot;</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">CMSPaths</span><span class="p">,</span> 
+                             <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                             <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SlugField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#We make the content a many to many to be able to handle multiple</span>
+    <span class="c1">#so we can version by published.</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">CMSContents</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date_created</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date_modified</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">page_type</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;CMSPageTypes&quot;</span><span class="p">,</span> 
+                                  <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                  <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">CMSTemplates</span><span class="p">,</span> 
+                                 <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                 <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                  <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+
+    <span class="n">frontpage</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">published</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">lists_include</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">page_number</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> 
+                                   <span class="c1">#default=get_admin_user().pk, </span>
+                                   <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                   <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                                   
+                                  <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+
+    <span class="n">logo_url</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;/static/mycms/images/png/default.png&quot;</span><span class="p">,</span> 
+                                <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                <span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">toggle_published</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">published</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">published</span><span class="o">=</span><span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">toggle_frontpage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frontpage</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frontpage</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frontpage</span><span class="o">=</span><span class="kc">True</span>
+            
+    <span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">view_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span>
+        
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">view_object</span><span class="p">,</span> <span class="s2">&quot;on_create&quot;</span><span class="p">):</span>
+            <span class="n">view_object</span><span class="o">.</span><span class="n">on_create</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1">#Get the cms entry that has a path belonging to the parent of our path.</span>
+        <span class="n">parent_entry</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parent_entry</span>
+
+
+    <span class="k">def</span> <span class="nf">html_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># We are going to index the parsed content of the CMSEntries </span>
+        <span class="c1"># so we are going to ask our view to give that to us.</span>
+        
+        <span class="c1">#Fortunately the view for this CMSEntrie should alread</span>
+        <span class="c1">#implement html_content so we let it handle it. </span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">html_content</span>
+
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+
+ 
+    <span class="c1">#----------------------------------------------------------------------</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span>  <span class="nf">date_created_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="c1">#value = self.date_created.strftime(&quot;%Y%m%d %H:%M&quot;)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_created</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span>  <span class="nf">date_modified_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_modified</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">mycms.view_handlers</span> <span class="k">import</span> <span class="n">ViewObject</span>
+        <span class="n">view_object</span> <span class="o">=</span>  <span class="n">ViewObject</span><span class="p">(</span><span class="n">page_object</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">view_object</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">view_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span>
+
+    <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cms_base_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s2">&quot;YACMS_BASEPATH&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cms_base_path</span><span class="p">:</span>
+            <span class="n">cms_base_path</span> <span class="o">=</span> <span class="s2">&quot;/cms&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cms_base_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+            <span class="n">cms_base_path</span> <span class="o">=</span> <span class="n">cms_base_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+        <span class="c1">#we assume here that self.path.path will always start with a /</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cms_base_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">get_parent_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path_str</span><span class="p">):</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">path_str</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="c1">#we are at the root</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">path_str</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">get_parent_paths</span><span class="p">(</span><span class="n">path_str</span><span class="p">[:</span><span class="n">x</span><span class="p">])</span> <span class="o">+</span> <span class="p">[</span><span class="n">path_str</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">parents_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">path_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parent_paths</span><span class="p">(</span><span class="n">path_str</span><span class="p">)</span>
+
+        <span class="n">pl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">path_str</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+
+            <span class="n">pl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path__path</span><span class="o">=</span><span class="n">path_str</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">pl</span>
+
+    <span class="k">def</span> <span class="nf">categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">path__parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> 
+                                      <span class="n">page_type__page_type</span><span class="o">=</span><span class="s2">&quot;CATEGORY&quot;</span><span class="p">,</span>
+                                      <span class="n">published</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span>
+
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">CMSEntries</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+            <span class="c1">#Commenting out self.on_create() because we still do not have </span>
+            <span class="c1">#a path yet and as a result we can not call self.on_create()</span>
+            <span class="c1">#self.on_create()</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">CMSEntries</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+
+    <span class="c1">#def save(self, *args, **kwargs):</span>
+
+        <span class="c1">#if self.pk is None:</span>
+            <span class="c1">#tell parent to save ourselves so we get a pk.</span>
+            <span class="c1">#super(CMSEntries, self).save(*args, **kwargs)</span>
+
+            <span class="c1">#print(&quot;WE HAVE A PK: {} &quot;.format(self.pk))</span>
+            <span class="c1">##This is a new cms entry</span>
+            <span class="c1">##create a new content and</span>
+            <span class="c1">#paragraphs = generate_paragraphs(5, start_with_lorem=False)</span>
+            <span class="c1">#p = &quot;&quot;</span>
+            <span class="c1">#for paragraph in paragraphs:</span>
+                <span class="c1">#p =  unicode(paragraph[2]) + &quot;\n\n&quot; + p</span>
+            <span class="c1">#h =  creole2html(p)</span>
+
+            <span class="c1">#obj = CMSContents()</span>
+            <span class="c1">#obj.content = &quot;This is a new content.&quot;</span>
+            <span class="c1">#obj.save()</span>
+
+            <span class="c1">#cms_obj = CMSEntries.objects.get(id=self.pk)</span>
+            <span class="c1">#cms_obj.content.add(obj)</span>
+
+
+        <span class="c1">#else:</span>
+            <span class="c1">#super(CMSEntries, self).save(*args, **kwargs)</span>
+
+            
+
+<span class="c1">## method for updating</span>
+<span class="c1">#def create_default_content(sender, instance, created, **kwargs):</span>
+
+    <span class="c1">#if created:</span>
+        <span class="c1">#obj = CMSContents()</span>
+        <span class="c1">#obj.content = &quot;This is the latest content1&quot;</span>
+        <span class="c1">#obj.save()</span>
+
+        <span class="c1">#c = CMSContents.objects.get(id=obj.id)</span>
+        <span class="c1">#instance.content.add(c)</span>
+        <span class="c1">#print(type(instance))</span>
+
+<span class="c1">## register the signal</span>
+<span class="c1">#post_save.connect(create_default_content, sender=CMSEntries, dispatch_uid=&quot;CREATE_CONTENT&quot;)</span>
+
+<span class="k">class</span> <span class="nc">CMSArchivesIndex</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    
+    <span class="n">month</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1975</span><span class="p">)</span>
+    <span class="n">entries</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">CMSEntries</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">post_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_auth_token</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">created</span><span class="p">:</span>
+        <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
+
+
+    
+<span class="k">class</span> <span class="nc">CMSPageDataStore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all classes that implements access to </span>
+<span class="sd">    a data store. The CMSPageDBBackend inherets this class</span>
+<span class="sd">    and abstracts away the database read and writes </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+ 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+    
+    <span class="nd">@path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">param</span>
+        
+        
+    <span class="nd">@property</span> 
+    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
+    
+    <span class="nd">@path</span><span class="o">.</span><span class="n">getter</span>
+    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">param</span>
+        
+ 
+<span class="c1"># ##############################################################################</span>
+
+<span class="c1">#Import all CMSApps</span>
+
+<span class="k">try</span><span class="p">:</span>
+    
+    <span class="n">CMSAPPS</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MYCMS_CONFIGS</span><span class="p">[</span><span class="s2">&quot;CMSAPPS&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MYCMS_CONFIGS does not have any CMSAPPS listed. Please add a CMSAPPS section&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CMSAppRegistry"><a class="viewcode-back" href="../../cmsapps.html#mycms.models.CMSAppRegistry">[docs]</a><span class="k">class</span> <span class="nc">CMSAppRegistry</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A database table that stores the information about the different cmsapps.</span>
+<span class="sd">    It also provides helper methods to easily get data from the registered</span>
+<span class="sd">    cmsapps. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>    
+    
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">CMSAppRegistry</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_cmsapp_dirs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of directories where the cmsapps reside. It gets</span>
+<span class="sd">        the list of cmsapp module names and instantiates them so that </span>
+<span class="sd">        we can find the path where they reside and returns that as a list</span>
+<span class="sd">        of directories</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">apps</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+    
+        <span class="n">cmsapp_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">apps</span><span class="p">:</span>
+            
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">module_name</span>
+        
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+            <span class="n">cmsapp_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+
+        <span class="k">return</span><span class="p">(</span><span class="n">cmsapp_dirs</span><span class="p">)</span>
+    
+    <span class="nd">@classmethod</span>
+    
+    <span class="k">def</span> <span class="nf">register_serializers</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load all serializers for each of the cmsapps. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">cmsapps</span> <span class="o">=</span> <span class="n">CMSAppRegistry</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">cmsapp</span> <span class="ow">in</span> <span class="n">cmsapps</span><span class="p">:</span>
+            <span class="c1">#load the serializer module.</span>
+            <span class="n">modoule_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.serializers&quot;</span>
+            <span class="n">serializer_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        
+        
+    <span class="nd">@classmethod</span> 
+    <span class="k">def</span> <span class="nf">get_cmsapp_subdir</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dirname</span><span class="p">):</span>
+        <span class="n">cmsapp_dirs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cmsapp_dirs</span><span class="p">()</span>
+        <span class="n">cmsapp_template_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">cmsapp_dir</span> <span class="ow">in</span> <span class="n">cmsapp_dirs</span><span class="p">:</span>
+            <span class="c1">#cmsapp_template_dirs.append(Path(cmsapp_dir, dirname).as_posix())</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">cmsapp_template_dirs</span>        
+    
+    <span class="nd">@classmethod</span> 
+    <span class="k">def</span> <span class="nf">get_cmsapp_static_dirs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cmsapp_subdir</span><span class="p">(</span><span class="s2">&quot;static&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>   
+    <span class="k">def</span> <span class="nf">get_cmsapp_template_dirs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all template dirs for each cmsapp module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cmsapp_subdir</span><span class="p">(</span><span class="s2">&quot;templates&quot;</span><span class="p">)</span>
+            
+    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>    
+    <span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the cmsapp entries from the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">apps</span> <span class="o">=</span> <span class="n">CMSAppRegistry</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">apps</span>
+    
+    
+    <span class="nd">@classmethod</span> 
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>   
+    <span class="k">def</span> <span class="nf">import_module</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">module_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A method to import a module name. This is just a copy of the global </span>
+<span class="sd">        function of the same name. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">module</span>    
+ 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cmsapp_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Try to load the cmsapp class&quot;&quot;&quot;</span>
+        
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmsapp</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">module</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">controller_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a controller class instance of the cmsapp.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+       
+        <span class="n">controller_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_name</span> <span class="o">+</span> <span class="s2">&quot;.controller&quot;</span><span class="p">)</span>
+        <span class="n">controller_cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">controller_module</span><span class="p">,</span><span class="s2">&quot;Controller&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">controller_cls</span>
+    
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  
+    <span class="k">def</span> <span class="nf">get_api_urls</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        
+        <span class="n">router</span> <span class="o">=</span> <span class="n">routers</span><span class="o">.</span><span class="n">DefaultRouter</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">CMSAppRegistry</span><span class="o">.</span><span class="n">as_list</span><span class="p">():</span>
+            <span class="c1">#load the module for each app api.py</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">module_name</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">module_name</span> <span class="o">+</span> <span class="s2">&quot;.api&quot;</span>
+                <span class="n">api_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+                
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">api_module</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">)</span> <span class="ow">or</span> 
+                           <span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">viewsets</span><span class="o">.</span><span class="n">ViewSet</span><span class="p">)):</span>
+                            <span class="bp">cls</span><span class="o">.</span><span class="n">__add_router_entry</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">router</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="n">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to find module: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">))</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">urls</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__add_router_entry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">router</span><span class="p">):</span>
+         
+        <span class="n">api_base_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;api_base_name&quot;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">api_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s2">&quot;api_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">api_base_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">api_base_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            
+        <span class="k">if</span> <span class="n">api_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">api_path</span> <span class="o">=</span> <span class="n">raw</span><span class="p">(</span><span class="s2">&quot;api/v2/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> 
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;adding router url: </span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">,base_name=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_path</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">api_base_name</span><span class="p">))</span>
+        <span class="n">router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">api_path</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="n">api_base_name</span><span class="p">)</span>   
+          
+        <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">urls</span></div>
+         
+    
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>      
+<span class="k">def</span> <span class="nf">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">):</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
+    
+    <span class="c1">#at this point module will be the mycommand module as </span>
+    <span class="k">return</span> <span class="n">module</span>
+       
+
+<div class="viewcode-block" id="CMSNode"><a class="viewcode-back" href="../../cmsapps.html#mycms.models.CMSNode">[docs]</a><span class="k">class</span> <span class="nc">CMSNode</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The CMSNode is a database table stores that attributes about any node within mycms.</span>
+<span class="sd">    Every entry within MYCMS is a node. (Just like inodes in a filesystem.) </span>
+<span class="sd">    </span>
+<span class="sd">    These main comononets of a node are:</span>
+<span class="sd">    </span>
+<span class="sd">    path: The actual cms url path of the node. For example /cms/page/mypage. </span>
+<span class="sd">    parent: A foreinkey to the parent path. In the above example this would be</span>
+<span class="sd">    to the CMSNode that has a path /cms/page. (This helps to do relational queries)</span>
+<span class="sd">    cmsapp: The module name for the cmsapp. The Node needs to load the module that </span>
+<span class="sd">    implements rendering and processing data for the node. </span>
+<span class="sd">    </span>
+<span class="sd">    So we can create a node as follows:</span>
+<span class="sd">    </span>
+<span class="sd">    cmsapp = CMSAppRegistry.objects.get(name=&quot;category&quot;)</span>
+<span class="sd">    cmsnode = CMSNode.objects.get_or_create(path=&quot;/cmsapp&quot;, cmsapp=cmsapp)</span>
+<span class="sd">    </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">path</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;CMSNode&quot;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                               <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s2">&quot;parentpath&quot;</span><span class="p">)</span>    
+    <span class="n">cmsapp</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">CMSAppRegistry</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    
+    
+    <span class="c1">#def __str__(self):</span>
+        <span class="c1">#return self.path</span>
+    
+  
+        
+    <span class="k">def</span> <span class="nf">get_cmsapp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    </span>
+<span class="sd">        Returns an instance of a CMSPage.</span>
+<span class="sd">        </span>
+<span class="sd">        For example:</span>
+<span class="sd">        </span>
+<span class="sd">        cmspages/login</span>
+<span class="sd">        cmspages/logout</span>
+<span class="sd">        cmspages/singlepage</span>
+<span class="sd">        cmspages/pagelist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="n">Controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmsapp</span><span class="o">.</span><span class="n">controller_class</span>
+        <span class="k">return</span> <span class="n">Controller</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>    
+    
+    <span class="k">def</span> <span class="nf">page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns html of the page.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="c1">#tis is just a facade. The actual processing is handled</span>
+        <span class="c1">#by the app. </span>
+        <span class="k">pass</span></div>
+    
+        
+ 
+    
+    
+<span class="k">class</span> <span class="nc">DBCMSContent</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A generic text storage with various metadata about the content</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20480</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Empty&quot;</span><span class="p">)</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">markup</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">CMSMarkUps</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">meta_description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20480</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    
+        
+        
+<span class="k">class</span> <span class="nc">DBCMSPage</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all database stored cms data. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;CMSPaths&quot;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                               <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">date_created</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date_modified</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    
+    
+    
+    
+<span class="k">class</span> <span class="nc">CMSTextPage</span><span class="p">(</span><span class="n">DBCMSPage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stores article pages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">DBCMSContent</span><span class="p">,</span><span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">)</span>
+    
+
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jason Viloria
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

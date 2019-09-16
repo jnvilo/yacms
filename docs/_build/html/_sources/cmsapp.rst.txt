@@ -1,0 +1,15 @@
+Rest API
+===========================
+
+.. image:: mycms-api.png
+  :width: 600
+  :alt: API web interface
+
+
+.. automodule:: mycms.cmsapps
+.. autoclass:: mycms.cmsapps.base.CMSApp
+.. autoclass:: mycms.api.CMSContentsViewSet 
+.. autoclass:: mycms.api.CMSEntriesViewSet
+.. autoclass:: mycms.api.CMSFormatterContent
+.. autoclass:: mycms.api.CMSPagesViewSet
+.. autoclass:: mycms.api.CMSPathsViewSet

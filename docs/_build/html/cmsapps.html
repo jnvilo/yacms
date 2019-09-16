@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CMSApps Internals &mdash; MyCMS 0.0.1-poc documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development Setup" href="devup.html" />
+    <link rel="prev" title="MyCMS - Yet Another Django Based CMS." href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MyCMS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CMSApps Internals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-structure-of-a-mycms-website">The Structure of a MyCMS Website</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#from-request-to-django-view-to-a-cmsapp-view">From request to django view to a cmsapp view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-a-cmsapp">What is a CMSApp?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-cmsapp-skeleton">A CMSApp Skeleton.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-loading-of-cmsapp">Dynamic Loading of CMSApp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#cmsappregistry">CMSAppRegistry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#cmsnode">CMSNode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devup.html">Development Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devup.html#build-requirements">Build Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="devup.html#building-templates">Building templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devup.html#overrides">Overrides</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="editors.html">Development Notes:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="editors.html#writing-page-editors">Writing Page Editors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Rest API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_api.html#tutorials">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rest_api.html#create-a-new-cmsentry-using-javascript">Create a new CMSEntry using javascript</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MyCMS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>CMSApps Internals</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cmsapps.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-mycms.cmsapps"></span><div class="section" id="cmsapps-internals">
+<h1>CMSApps Internals<a class="headerlink" href="#cmsapps-internals" title="Permalink to this headline">¶</a></h1>
+<p>CMSApps automate a lot of the grind work when building a tree hierarchy based
+website.</p>
+<p>What is CMSApps trying to solve:</p>
+<ul class="simple">
+<li><p>Provide an easy way of building the tree of pages that makes up a website..</p></li>
+<li><p>Automate the creation of each branch/leaf.</p></li>
+<li><p>Creating new webpages should be easy. It should be as simple as creating a class to provide the values for the templates and then providing the templates</p></li>
+<li><p>The static assets and tempaltes should be kept together within the cmsapp module.</p></li>
+</ul>
+<p>The way CMSApps work makes it very easy to create new type of cms pages. However it
+is also very opinionated. A page for example supports only a GET. All interactions
+with the models must be done via DRF by implementing a ViewSet. All API endpoints are viewsets.
+This is my personal preference. I want to have all the static and templates that
+is specific to a particular page tyhpes.</p>
+<p>A CMSApp module implements a certain type of page. For example the category cmssapp
+is designed to retrieve all article nodes below it and provide them to its template
+so that it can iterate and display them. It provides methods to also create child nodes.</p>
+<div class="section" id="the-structure-of-a-mycms-website">
+<h2>The Structure of a MyCMS Website<a class="headerlink" href="#the-structure-of-a-mycms-website" title="Permalink to this headline">¶</a></h2>
+<p>Just like any website, a MYCMS website is a tree of webpages. MyCMS achieves this
+by implementing a CMSNode which keeps track of the path of the Node and its parents
+and also its children.</p>
+<a class="reference internal image-reference" href="_images/mycms-tree.png"><img alt="Sample Website." src="_images/mycms-tree.png" style="width: 600px;" /></a>
+<p>The above shows web pages as nodes. The Root node is a category node. Within mycms
+it is referenced by the CMSNode model. Each child node has a foreign key to it
+and it has access to all child nodes.</p>
+<p>The CMSNode provides contains an attribute that tell it what type of CMSApp it
+should use to render the page. It knows what type of cmsapp because it contains
+a ForeignKey to eh CMSAppRegistry.</p>
+<p>Each cmsapp in the node provides a rest api to create a child node.</p>
+</div>
+<div class="section" id="from-request-to-django-view-to-a-cmsapp-view">
+<h2>From request to django view to a cmsapp view<a class="headerlink" href="#from-request-to-django-view-to-a-cmsapp-view" title="Permalink to this headline">¶</a></h2>
+<p><strong>the call sequence can be summarized as follows</strong>:</p>
+<a class="reference internal image-reference" href="_images/cmsapps-callchart.png"><img alt="Sample Website." src="_images/cmsapps-callchart.png" style="width: 600px;" /></a>
+<p>1.  request is routed in the normal django way via urls.py
+via</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(?P&lt;path&gt;[-/\.a-z\d_]*)/$&#39;</span><span class="p">,</span> <span class="n">CMSNodeView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cmsnode&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>The CMSNodeView uses the path parameter to query the CMSNode table to
+directly load the CMSNode.</p></li>
+</ol>
+<p>The following node snippet is enough to load a cmsapp to render its html:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node</span> <span class="o">=</span> <span class="n">CMSNode</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">pathname</span><span class="p">,)</span>
+<span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The magic starts to happen when we call Node.render. Dynamic
+import is used to load the cmsapp Controller class through the use of
+CMSAppRegistry and hands off processing ot it.</p>
+</div>
+<ol class="arabic" start="3">
+<li><p>CMSNode uses CMSAppRegister to get the details about the cmsapp for it.
+CMSAppRegister provides various methods such as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>finding templates</p></li>
+<li><p>finding staticfile</p></li>
+<li><p>get a list of all cmsapps</p></li>
+<li><p>load a cmsapp module. (dynamically import the module)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The CMSNode provides initializing a CMSPageData and various tasks to populate
+the CMSPageData. The CMSPageData is like a Context that contains information
+to be used by the template.</p>
+<p>The least task needed to implement a new cmsapp is to implement the CMSPageData.</p>
+</div>
+</div>
+<div class="section" id="what-is-a-cmsapp">
+<h2>What is a CMSApp?<a class="headerlink" href="#what-is-a-cmsapp" title="Permalink to this headline">¶</a></h2>
+<p>A CMSApp is like a django app that implements a webpage. For example the category
+CMSapp provides data for its template such that the template can display the different
+child categories and child articles under it.</p>
+</div>
+<div class="section" id="a-cmsapp-skeleton">
+<h2>A CMSApp Skeleton.<a class="headerlink" href="#a-cmsapp-skeleton" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="dynamic-loading-of-cmsapp">
+<h2>Dynamic Loading of CMSApp<a class="headerlink" href="#dynamic-loading-of-cmsapp" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<span class="target" id="module-mycms.cmsapps.base"></span><div class="section" id="cmsappregistry">
+<h1>CMSAppRegistry<a class="headerlink" href="#cmsappregistry" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mycms.models.CMSAppRegistry">
+<em class="property">class </em><code class="sig-prename descclassname">mycms.models.</code><code class="sig-name descname">CMSAppRegistry</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSAppRegistry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSAppRegistry" title="Permalink to this definition">¶</a></dt>
+<dd><p>A database table that stores the information about the different cmsapps.
+It also provides helper methods to easily get data from the registered
+cmsapps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>AutoField</em>) – ID</p></li>
+<li><p><strong>name</strong> (<em>CharField</em>) – Identifier for the cmsapp. By convention its the module name.</p></li>
+<li><p><strong>module_name</strong> (<em>CharField</em>) – The module name for the cmsapp.</p></li>
+<li><p><strong>display_name</strong> (<em>CharField</em>) – Pretty name to display in lists and admin interfaces.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSAppRegistry.get_cmsapp_dirs">
+<em class="property">classmethod </em><code class="sig-prename descclassname">CMSAppRegistry.</code><code class="sig-name descname">get_cmsapp_dirs</code><span class="sig-paren">(</span><em class="sig-param">cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSAppRegistry.get_cmsapp_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSAppRegistry.get_cmsapp_dirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of directories where the cmsapps reside. It gets
+the list of cmsapp module names and instantiates them so that
+we can find the path where they reside and returns that as a list
+of directories</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSAppRegistry.get_cmsapp_static_dirs">
+<em class="property">classmethod </em><code class="sig-prename descclassname">CMSAppRegistry.</code><code class="sig-name descname">get_cmsapp_static_dirs</code><span class="sig-paren">(</span><em class="sig-param">cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSAppRegistry.get_cmsapp_static_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSAppRegistry.get_cmsapp_static_dirs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSAppRegistry.get_cmsapp_template_dirs">
+<em class="property">classmethod </em><code class="sig-prename descclassname">CMSAppRegistry.</code><code class="sig-name descname">get_cmsapp_template_dirs</code><span class="sig-paren">(</span><em class="sig-param">cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSAppRegistry.get_cmsapp_template_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSAppRegistry.get_cmsapp_template_dirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all template dirs for each cmsapp module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSAppRegistry.as_list">
+<em class="property">classmethod </em><code class="sig-prename descclassname">CMSAppRegistry.</code><code class="sig-name descname">as_list</code><span class="sig-paren">(</span><em class="sig-param">cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSAppRegistry.as_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSAppRegistry.as_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cmsapp entries from the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSAppRegistry.import_module">
+<em class="property">classmethod </em><code class="sig-prename descclassname">CMSAppRegistry.</code><code class="sig-name descname">import_module</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">module_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSAppRegistry.import_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSAppRegistry.import_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to import a module name. This is just a copy of the global
+function of the same name.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="cmsnode">
+<h1>CMSNode<a class="headerlink" href="#cmsnode" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mycms.models.CMSNode">
+<em class="property">class </em><code class="sig-prename descclassname">mycms.models.</code><code class="sig-name descname">CMSNode</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CMSNode is a database table stores that attributes about any node within mycms.
+Every entry within MYCMS is a node. (Just like inodes in a filesystem.)</p>
+<p>cmsapp = CMSAppRegistry.objects.get(name=”category”)
+cmsnode = CMSNode.objects.get_or_create(path=”/cmsapp”, cmsapp=cmsapp)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>AutoField</em>) – ID</p></li>
+<li><p><strong>path</strong> (<em>CharField</em>) – Path to the node. example: /cms/category/file</p></li>
+<li><p><strong>parent_id</strong> (<em>ForeignKey</em>) – A foreinkey to the parent path.</p></li>
+<li><p><strong>cmsapp_id</strong> (<em>ForeignKey</em>) – Foreignkey to the cmsapp</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="exception">
+<dt id="mycms.models.CMSNode.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#mycms.models.CMSNode.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="mycms.models.CMSNode.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#mycms.models.CMSNode.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSNode.get_cmsapp">
+<code class="sig-name descname">get_cmsapp</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSNode.get_cmsapp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSNode.get_cmsapp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an instance of a CMSPage.</p>
+<p>For example:</p>
+<p>cmspages/login
+cmspages/logout
+cmspages/singlepage
+cmspages/pagelist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSNode.get_pageview">
+<code class="sig-name descname">get_pageview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSNode.get_pageview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSNode.get_pageview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pageview for the cmsapp.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mycms.models.CMSNode.page">
+<code class="sig-name descname">page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/models.html#CMSNode.page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.models.CMSNode.page" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns html of the page.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mycms.cmsapps.base.CMSAppController">
+<em class="property">class </em><code class="sig-prename descclassname">mycms.cmsapps.base.</code><code class="sig-name descname">CMSAppController</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">cmsnode</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mycms/cmsapps/base.html#CMSAppController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mycms.cmsapps.base.CMSAppController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for CMSApps controller.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="devup.html" class="btn btn-neutral float-right" title="Development Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="MyCMS - Yet Another Django Based CMS." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jason Viloria
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

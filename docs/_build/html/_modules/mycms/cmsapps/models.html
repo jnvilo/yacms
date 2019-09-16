@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mycms.cmsapps.models &mdash; MyCMS 0.0.1-poc documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MyCMS
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cmsapps.html">CMSApps Internals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cmsapps.html#the-structure-of-a-mycms-website">The Structure of a MyCMS Website</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cmsapps.html#from-request-to-django-view-to-a-cmsapp-view">From request to django view to a cmsapp view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cmsapps.html#what-is-a-cmsapp">What is a CMSApp?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cmsapps.html#a-cmsapp-skeleton">A CMSApp Skeleton.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cmsapps.html#dynamic-loading-of-cmsapp">Dynamic Loading of CMSApp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cmsapps.html#cmsappregistry">CMSAppRegistry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cmsapps.html#cmsnode">CMSNode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devup.html">Development Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../devup.html#build-requirements">Build Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../devup.html#building-templates">Building templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../devup.html#overrides">Overrides</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../editors.html">Development Notes:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../editors.html#writing-page-editors">Writing Page Editors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_api.html">Rest API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../rest_api.html#tutorials">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../rest_api.html#create-a-new-cmsentry-using-javascript">Create a new CMSEntry using javascript</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MyCMS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mycms.cmsapps.models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mycms.cmsapps.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Contains CMSApps models. </span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="k">import</span> <span class="n">viewsets</span> <span class="c1">#added for use in CMSAppRegistry</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="k">import</span> <span class="n">routers</span>  <span class="c1">#added for use in CMSAppRegistry</span>
+<span class="kn">from</span> <span class="nn">mycms.funclib</span> <span class="k">import</span> <span class="n">raw</span> <span class="c1">#added for use in CMSAppRegistry</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CMSAppRegistry&#39;</span><span class="p">,</span><span class="s1">&#39;CMSNode&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CMSAppRegistry"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSAppRegistry">[docs]</a><span class="k">class</span> <span class="nc">CMSAppRegistry</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A database table that stores the information about the different cmsapps.</span>
+<span class="sd">    It also provides helper methods to easily get data from the registered</span>
+<span class="sd">    cmsapps. </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Identifier for the cmsapp. By convention its the module name.&quot;</span><span class="p">)</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;The module name for the cmsapp.&quot;</span><span class="p">)</span>
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Pretty name to display in lists and admin interfaces.&quot;</span><span class="p">)</span>    
+    
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">CMSAppRegistry</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="CMSAppRegistry.get_cmsapp_dirs"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSAppRegistry.get_cmsapp_dirs">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_cmsapp_dirs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of directories where the cmsapps reside. It gets</span>
+<span class="sd">        the list of cmsapp module names and instantiates them so that </span>
+<span class="sd">        we can find the path where they reside and returns that as a list</span>
+<span class="sd">        of directories</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">apps</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+    
+        <span class="n">cmsapp_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">apps</span><span class="p">:</span>
+            
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">module_name</span>
+        
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+            <span class="n">cmsapp_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+
+        <span class="k">return</span><span class="p">(</span><span class="n">cmsapp_dirs</span><span class="p">)</span></div>
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_serializers</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load all serializers for each of the cmsapps. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">cmsapps</span> <span class="o">=</span> <span class="n">CMSAppRegistry</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">cmsapp</span> <span class="ow">in</span> <span class="n">cmsapps</span><span class="p">:</span>
+            <span class="c1">#load the serializer module.</span>
+            <span class="n">modoule_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.serializers&quot;</span>
+            <span class="n">serializer_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        
+        
+    <span class="nd">@classmethod</span> 
+    <span class="k">def</span> <span class="nf">get_cmsapp_subdir</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dirname</span><span class="p">):</span>
+        <span class="n">cmsapp_dirs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cmsapp_dirs</span><span class="p">()</span>
+        <span class="n">cmsapp_template_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">cmsapp_dir</span> <span class="ow">in</span> <span class="n">cmsapp_dirs</span><span class="p">:</span>
+            <span class="c1">#cmsapp_template_dirs.append(Path(cmsapp_dir, dirname).as_posix())</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">cmsapp_template_dirs</span>        
+    
+<div class="viewcode-block" id="CMSAppRegistry.get_cmsapp_static_dirs"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSAppRegistry.get_cmsapp_static_dirs">[docs]</a>    <span class="nd">@classmethod</span> 
+    <span class="k">def</span> <span class="nf">get_cmsapp_static_dirs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cmsapp_subdir</span><span class="p">(</span><span class="s2">&quot;static&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="CMSAppRegistry.get_cmsapp_template_dirs"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSAppRegistry.get_cmsapp_template_dirs">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>   
+    <span class="k">def</span> <span class="nf">get_cmsapp_template_dirs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all template dirs for each cmsapp module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cmsapp_subdir</span><span class="p">(</span><span class="s2">&quot;templates&quot;</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="CMSAppRegistry.as_list"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSAppRegistry.as_list">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>    
+    <span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the cmsapp entries from the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">apps</span> <span class="o">=</span> <span class="n">CMSAppRegistry</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">apps</span></div>
+    
+    
+<div class="viewcode-block" id="CMSAppRegistry.import_module"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSAppRegistry.import_module">[docs]</a>    <span class="nd">@classmethod</span> 
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>   
+    <span class="k">def</span> <span class="nf">import_module</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">module_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A method to import a module name. This is just a copy of the global </span>
+<span class="sd">        function of the same name. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">module</span>    </div>
+ 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cmsapp_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This imports the module for the cmsapp.&quot;&quot;&quot;</span>
+        
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmsapp</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">module</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pageview_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the pageview class of the cmsapp.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+       
+        <span class="n">pageview_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_name</span> <span class="o">+</span> <span class="s2">&quot;.view&quot;</span><span class="p">)</span>
+        <span class="n">pageview_cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pageview_module</span><span class="p">,</span><span class="s2">&quot;PageView&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pageview_cls</span>
+    
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  
+    <span class="k">def</span> <span class="nf">get_api_urls</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        
+        <span class="n">router</span> <span class="o">=</span> <span class="n">routers</span><span class="o">.</span><span class="n">DefaultRouter</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">CMSAppRegistry</span><span class="o">.</span><span class="n">as_list</span><span class="p">():</span>
+            <span class="c1">#load the module for each app api.py</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">module_name</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">module_name</span> <span class="o">+</span> <span class="s2">&quot;.api&quot;</span>
+                <span class="n">api_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+                
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">api_module</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">)</span> <span class="ow">or</span> 
+                           <span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">viewsets</span><span class="o">.</span><span class="n">ViewSet</span><span class="p">)):</span>
+                            <span class="bp">cls</span><span class="o">.</span><span class="n">__add_router_entry</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">router</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="n">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to find module: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">))</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">urls</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__add_router_entry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">router</span><span class="p">):</span>
+         
+        <span class="n">api_base_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;api_base_name&quot;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">api_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s2">&quot;api_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">api_base_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">api_base_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            
+        <span class="k">if</span> <span class="n">api_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">api_path</span> <span class="o">=</span> <span class="n">raw</span><span class="p">(</span><span class="s2">&quot;api/v2/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> 
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;adding router url: </span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">,base_name=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_path</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">api_base_name</span><span class="p">))</span>
+        <span class="n">router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">api_path</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="n">api_base_name</span><span class="p">)</span>   
+          
+        <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">urls</span></div>
+         
+    
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>      
+<span class="k">def</span> <span class="nf">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">):</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="n">module</span>
+       
+<div class="viewcode-block" id="CMSNode"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSNode">[docs]</a><span class="k">class</span> <span class="nc">CMSNode</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The CMSNode is a database table stores that attributes about any node within mycms.</span>
+<span class="sd">    Every entry within MYCMS is a node. (Just like inodes in a filesystem.) </span>
+<span class="sd">     </span>
+<span class="sd">    cmsapp = CMSAppRegistry.objects.get(name=&quot;category&quot;)</span>
+<span class="sd">    cmsnode = CMSNode.objects.get_or_create(path=&quot;/cmsapp&quot;, cmsapp=cmsapp)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">path</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Path to the node. example: /cms/category/file&quot;</span><span class="p">)</span>    
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;CMSNode&quot;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot; A foreinkey to the parent path.&quot;</span><span class="p">,</span>
+                               <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s2">&quot;parentpath&quot;</span><span class="p">)</span>    
+    <span class="n">cmsapp</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">CMSAppRegistry</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DO_NOTHING</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Foreignkey to the cmsapp&quot;</span><span class="p">)</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+        
+<div class="viewcode-block" id="CMSNode.get_cmsapp"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSNode.get_cmsapp">[docs]</a>    <span class="k">def</span> <span class="nf">get_cmsapp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    </span>
+<span class="sd">        Returns an instance of a CMSPage.</span>
+<span class="sd">        </span>
+<span class="sd">        For example:</span>
+<span class="sd">        </span>
+<span class="sd">        cmspages/login</span>
+<span class="sd">        cmspages/logout</span>
+<span class="sd">        cmspages/singlepage</span>
+<span class="sd">        cmspages/pagelist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="n">PageView</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmsapp</span><span class="o">.</span><span class="n">pageview_class</span>
+        <span class="n">pageview</span> <span class="o">=</span>  <span class="n">PageView</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">pageview</span> <span class="o">=</span> <span class="n">pageview</span><span class="o">.</span><span class="n">pageview</span>
+        <span class="k">return</span> <span class="n">pageview</span></div>
+    
+<div class="viewcode-block" id="CMSNode.get_pageview"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSNode.get_pageview">[docs]</a>    <span class="k">def</span> <span class="nf">get_pageview</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the pageview for the cmsapp. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">PageView</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmsapp</span><span class="o">.</span><span class="n">pageview_class</span>
+        <span class="k">return</span> <span class="n">PageView</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">pageview</span>           </div>
+    
+<div class="viewcode-block" id="CMSNode.page"><a class="viewcode-back" href="../../../cmsapps.html#mycms.models.CMSNode.page">[docs]</a>    <span class="k">def</span> <span class="nf">page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns html of the page.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="k">pass</span></div></div>
+    
+        
+ 
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jason Viloria
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

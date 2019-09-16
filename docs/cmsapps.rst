@@ -1,0 +1,29 @@
+.. """ALL DOCUMENTATION IS WITHIN THE CODE DocStrings"""
+
+
+.. automodule:: mycms.cmsapps
+.. """ALL DOCUMENTATION for mycms.cmsapps is in mycms.cmsapps.__init__  DocStrings"""
+
+
+.. automodule:: mycms.cmsapps.base
+
+
+
+CMSAppRegistry
+--------------
+
+.. autoclass:: mycms.models.CMSAppRegistry
+.. automethod:: mycms.models.CMSAppRegistry.get_cmsapp_dirs(cls)
+.. automethod:: mycms.models.CMSAppRegistry.get_cmsapp_static_dirs(cls)
+.. automethod:: mycms.models.CMSAppRegistry.get_cmsapp_template_dirs(cls)
+.. automethod:: mycms.models.CMSAppRegistry.as_list(cls)
+.. automethod:: mycms.models.CMSAppRegistry.import_module(cls,module_name)
+    
+CMSNode
+--------------
+
+.. autoclass:: mycms.models.CMSNode
+    :members:
+    
+.. autoclass:: mycms.cmsapps.base.CMSAppController
+..

@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Rest API" href="rest_api.html" />
     <link rel="prev" title="Development Setup" href="devup.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -96,7 +98,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#writing-page-editors">Writing Page Editors</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Rest API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Rest API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_api.html#tutorials">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rest_api.html#create-a-new-cmsentry-using-javascript">Create a new CMSEntry using javascript</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -168,16 +176,16 @@
 <p>Each new page type requires a way of creating and editing new pages.  For example a CategoryPage type, we need to be able to edit the content attribute
 for the page.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last simple">
-<li>mycms/static/mycms/editor contains the js and css for the editor.</li>
-<li>html is placed within the page template and shown when user clicks the edit page whenever ?toolbar=True is passed in the request param.</li>
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>mycms/static/mycms/editor contains the js and css for the editor.</p></li>
+<li><p>html is placed within the page template and shown when user clicks the edit page whenever ?toolbar=True is passed in the request param.</p></li>
 </ul>
 </div>
 <p>Editors have three basic components:</p>
 <ul class="simple">
-<li>javascript code - The javascript code is in mycms/static/mycms/editor. For example we have there the article.editor.js and category.editor.js which contains code for editing SinglePage and CategeryPage articles.</li>
-<li>html code . This code exists within the page template . For the category page, this would be in mycms/templates/mycms/CategoryPage.</li>
+<li><p>javascript code - The javascript code is in mycms/static/mycms/editor. For example we have there the article.editor.js and category.editor.js which contains code for editing SinglePage and CategeryPage articles.</p></li>
+<li><p>html code . This code exists within the page template . For the category page, this would be in mycms/templates/mycms/CategoryPage.</p></li>
 </ul>
 <p>The code for the editor starts as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">view_object</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">==</span> <span class="s2">&quot;admin&quot;</span> <span class="o">%</span><span class="p">}</span>
@@ -192,7 +200,7 @@ for the page.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li>style sheets - All styles used for the editors should be in mycms/static/mycms/editor/</li>
+<li><p>style sheets - All styles used for the editors should be in mycms/static/mycms/editor/</p></li>
 </ul>
 </div>
 </div>
@@ -208,7 +216,7 @@ for the page.</p>
         <a href="rest_api.html" class="btn btn-neutral float-right" title="Rest API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="devup.html" class="btn btn-neutral" title="Development Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="devup.html" class="btn btn-neutral float-left" title="Development Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -217,7 +225,7 @@ for the page.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Jason Viloria.
+        &copy; Copyright 2018, Jason Viloria
 
     </p>
   </div>
@@ -234,32 +242,16 @@ for the page.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.1-poc',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Development Notes:" href="editors.html" />
     <link rel="prev" title="MyCMS - Yet Another Django Based CMS." href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -96,7 +98,13 @@
 <li class="toctree-l2"><a class="reference internal" href="editors.html#writing-page-editors">Writing Page Editors</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Rest API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_api.html">Rest API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_api.html#tutorials">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rest_api.html#create-a-new-cmsentry-using-javascript">Create a new CMSEntry using javascript</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -184,18 +192,21 @@ Development:</p>
 <p>MyCMS uses dustjs templates which are found in /mycms/templates/mycms/dustjs_templates.</p>
 <p>Rebuild of dustjs templates is done by:</p>
 <blockquote>
-<div>make dustjs</div></blockquote>
+<div><p>make dustjs</p>
+</div></blockquote>
 <p>This will also install npm and required modules if not already installed.</p>
 </div>
 <div class="section" id="overrides">
 <h3>Overrides<a class="headerlink" href="#overrides" title="Permalink to this headline">¶</a></h3>
 <p>python version:</p>
 <blockquote>
-<div>make PYTHON_VERSION=‘2.7.8’ test
-make PYTHON_VERSION=‘2.7.8’ virtualenv</div></blockquote>
+<div><p>make PYTHON_VERSION=’2.7.8’ test
+make PYTHON_VERSION=’2.7.8’ virtualenv</p>
+</div></blockquote>
 <p>pep8 options:</p>
 <blockquote>
-<div>make PEP8_OPTIONS=’–max-line-length=120’ python-pep8</div></blockquote>
+<div><p>make PEP8_OPTIONS=’–max-line-length=120’ python-pep8</p>
+</div></blockquote>
 <p>If you have already downloaded the tarballs you need (Python and/or virtualenv) you can work offline like this:</p>
 <p>make ONLINE=false virtualenv</p>
 </div>
@@ -213,7 +224,7 @@ make PYTHON_VERSION=‘2.7.8’ virtualenv</div></blockquote>
         <a href="editors.html" class="btn btn-neutral float-right" title="Development Notes:" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="MyCMS - Yet Another Django Based CMS." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="MyCMS - Yet Another Django Based CMS." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -222,7 +233,7 @@ make PYTHON_VERSION=‘2.7.8’ virtualenv</div></blockquote>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Jason Viloria.
+        &copy; Copyright 2018, Jason Viloria
 
     </p>
   </div>
@@ -239,32 +250,16 @@ make PYTHON_VERSION=‘2.7.8’ virtualenv</div></blockquote>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.1-poc',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

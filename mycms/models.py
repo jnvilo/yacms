@@ -1,10 +1,12 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
+
+import os
+import sys
+import inspect
+from pathlib import Path
 from django.db.models.signals import post_save
 from django.db.utils import OperationalError
 import pathlib
+import functools
 from datetime import datetime
 from django.core.cache import cache
 
@@ -16,8 +18,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-from mycms.creole import creole2html
+from rest_framework import viewsets #added for use in CMSAppRegistry
+from rest_framework import routers  #added for use in CMSAppRegistry
 
+from mycms.creole import creole2html
+from mycms.funclib import raw #added for use in CMSAppRegistry
 
 from rest_framework.authtoken.models import Token
 
@@ -34,8 +39,6 @@ class CMSPaths(models.Model):
 
     def __str__(self):
         return self.path
-
-
 
 
 class CMSTags(models.Model):
@@ -56,7 +59,7 @@ class CMSMarkUps(models.Model):
 
     def __str__(self):
         return self.markup
-                    
+                
 class CMSContents(models.Model):
     
     #class Meta:
@@ -114,8 +117,6 @@ class CMSPageTypes(models.Model):
         super(CMSPageTypes, self).save(*args, **kwargs)
 
 
-
-
     def __str__(self):
         return self.text
 
@@ -127,7 +128,6 @@ def get_admin_user():
         return admin
     except OperationalError as e:
         return 1
-
 
 
 class CMSEntries(models.Model):
@@ -282,8 +282,6 @@ class CMSEntries(models.Model):
         return c
 
 
-
-
     def save(self, *args, **kwargs):
         if self.pk is None:
             super(CMSEntries, self).save(*args, **kwargs)
@@ -352,7 +350,42 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
-    #
+    
+class CMSPageDataStore(object):
+    """
+    Base class for all classes that implements access to 
+    a data store. The CMSPageDBBackend inherets this class
+    and abstracts away the database read and writes 
+    """
  
+    @property
+    def path(self):
+        return self._path
+    
+    @path.setter
+    def path(self, param): 
+        self._path = param
+        
+        
+    @property 
+    def parent(self):
+        return self._parent
+    
+    @path.getter
+    def parent(self, param):
+        self._parent = param
+        
  
- 
+# ##############################################################################
+
+#Import all CMSApps
+
+try:
+    
+    CMSAPPS = settings.MYCMS_CONFIGS["CMSAPPS"]
+except KeyError as e:
+    print("MYCMS_CONFIGS does not have any CMSAPPS listed. Please add a CMSAPPS section")
+    sys.exit(1)
+
+
+from mycms.cmsapps.models import * 

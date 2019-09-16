@@ -17,32 +17,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/searchtools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="#" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -82,6 +85,16 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="cmsapps.html">CMSApps Internals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cmsapps.html#the-structure-of-a-mycms-website">The Structure of a MyCMS Website</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmsapps.html#from-request-to-django-view-to-a-cmsapp-view">From request to django view to a cmsapp view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmsapps.html#what-is-a-cmsapp">What is a CMSApp?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmsapps.html#a-cmsapp-skeleton">A CMSApp Skeleton.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmsapps.html#dynamic-loading-of-cmsapp">Dynamic Loading of CMSApp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cmsapps.html#cmsappregistry">CMSAppRegistry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmsapps.html#cmsnode">CMSNode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="devup.html">Development Setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="devup.html#build-requirements">Build Requirements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="devup.html#building-templates">Building templates</a></li>
@@ -187,7 +200,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Jason Viloria.
+        &copy; Copyright 2018, Jason Viloria
 
     </p>
   </div>
@@ -204,33 +217,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.1-poc',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/searchtools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
+  
   <script type="text/javascript">
     jQuery(function() { Search.loadIndex("searchindex.js"); });
   </script>

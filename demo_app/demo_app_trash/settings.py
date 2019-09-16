@@ -62,6 +62,9 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR,"templates"),os.path.join(BASE_DIR,"mockups") ],
         'APP_DIRS': True,
         'OPTIONS': {
+            'loaders': [
+                'mycms.cmsapps.loaders.Loader'  ,           
+             ],       
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -151,3 +154,9 @@ REST_FRAMEWORK = {
 }
 
 FORCE_SHOW_ADVERTS=False
+
+MYCMS_CONFIGS = {
+
+    'CMSAPPS': ("mycms.cmsapps.category","mycms.cmsapps.singlepage"),
+    "FORCE_SHOW_ADVERTS": False
+}

@@ -11,6 +11,16 @@ logger = logging.getLogger("mycms.page_handlers")
 
 class BasePage(object):
     
+    def __init__(self, page_object, request=None):
+        
+        #The page_object in this case is the cmsentry model instance.
+        self.page_object = page_object
+        self.request = request    
+    
+    def on_create(self):
+        logger.debug("on_create called from BasePage.")
+        
+    
     def get_list_params(self):
         
         LIMIT = 10
@@ -146,6 +156,48 @@ try:
 
         allarticles_pagetype_obj = CMSPageTypes.objects.filter(page_type="ALLARTICLES")[0]
 
+
+    
+    #Precreate LISTITEM
+    try:
+        listitem_pagetype_obj, c = obj = CMSPageTypes.objects.get_or_create(page_type = "LISTITEM",
+                                                     text = "List Item",
+                                                     view_class = "ListItem",
+                                                     view_template = "ListItem.html")
+
+    except ObjectDoesNotExist as e:
+        listitem_pagetype_obj = CMSPageTypes( ppage_type = "LISTITEM",
+                                                     text = "List Item",
+                                                     view_class = "ListItem",
+                                                     view_template = "ListItem.html")
+        listitem_pagetype_obj.save()
+
+    except MultipleObjectsReturned as e:
+        msg = "Got more than 1 CMSPageTypes : LISTITEM. Database is inconsistent, Will return the first one. "
+        logger.warn(msg)
+
+        listitem_pagetype_obj = CMSPageTypes.objects.filter(page_type="LISTITEM")[0]
+
+
+    #precreate LISTPAGE
+    try:
+        listpage_pagetype_obj, c = obj = CMSPageTypes.objects.get_or_create(page_type = "LISTPAGE",
+                                                     text = "List Page",
+                                                     view_class = "ListPage",
+                                                     view_template = "ListPage.html")
+
+    except ObjectDoesNotExist as e:
+        listpage_pagetype_obj = CMSPageTypes( ppage_type = "LISTPAGE",
+                                                     text = "List Page",
+                                                     view_class = "ListPage",
+                                                     view_template = "ListPage.html")
+        listpage_pagetype_obj.save()
+
+    except MultipleObjectsReturned as e:
+        msg = "Got more than 1 CMSPageTypes : LISTPAGE. Database is inconsistent, Will return the first one. "
+        logger.warn(msg)
+
+        listitem_pagetype_obj = CMSPageTypes.objects.filter(page_type="LISTITEM")[0]
 
 except OperationalError as e:
     #This can happen only when the database is not yet initialized.

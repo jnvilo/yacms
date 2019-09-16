@@ -23,6 +23,7 @@ from mycms.views import CMSFrontPage
 from mycms.views import CMSLoginView
 from mycms.views import CMSLogoutView
 from mycms.views import CMSSitemap
+from mycms.views import CMSView
 
 from django.contrib.sitemaps.views import sitemap
 from .views import TemplateSampleLoader
@@ -35,6 +36,7 @@ urlpatterns = [
     url(r'^cms/',include('mycms.urls')),
     url(r'^$', CMSFrontPage.as_view()),
     url(r'^login/', CMSLoginView.as_view()),
+    url(r'^category/', CMSView.as_view()),
     url(r'^logout/', CMSLogoutView.as_view()),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
     url(r'^templates/(?P<template>[-._\w\d]*.html)$', TemplateSampleLoader.as_view()),

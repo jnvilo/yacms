@@ -37,8 +37,6 @@ class CategoryPage(page_types.BasePage):
 
         from django.db.models import Q
         
-       
-        # ######################################################################
         # This loads up all the articles that are 
         # of type single_page or multipage and has the provided parent. 
         # 
@@ -96,7 +94,7 @@ class CategoryPage(page_types.BasePage):
     def page_types(self):
         """
         Refactor me into a parent class.
-        returns a list fo page_types
+        returns a list of page_types
         """
 
         pagetype_objs = CMSPageTypes.objects.all()

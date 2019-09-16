@@ -13,10 +13,12 @@ This is a cms that I have been using as a development playground to test out dja
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
-    
+   
+   cmsapps.rst 
    devup.rst
    editors.rst
    rest_api.rst
+   
 
 
 Indices and tables

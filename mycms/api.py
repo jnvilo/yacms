@@ -68,6 +68,8 @@ from mycms.serializers import CMSPathsSerializer
 from mycms.serializers import CMSEntryExpandedSerializer
 from mycms.serializers import LoremIpsumSerializer
 from mycms.serializers import CMSChildEntrySerializer
+from mycms.serializers import CMSNodeSerializer
+
 
 import mycms.serializers as mycmsserializers
 
@@ -77,6 +79,7 @@ from mycms.models import CMSTemplates
 from mycms.models import CMSPageTypes
 from mycms.models import CMSEntries
 from mycms.models import CMSPaths
+from mycms.models import CMSNode
 
 from rest_framework.schemas import AutoSchema, ManualSchema
 import coreapi
@@ -227,9 +230,6 @@ class CMSPageTypeViewSet(viewsets.ModelViewSet):
     serializer_class =  CMSPageTypesSerializer
 
 
-
-
-
 class CMSPathsViewSet(viewsets.ModelViewSet):
 
     permission_classes = (IsAuthenticated,)
@@ -346,3 +346,9 @@ class CMSAuthToken(viewsets.GenericViewSet):
 
         else:
             return Response(data={"error": "Not Authorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+# ##############################################################################
+
+
+

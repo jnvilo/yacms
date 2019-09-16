@@ -113,6 +113,15 @@ class ViewObject(object):
     coupling together the different pieces of a page such that it can
     be serialized.  The ViewObject handles the management of the
     attributes of the CMSEntry model.
+    
+    The ViewObject loads a view_handler from mycms.view_handlers according 
+    to the page_type. For example CategoryPage.
+    
+    This used to be the base class for all the page_handlers but now 
+    its a loader.
+    
+    TODO: Complete the migration of the properties and methods to the 
+    page handlers.
     """
     
     def __init__(self, path=None, page_id=None, page_object=None, request=None):
@@ -134,11 +143,14 @@ class ViewObject(object):
         x = __import__("mycms.view_handlers")
         y = getattr(x, "view_handlers")
         
-        #the view class take care of providing extra implementation that is 
-        #needed in the page. vie_class is defined as an attribute inside the 
-        #the database.
-        # 
-        # we provide it the page_object and 
+        """
+        The view class take care of providing extra implementation that is 
+        needed in the page. vie_class is defined as an attribute inside the 
+        the database.
+        
+        This architecture was chosen for more flexibility because it allows us
+        to create new page_types and have specifc code for each view class.
+        """ 
         
         ViewClass  = getattr(y, self.page_object.page_type.view_class)
         instance =  ViewClass(self.page_object, request=self.request)
@@ -177,6 +189,9 @@ class ViewObject(object):
             return value
 
         except AttributeError as e:
+            
+            #TODO: CRemove This is really bad since 
+            #the recipient expects a value other than none.
             return None
 
     @property

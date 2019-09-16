@@ -6,9 +6,6 @@ class BaseAdmin{
         this.cmsentry_id = data["id"];
           
     }
-    
-   
-
 }
 
 
@@ -368,7 +365,7 @@ class CMSEntriesWidget extends AdminWidget{
                 
                 console.log("GOT RESILTS", cmsentries_list);
                 $.ajax({
-                    url: "/cms/api/v2/cmspagetypes/",
+                    url: "/cms/api/v2/cmspagetypes/?limit=1000",
                     type: 'GET',
                     error: function(){
                         log.debug("Failed to load PageTypes");
@@ -384,14 +381,14 @@ class CMSEntriesWidget extends AdminWidget{
                     
                         /** create an index **/
                         
-                        var pagetype_dict = {};
-                        
+                        var pagetype_dict = {};  
                         for (var j=0; j < pagetypes.length; j++){
                                 //log.debug(pagetypes[j]);
                                 /**if (pagetypes[j]["id"] == pagetype_id){
                                     log.debug("PAGETYPE: ",pagetypes[j].page_type);
                                     var pagetype_text = pagetypes[j]["text"];
                                 }**/
+                                console.log("PAGETYPE: ",pagetypes[j].page_type, "  ID", pagetypes[j].id);
                                 
                                 pagetype_dict[pagetypes[j]["id"]] = pagetypes[j]["text"]; 
                                 

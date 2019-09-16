@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -82,6 +84,16 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cmsapps.html">CMSApps Internals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#the-structure-of-a-mycms-website">The Structure of a MyCMS Website</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#from-request-to-django-view-to-a-cmsapp-view">From request to django view to a cmsapp view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#what-is-a-cmsapp">What is a CMSApp?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#a-cmsapp-skeleton">A CMSApp Skeleton.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cmsapps.html#dynamic-loading-of-cmsapp">Dynamic Loading of CMSApp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cmsapps.html#cmsappregistry">CMSAppRegistry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cmsapps.html#cmsnode">CMSNode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../devup.html">Development Setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../devup.html#build-requirements">Build Requirements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../devup.html#building-templates">Building templates</a></li>
@@ -165,13 +177,13 @@
             
   <h1>Source code for mycms.api</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The module mycms.api is a DRF based api which allows REST calls into the CMS contents stored </span>
+<span class="sd">The module mycms.api is a DRF based api which allows REST calls into the CMS contents stored</span>
 <span class="sd">in the mycms database. The REST API documentation and interface can be reached at /cms/api/v2/docs/ of a mycms instance.</span>
 
-<span class="sd">The web interface to the api exposes all the possible operations that we can do to the MyCMS database and is the </span>
-<span class="sd">best way for understanding and testing the various api calls. </span>
+<span class="sd">The web interface to the api exposes all the possible operations that we can do to the MyCMS database and is the</span>
+<span class="sd">best way for understanding and testing the various api calls.</span>
 
-<span class="sd">The API exposes the following endpoints: </span>
+<span class="sd">The API exposes the following endpoints:</span>
 
 <span class="sd">* cmsauthtoken</span>
 
@@ -191,16 +203,17 @@
 <span class="sd">Create a new CMSEntry using javascript</span>
 <span class="sd">---------------------------------------</span>
 
-<span class="sd">Every mycms page defines a view_json object which contains information about the page. This can be seen in the html page </span>
+<span class="sd">Introduction and Some Background:</span>
+
+<span class="sd">Every mycms page defines a view_json object which contains information about the page. This can be seen in the html page</span>
 <span class="sd">for example:</span>
 
 <span class="sd">.. code-block:: javascript</span>
 
 <span class="sd">    var view_json = {&quot;id&quot;: 1, &quot;title&quot;: &quot;Yet Another CMS.&quot;, &quot;path&quot;: 1, &quot;slug&quot;: &quot;yet-another-cms&quot;, &quot;page_type&quot;: 5, &quot;template&quot;: null, &quot;frontpage&quot;: false, &quot;published&quot;: true, &quot;lists_include&quot;: false, &quot;page_number&quot;: 1, &quot;created_by&quot;: 1, &quot;logo_url&quot;: &quot;/static/mycms/images/png/default.png&quot;, &quot;path_str&quot;: &quot;/&quot;, &quot;content&quot;: [], &quot;date_created_epoch&quot;: 1460237699000, &quot;date_modified_epoch&quot;: 1460237699000}</span>
 
-<span class="sd">In order to create a CMSEntry we use the </span>
 
-
+<span class="sd">In order to create a CMSEntry we use the endpoint /cms/api/v2/cmsentries/id/create_child/ where id is the parent of the page we want to create.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -233,6 +246,8 @@
 <span class="kn">from</span> <span class="nn">mycms.serializers</span> <span class="k">import</span> <span class="n">CMSEntryExpandedSerializer</span>
 <span class="kn">from</span> <span class="nn">mycms.serializers</span> <span class="k">import</span> <span class="n">LoremIpsumSerializer</span>
 <span class="kn">from</span> <span class="nn">mycms.serializers</span> <span class="k">import</span> <span class="n">CMSChildEntrySerializer</span>
+<span class="kn">from</span> <span class="nn">mycms.serializers</span> <span class="k">import</span> <span class="n">CMSNodeSerializer</span>
+
 
 <span class="kn">import</span> <span class="nn">mycms.serializers</span> <span class="k">as</span> <span class="nn">mycmsserializers</span>
 
@@ -242,51 +257,65 @@
 <span class="kn">from</span> <span class="nn">mycms.models</span> <span class="k">import</span> <span class="n">CMSPageTypes</span>
 <span class="kn">from</span> <span class="nn">mycms.models</span> <span class="k">import</span> <span class="n">CMSEntries</span>
 <span class="kn">from</span> <span class="nn">mycms.models</span> <span class="k">import</span> <span class="n">CMSPaths</span>
+<span class="kn">from</span> <span class="nn">mycms.models</span> <span class="k">import</span> <span class="n">CMSNode</span>
 
 <span class="kn">from</span> <span class="nn">rest_framework.schemas</span> <span class="k">import</span> <span class="n">AutoSchema</span><span class="p">,</span> <span class="n">ManualSchema</span>
-<span class="kn">import</span> <span class="nn">coreapi</span> 
+<span class="kn">import</span> <span class="nn">coreapi</span>
 <span class="kn">import</span> <span class="nn">coreschema</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;CMSContentsViewSet&quot;</span><span class="p">,</span> 
+
+<span class="kn">from</span> <span class="nn">django_filters.rest_framework</span> <span class="k">import</span> <span class="n">DjangoFilterBackend</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;CMSContentsViewSet&quot;</span><span class="p">,</span>
             <span class="s2">&quot;CMSFormatterContent&quot;</span><span class="p">,</span>
             <span class="s2">&quot;CMSEntriesViewSet&quot;</span><span class="p">]</span>
 
 
 
-<div class="viewcode-block" id="CMSContentsViewSet"><a class="viewcode-back" href="../../rest_api.html#mycms.api.CMSContentsViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSContentsViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+<div class="viewcode-block" id="CMSContentsViewSet"><a class="viewcode-back" href="../../cmsapps.html#mycms.api.CMSContentsViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSContentsViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A viewset that allows </span>
+<span class="sd">    A viewset that allows</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
-    
+
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">CMSContents</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
     <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">CMSContentsSerializer</span>
-    
+
     <span class="nd">@detail_route</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="n">content_obj</span> <span class="o">=</span><span class="n">CMSContents</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="n">content_obj</span><span class="o">.</span><span class="n">html</span><span class="p">}</span> 
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="n">content_obj</span><span class="o">.</span><span class="n">html</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span> <span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span></div>
-    
-        
-<div class="viewcode-block" id="CMSFormatterContent"><a class="viewcode-back" href="../../rest_api.html#mycms.api.CMSFormatterContent">[docs]</a><span class="k">class</span> <span class="nc">CMSFormatterContent</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
-    
+
+
+<div class="viewcode-block" id="CMSFormatterContent"><a class="viewcode-back" href="../../cmsapps.html#mycms.api.CMSFormatterContent">[docs]</a><span class="k">class</span> <span class="nc">CMSFormatterContent</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        
+
         <span class="n">content_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content_id&quot;</span><span class="p">)</span>
-        
+
         <span class="n">content_obj</span> <span class="o">=</span><span class="n">CMSContents</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">content_id</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="n">content_obj</span><span class="o">.</span><span class="n">html</span><span class="p">}</span> 
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="n">content_obj</span><span class="o">.</span><span class="n">html</span><span class="p">}</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="s2">&quot;Use the new html action of CMSContents.&quot;</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span> <span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span></div>
-    
-<div class="viewcode-block" id="CMSEntriesViewSet"><a class="viewcode-back" href="../../rest_api.html#mycms.api.CMSEntriesViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSEntriesViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
-    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
-    
-    <span class="n">queryset</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">CMSEntrySerializer</span>    
 
+<div class="viewcode-block" id="CMSEntriesViewSet"><a class="viewcode-back" href="../../cmsapps.html#mycms.api.CMSEntriesViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSEntriesViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
+
+
+    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">CMSEntrySerializer</span>
+    <span class="n">filter_backends</span> <span class="o">=</span> <span class="p">(</span><span class="n">DjangoFilterBackend</span><span class="p">,)</span>
+    <span class="n">filter_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;page_type&#39;</span><span class="p">,</span><span class="s2">&quot;frontpage&quot;</span><span class="p">,</span><span class="s2">&quot;published&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">queryset</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="n">parent_path_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_path_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parent_path_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">queryset</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">path__parent</span><span class="o">=</span><span class="n">parent_path_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">queryset</span>
 
     <span class="nd">@detail_route</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">get_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -295,66 +324,164 @@
         <span class="n">c</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">path__parent</span><span class="o">=</span><span class="n">parent_obj</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">page_type__page_type</span><span class="o">=</span><span class="s2">&quot;CATEGORY&quot;</span><span class="p">)</span>
         <span class="n">serializer</span> <span class="o">=</span>  <span class="n">CMSEntrySerializer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
-    
+
     <span class="nd">@detail_route</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">create_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A utility function to create an article including path information. </span>
+<span class="sd">        A utility function to create an article including path information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="nb">print</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">fake_flag</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fake&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">_mutable</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">slug</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;slug&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="n">fake_flag</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">faker</span> <span class="k">import</span> <span class="n">Faker</span>
+            <span class="kn">import</span> <span class="nn">random</span>
+            <span class="kn">from</span> <span class="nn">django.utils.text</span> <span class="k">import</span> <span class="n">slugify</span>
+            <span class="n">fake_factory</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+            
+            <span class="n">fake_title</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fake_factory</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">)))</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_title</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slugify</span><span class="p">(</span><span class="n">fake_title</span><span class="p">)</span>
+            
+            <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;published&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">CMSChildEntrySerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-       
+
         <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
             <span class="n">vd</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">validated_data</span>
-            
-            
-            <span class="c1">#The CMSChildEntrySerializer expects to get the pk of </span>
+
+
+            <span class="c1">#The CMSChildEntrySerializer expects to get the pk of</span>
             <span class="c1">#the parent.</span>
             <span class="n">child_obj</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">vd</span><span class="p">,</span> <span class="n">pk</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_201_CREATED</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>            </div>
+            
         
-        
-        
-<div class="viewcode-block" id="CMSPathsViewSet"><a class="viewcode-back" href="../../rest_api.html#mycms.api.CMSPathsViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSPathsViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+            
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+
     
+    <span class="nd">@detail_route</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">toggle_published</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pk</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pk&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            
+            <span class="n">cms_entry</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+            <span class="n">cms_entry</span><span class="o">.</span><span class="n">toggle_published</span><span class="p">()</span>
+            <span class="n">cms_entry</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+         
+            <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;error&quot;</span> <span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">Response</span><span class="p">({</span> <span class="s2">&quot;published&quot;</span><span class="p">:</span> <span class="n">cms_entry</span><span class="o">.</span><span class="n">published</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_202_ACCEPTED</span><span class="p">)</span>
+    
+    <span class="nd">@detail_route</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">toggle_frontpage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pk</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pk&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            
+            <span class="n">cms_entry</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+            <span class="n">cms_entry</span><span class="o">.</span><span class="n">toggle_frontpage</span><span class="p">()</span>
+            <span class="n">cms_entry</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+         
+            <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;error&quot;</span> <span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">Response</span><span class="p">({</span> <span class="s2">&quot;frontpage&quot;</span><span class="p">:</span> <span class="n">cms_entry</span><span class="o">.</span><span class="n">frontpage</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_202_ACCEPTED</span><span class="p">)</span></div>
+    
+        
+<span class="k">class</span> <span class="nc">CMSPageTypeViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">CMSPageTypes</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">CMSPageTypesSerializer</span>
+
+
+<div class="viewcode-block" id="CMSPathsViewSet"><a class="viewcode-back" href="../../cmsapps.html#mycms.api.CMSPathsViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSPathsViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">CMSPaths</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">CMSPathsSerializer</span>    </div>
-    
+    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">CMSPathsSerializer</span></div>
 
 
-<div class="viewcode-block" id="CMSPagesViewSet"><a class="viewcode-back" href="../../rest_api.html#mycms.api.CMSPagesViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSPagesViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
-    
+
+<div class="viewcode-block" id="CMSPagesViewSet"><a class="viewcode-back" href="../../cmsapps.html#mycms.api.CMSPagesViewSet">[docs]</a><span class="k">class</span> <span class="nc">CMSPagesViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
     <span class="n">queryset</span> <span class="o">=</span> <span class="n">CMSEntries</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">mycmsserializers</span><span class="o">.</span><span class="n">CMSPageSerializer</span> </div>
+    <span class="n">serializer_class</span> <span class="o">=</span>  <span class="n">mycmsserializers</span><span class="o">.</span><span class="n">CMSPageSerializer</span></div>
+
+
+<span class="k">class</span> <span class="nc">CMSContentPreview</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">GenericViewSet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implements API endpoint to preview a page.&quot;&quot;&quot;</span>
+
+    <span class="c1">#from rest_framework.schemas.inspectors import AuthoSchema</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">ManualSchema</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span>
+           <span class="n">coreapi</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+               <span class="s2">&quot;content&quot;</span><span class="p">,</span>
+               <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+               <span class="n">location</span><span class="o">=</span><span class="s2">&quot;form&quot;</span><span class="p">,</span>
+               <span class="n">schema</span><span class="o">=</span><span class="n">coreschema</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">description</span><span class="o">=</span> <span class="s2">&quot;The raw content that needs to be formatted.&quot;</span><span class="p">),</span>
+
+           <span class="p">)</span>
+           
+       <span class="p">],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Retrieves the Creole formatted content of what is posted.&quot;</span><span class="p">)</span>
+
+
+    <span class="c1">#def get(self, request):</span>
+
+        <span class="c1">#if request.user.is_authenticated:</span>
+
+            <span class="c1">#token =</span>
+
+
+    <span class="k">def</span> <span class="nf">retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+       
+        <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">mycms.view_handlers.formatters</span> <span class="k">import</span> <span class="n">CreoleFormatter</span>
+            <span class="n">content</span> <span class="o">=</span>  <span class="n">CreoleFormatter</span><span class="p">(</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">html</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;content&quot;</span> <span class="p">:</span> <span class="n">content</span><span class="p">},</span>\
+                            <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;No Content&quot;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+
+
+
     
-    
+
 <div class="viewcode-block" id="CMSAuthToken"><a class="viewcode-back" href="../../rest_api.html#mycms.api.CMSAuthToken">[docs]</a><span class="k">class</span> <span class="nc">CMSAuthToken</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">GenericViewSet</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Implements retrieving of Token.&quot;&quot;&quot;</span>
-    
+
     <span class="c1">#permission_classes = (IsAuthenticated,)</span>
-   
+
     <span class="c1">#from rest_framework.schemas.inspectors import AuthoSchema</span>
     <span class="n">schema</span> <span class="o">=</span> <span class="n">ManualSchema</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span>
            <span class="n">coreapi</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
                <span class="s2">&quot;username&quot;</span><span class="p">,</span>
                <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                <span class="n">location</span><span class="o">=</span><span class="s2">&quot;form&quot;</span><span class="p">,</span>
-               <span class="n">schema</span><span class="o">=</span><span class="n">coreschema</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">description</span><span class="o">=</span> <span class="s2">&quot;username required to create or retrieve token&quot;</span><span class="p">),</span> 
-               
+               <span class="n">schema</span><span class="o">=</span><span class="n">coreschema</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">description</span><span class="o">=</span> <span class="s2">&quot;username required to create or retrieve token&quot;</span><span class="p">),</span>
+
            <span class="p">),</span>
            <span class="n">coreapi</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
                <span class="s2">&quot;password&quot;</span><span class="p">,</span>
                <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                <span class="n">location</span><span class="o">=</span><span class="s2">&quot;form&quot;</span><span class="p">,</span>
                <span class="n">schema</span><span class="o">=</span><span class="n">coreschema</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;password required to create or retrieve token&quot;</span><span class="p">),</span>
-              
-               
            <span class="p">),</span>
            <span class="n">coreapi</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
                <span class="s2">&quot;renew&quot;</span><span class="p">,</span>
@@ -362,27 +489,27 @@
                <span class="n">location</span><span class="o">=</span><span class="s2">&quot;query&quot;</span><span class="p">,</span>
                <span class="n">schema</span><span class="o">=</span><span class="n">coreschema</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">description</span><span class="o">=</span> <span class="s2">&quot;set to true to retrieve a new token invalidating old one if it exists.&quot;</span><span class="p">),</span>
                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;password required to create or retrieve token&quot;</span>
-               
-           <span class="p">)</span>           
-       <span class="p">],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Gets or Creates a Token for the given user.&quot;</span><span class="p">)</span>       
-    
-    
+
+           <span class="p">)</span>
+       <span class="p">],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Gets or Creates a Token for the given user.&quot;</span><span class="p">)</span>
+
+
     <span class="c1">#def get(self, request):</span>
-        
-        <span class="c1">#if request.user.is_authenticated: </span>
-            
-            <span class="c1">#token = </span>
-    
-    
-    <span class="k">def</span> <span class="nf">retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> 
-        
+
+        <span class="c1">#if request.user.is_authenticated:</span>
+
+            <span class="c1">#token =</span>
+
+
+    <span class="k">def</span> <span class="nf">retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
         <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">renew</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;renew&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;Returns token for logged in user.&quot;&quot;&quot;</span>
-    
-    
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>     
+
+
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">renew</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">token</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
@@ -390,14 +517,19 @@
                 <span class="k">except</span> <span class="n">ObjectDoesNotExist</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="c1">#Nothing to renew</span>
                     <span class="k">pass</span>
-           
+
             <span class="n">token</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;token&quot;</span> <span class="p">:</span> <span class="n">token</span><span class="o">.</span><span class="n">key</span><span class="p">},</span>\
                             <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
-    
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Not Authorized&quot;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">)</span></div>
-        
+
+
+<span class="c1"># ##############################################################################</span>
+
+
+
 </pre></div>
 
            </div>
@@ -410,7 +542,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Jason Viloria.
+        &copy; Copyright 2018, Jason Viloria
 
     </p>
   </div>
@@ -427,32 +559,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.0.1-poc',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

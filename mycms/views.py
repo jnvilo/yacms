@@ -942,11 +942,9 @@ class CMSPageView(View):
         This method gets the cmsentries object from the database. 
         """
         
-        
         path = kwargs.get("path", None)
         page_id = kwargs.get("page_id", None)
 
-        
         """
         We use the path to search for the object if it is provided. Otherwise
         we can also load the page via page_id. If none is provided then 
@@ -972,7 +970,8 @@ class CMSPageView(View):
 
         except ObjectDoesNotExist as e:
             """
-            Handle special case where we are in the root of the CMS i.e. /cms/
+            Handle special case for paths /cms/ or /cms/about
+            If they do not exist, then we create empty pages for them.
             """
             if path in [None , "/", "about"]:
                 """
@@ -1036,10 +1035,10 @@ class CMSPageView(View):
                 return obj
             else:
                 
-                #TODO: Make sure to log this too 
-                raise Http404("Page Does Not Exist.")
-
-
+                #Send the request to CMSView() The new kid on the block
+                #which ultimately everything will be migrated to.
+                return None
+            
 
     def get(self,request, **kwargs):
         """
@@ -1048,8 +1047,8 @@ class CMSPageView(View):
     
         get = request.GET
         
-        """
-        Whenever ?toolbar is added to the get parameter, we save it to the session
+    
+        """Whenever ?toolbar is added to the get parameter, we save it to the session
         This is used as a flag to show the files. 
         """
         toolbar = request.GET.get("toolbar", None)
@@ -1058,9 +1057,16 @@ class CMSPageView(View):
         elif toolbar and toolbar.upper() == "FALSE":
             request.session["show_toolbar"] = False
         
+        
+        
+        """
+        Handle login/logout page attributes. This is to handle the feature of 
+        MyCMS where we want to be able to redirect a user to the login page 
+        and then return them back to the current page. All that is needed to be
+        done is to append ?login=True, or ?logout=True
+        """
         login = request.GET.get("login", None)
         logout = request.GET.get("logout", None)
-        
         if login:
             """
             When a page is requested with ?login=X where X can be anything, we 
@@ -1088,35 +1094,68 @@ class CMSPageView(View):
         if logout and request.user.is_authenticated:
             #jist logout the current user and send him to the logout. 
                 return HttpResponseRedirect("/cms/logout/")
+        
             
-        #get object will load return an instance of mycms.view_handlers.ViewObject
-        #which encapsulates the CMSEntry and all other operations on it. 
+        """
+        get object will load return an instance of mycms.view_handlers.ViewObject
+        which encapsulates the CMSEntry and all other operations on it. 
+        """
+        
+        
         obj = self.get_object(request, **kwargs)
-        obj.request = request
         
-        #Save the toolbar value in the session in the show_toolbar member variable so 
-        #that it can be accessible in the web page template code. 
-        obj.show_toolbar = request.session.get("show_toolbar", False) 
-        
-        
-        
-        template = obj.template
-       
-        if settings.DEBUG:
-            return render_to_response(template, {"view_object": obj})
-        else:
-        
+        if obj:
+            
+            obj.request = request
+            
+            #Save the toolbar value in the session in the show_toolbar 
+            #member variable so that it can be accessible in the web page 
+            ##template code. 
+            obj.show_toolbar = request.session.get("show_toolbar", False) 
+            
+            template = obj.template
+               
             try:
                 return render_to_response(template, {"view_object": obj})
-                
             except Exception as e:
+                flag = getattr(setting, "DEBUG",False)
+                if flag:
+                    #if settings.DEBUG is not set, then we just re raise an 
+                    #the exception
+                    raise
+                else:
+                    #must be running in production. Just say a generic 
+                    #Application error message.
                 
-                #if we are in debug mode then show then let django handle showing 
-                #the debug error:
-                msg = "Application Error {}".format(e)            
-                return HttpResponse(content=bytes(msg, 'utf-8'), status=500)
+                    msg = "Application Error {}".format(e)            
+                    return HttpResponse(content=bytes(msg, 'utf-8'), status=500)
+                
+        else:
+            #Did not find any path in the cms. 
             
-        
+            pathname = kwargs.get("path",None)
+            
+            if pathname is None:
+                pathname = "/"            
+            elif not pathname.startswith("/"):
+                pathname = Path("/",pathname).as_posix()
+            
+            pathname = os.path.normpath(pathname)
+            
+            try:
+                node = CMSNode.objects.get(path=pathname,)
+                #The node takes care of loading the correct CMSApp 
+                #and all we need to do is call the cmsapp method 
+                #which will return a cmsapp. CMSApp has a render method
+                #hence django will call it to create the html output.
+                
+                pageview = node.get_pageview(request)
+                return pageview
+            
+            except ObjectDoesNotExist as e:
+                return HttpResponseNotFound(content=b'Page not found')           
+            
+            
     
     def post(self, request, **kwargs):
         print(request, kwargs)
@@ -1535,4 +1574,34 @@ class CMSUserContentArea(View):
     
         return render(request, "mycms/CMSUserContentArea.html")
     
+
+# ------------------
+
+from mycms.models import CMSNode
+import os
+
+class CMSView(View):
+    """
+    The entry point for every page in the website. 
+    """
     
+    
+    def get(self, request, **kwargs):
+        
+        #get the path from the database
+        pathname = kwargs.get("path",None)
+        
+        if pathname is None:
+            pathname = "/"
+        pathname = os.path.normpath(pathname)
+        
+        try:
+            node = CMSNode.objects.get(path=pathname,)
+            #The node takes care of loading the correct CMSApp 
+            #and all we need to do is call the render method on it 
+            #to get the required html page.
+            
+            return node.render(request)
+        
+        except ObjectDoesNotExist as e:
+            return Http404("Page not found.")

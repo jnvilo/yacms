@@ -13,10 +13,15 @@ from mycms.models import CMSTemplates
 from mycms.models import CMSPageTypes
 from mycms.models import CMSEntries
 from mycms.models import CMSPaths
+from mycms.models import CMSNode
 
 import os
 import random
 from faker import Faker
+
+
+from django.core.exceptions import ObjectDoesNotExist
+
 
 class LoremIpsumSerializer(serializers.Serializer):
 
@@ -105,8 +110,6 @@ class CMSChildEntrySerializer(serializers.ModelSerializer):
         fields = ('id','title','slug','content','date_created',
                   'page_type','template','frontpage','published',
                    'page_number')
-
-
 
     def make_path(self, slug, parent_id):
         """
@@ -210,6 +213,7 @@ class CMSPageSerializer(serializers.ModelSerializer):
 
     path = CMSPathFullSerializer()
     content = CMSContentsSerializer(many=True)
+ 
     class Meta:
         model = CMSEntries
         title = serializers.CharField(max_length=1024, default=None)
@@ -251,3 +255,71 @@ class CMSPageSerializer(serializers.ModelSerializer):
 class CMSAuthTokenSerializer(serializers.Serializer):
 
     pass
+
+
+# ##############################################################################
+
+
+
+class CMSNodeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = CMSNode
+        fields = ('path','cmsapp',) #path is a string , and parent is an id.
+        
+        
+    def validate(self,data):
+        
+        """
+        The parent path must exist. 
+        """
+        
+        path  = data["path"]
+        path = os.path.normpath(path)
+        
+        if path == '':
+            #This path has no parent so no validation required.
+            data[path]="/"
+        elif path == "/":
+            #No parent is needed since root has no parent.
+            pass 
+        else:
+            #We check to make sure the parent exists. 
+            parent_path_str = os.path.dirname(path)
+            
+            try: 
+                CMSPath.objects.get(path=parent_path_str)
+            except ObjectDoesNotExist as e:
+                raise serializers.ValidationError("Invalid path given. Parent path does not exist.")
+                 
+        return data
+            
+        
+    def create(self, validated_data):
+        
+        pathname = validated_data["path"]
+        cmsapp = validated_data['cmsapp']
+    
+        #get the parent 
+        pathname = os.path.normpath(pathname)
+        parent_path_str = os.path.dirname(pathname)
+        
+        if pathname != "/":
+            #Only try to get a parent of pathname is not. 
+            #This looks a bit over protective since / is always created by system
+            #and not by user.
+            try:
+                parent = CMSPath.objects.get(path=parent_path_str)
+            except ObjectDoesNotExist as e:
+                raise serializers.ValidationError("Invalid path given. Parent path does not exist.")        
+
+        else:
+            parent = None
+            
+        path, _ = CMSPath.objects.get_or_create(path=pathname, parent=parent,
+                                                cmsapp=cmsapp)
+        
+        
+        return path
+        
+        

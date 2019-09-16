@@ -5,12 +5,15 @@ register = template.Library()
 
 
 @register.tag
-def PageAdmin(parser, token):
-    
+def PageAdmin(parser, token):  
+    """
+    This tag acts like an inclusion tag. 
+    """
     return PageAdminNode()
 
 
 class PageAdminNode(template.Node):
+    
     
     def __init__(self):
         pass

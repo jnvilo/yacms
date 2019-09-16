@@ -69,8 +69,13 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR,"templates"),os.path.join(BASE_DIR,"mockups")],
-        'APP_DIRS': True,
+        #'APP_DIRS': True,
         'OPTIONS': {
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'mycms.cmsapps.loaders.Loader'  ,           
+             ],                   
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -94,6 +99,12 @@ DATABASES = {
     }
 }
 
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',    
+    'mycms.cmsapps.finders.CMSAppStaticFinder',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -165,3 +176,10 @@ REST_FRAMEWORK = {
 }
 
 FORCE_SHOW_ADVERTS = False
+
+
+
+MYCMS_CONFIGS = {
+    'CMSAPPS': ("mycms.cmsapps.category","mycms.cmsapps.singlepage"),
+    "FORCE_SHOW_ADVERTS": False
+}

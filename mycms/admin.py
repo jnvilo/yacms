@@ -5,6 +5,9 @@ from .models import CMSEntries
 from .models import CMSMarkUps
 from .models import CMSTemplates
 from .models import CMSPaths
+from .models import CMSNode
+from .models import CMSAppRegistry
+
 
 @admin.register(CMSPaths)
 class CMSPathsAdmin(admin.ModelAdmin):
@@ -42,5 +45,15 @@ class CMSPageTypesAdmin(admin.ModelAdmin):
     list_display = ['id','page_type', 'text', 'view_class', 'view_template']
     
 
+@admin.register(CMSNode)
+class CMSNodeAdmin(admin.ModelAdmin):
+    pass
 
     
+@admin.register(CMSAppRegistry)
+class CMSAppRegistryAdmin(admin.ModelAdmin):
+    list_display = ['name','module_name','display_name']
+    
+    
+
+

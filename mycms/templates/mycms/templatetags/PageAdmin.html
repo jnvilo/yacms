@@ -97,6 +97,8 @@
                               <option value="2">Category Page</option>
                               <option value="3">MultPage Article</option>
                               <option value="4">MemberPage Article</option>
+                              <option value="10">List Item</option>
+                              <option value="11">List Page</option>
               </select>
             </div>
             <div class="col-sm-1 pad-sm">
@@ -106,6 +108,9 @@
               
           <div class="cmsentries-admin-row row" id="cmsentries-table-row">
             <div class="pad-sm col">
+                {%comment%}
+                The table below is filled with javascript on pageload.
+                {%endcomment%}
                  <table class="table table-striped" id="CMSEntriesTable">
                       <thead>
                           <tr>

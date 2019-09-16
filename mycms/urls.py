@@ -26,6 +26,7 @@ from mycms.views import CMSLoginView
 from mycms.views import CMSLogoutView
 from mycms.views import CMSUserProfileView
 
+
 from rest_framework import routers
 
 from mycms import api
@@ -52,6 +53,9 @@ urlpatterns = [
 ]
 
 
+
+
+
 schema_view = get_schema_view(title="MyCMS API")
 
 cms_root = [url(r'^$', CMSPageView.as_view(), name="cms_page"),
@@ -61,7 +65,6 @@ cms_root = [url(r'^$', CMSPageView.as_view(), name="cms_page"),
             url(r'api/v2/cmspreview', api.CMSContentPreview.as_view({'post': 'retrieve'}), name='cmspreview')
         ]
 
-
 router = routers.DefaultRouter()
 #router.register(r'zones/(?P<zone_name>[-/\.a-z\d_]*)/records', RecordsViewSet, base_name='Records')
 router.register(r'api/v2/cmscontents', api.CMSContentsViewSet, base_name='cmscontents')
@@ -69,11 +72,21 @@ router.register(r'api/v2/cmsentries', api.CMSEntriesViewSet, base_name='cmsentri
 router.register(r'api/v2/cmspaths', api.CMSPathsViewSet, base_name='cmspaths')
 router.register(r'api/v2/cmspages', api.CMSPagesViewSet, base_name='cmspages')
 router.register(r'api/v2/cmspagetypes', api.CMSPageTypeViewSet, base_name='cmspagetypes')
+#router.register(r'api/v2/cmspath', api.CMSNodeViewSet, base_name='cmspath')
 #router.register(r'api/v2/cmspreview', api.CMSContentPreview, base_name='cmspreview')
 #router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, base_name='cmsauthtoken')
 #router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')
 
-urlpatterns =  cms_root + router.urls + urlpatterns 
+#We also dynamically register serializers 
+
+#CMSAppRegistry.get_api_routes()
+from mycms.models import CMSAppRegistry
+
+urlpatterns =  cms_root + router.urls + CMSAppRegistry.get_api_urls()  + urlpatterns 
+
+#Read the urls for cmsapps as well. 
+
+
 
 #for i in urlpatterns:
 #    print(i)

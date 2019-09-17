@@ -7,14 +7,43 @@ from django.template import Context
 class CMSPageData(Context):
 
 
+    page_attributes = ["get_absolute_url", "title","ancestors"]
+    
+    
 
-    def __init__(self, request, dict_=None, autoescape=True, use_l10n=None, use_tz=None):
+    def __init__(self, request, node, dict_=None, autoescape=True, use_l10n=None, use_tz=None):
         self.request = request
+        self.node = node
         super().__init__(dict_=dict_, autoescape=autoescape, use_l10n=use_l10n, use_tz=use_tz)
+
+
+    def title(self):
+        """
+        The title is taken from the cmsnode
+        """
+        return self.node.title
+
+    def ancestors(self):
+        """
+        Returns a list of the ancestor nodes. Ancestor Nodes
+        are the parent nodes and grandparents all the way to the root node.
+        It is returned as a list.
+        """
+
+        node_list = []
+        node = self.node
+        while node != None:
+            node_list.append(node)
+            node = node.parent
+
+        node_list.reverse()
+        return node_list   
 
     def add_to_context(self,attribute):
         pass
 
+    def get_absolute_url(self):
+        self.node.cmsapp.get_absolute_url()
 
     def flatten(self):
         #override flatten so that we have a chance to add the other
@@ -25,16 +54,18 @@ class CMSPageData(Context):
 
         attribute_dicts = {}
         for attribute in all_attributes:
-            if attribute not in unwanted_attributes:
+            if ((attribute not in unwanted_attributes) or (attribute in self.page_attributes)):
                 attribute_dicts.update({attribute:getattr(self,attribute)})
             self.dicts.append(attribute_dicts)
         return super().flatten()
+
+
+
 
 class CMSPageView:
     """
     Base class for all CMSApp views.
     """
-
 
     def __init__(self, node):
         self.node = node
@@ -70,7 +101,7 @@ class CMSPageView:
         """
         self.template = self.Meta.TEMPLATE
 
-        pagedata = self.Meta.PAGEDATA(self.request)
+        pagedata = self.Meta.PAGEDATA(self.request, self.node)
         pagedata["foo"] = "Hello"
         pagedata["bar"] = "world"
 

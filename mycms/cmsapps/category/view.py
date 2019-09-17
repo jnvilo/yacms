@@ -10,21 +10,13 @@ from mycms.cmsapps.base import CMSPageData
 from mycms.cmsapps.decorators import cms_attribute
 
 
-
 class PageData(CMSPageData):
-
-
-   def title(self):
-      return "A Title"
 
    def categories(self):
       """
       Returns all child CMSNodes that have the cmsapp name as category.
       """
-
       #Each category node has content text
-
-
       return "Categories"
 
    def articles(self):
@@ -32,7 +24,6 @@ class PageData(CMSPageData):
       Returns all child CMSNodes that have the cmsapp name as article.
       """
       return "Articles"
-
 
 class PageView(CMSPageView):
    """

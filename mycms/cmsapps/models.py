@@ -28,6 +28,8 @@ class CMSAppRegistry(models.Model):
     name = models.CharField(max_length=128, unique=True, null=True,help_text="Identifier for the cmsapp. By convention its the module name.")
     module_name = models.CharField(max_length=128, null=True,help_text="The module name for the cmsapp.")
     display_name = models.CharField(max_length=128,null=True, help_text="Pretty name to display in lists and admin interfaces.")
+    base_url = models.CharField(max_length=16, default="/cms")
+
 
     def save(self, *args, **kwargs):
         if self.display_name is None:
@@ -210,10 +212,15 @@ class CMSNode(models.Model):
     parent = models.ForeignKey("CMSNode", null=True, blank=True, help_text=" A foreinkey to the parent path.",
                                on_delete=models.DO_NOTHING, related_name="parentpath")
     cmsapp = models.ForeignKey(CMSAppRegistry, on_delete=models.DO_NOTHING, help_text="Foreignkey to the cmsapp")
+    
+
 
 
     def __str__(self):
         return self.path
+
+    def get_absolute_url(self):
+        return Path(self.cmsapp.base_url, self.path.strip("/"))
 
     def get_cmsapp(self, request,  **kwargs):
         """

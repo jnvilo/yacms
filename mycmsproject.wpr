@@ -1,0 +1,56 @@
+#!wing
+#!version=6.0
+##################################################################
+# Wing IDE project file                                          #
+##################################################################
+[project attributes]
+proj.directory-list = [{'dirloc': loc('../django/django'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('../django-rest-framework/rest_framework'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('mycms_demo'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('../mycms/mycms'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('tests'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('mycms'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True},
+                       {'dirloc': loc('../drf-yasg/src/drf_yasg'),
+                        'excludes': (),
+                        'filter': u'*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True}]
+proj.file-type = 'shared'
+proj.launch-config = {loc('mycms_demo/manage.py'): ('project',
+        (u'runserver --noreload',
+         '')),
+                      loc('website/manage.py'): ('project',
+        (u'runserver --noreload',
+         ''))}
+proj.main-file = loc('mycms_demo/manage.py')

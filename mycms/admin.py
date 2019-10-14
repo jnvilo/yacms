@@ -1,46 +1,25 @@
+
+# users/admin.py
 from django.contrib import admin
-from .models import CMSPageTypes
-from .models import CMSContents
-from .models import CMSEntries
-from .models import CMSMarkUps
-from .models import CMSTemplates
-from .models import CMSPaths
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 
-@admin.register(CMSPaths)
-class CMSPathsAdmin(admin.ModelAdmin):
-    list_display = ["id", "path", "parent"]
+from .forms import CMSUserCreationForm, CMSUserChangeForm
+from .models import CMSUser
+from .models import PageType
+from .models import Node
 
-@admin.register(CMSContents)
-class CMSContents(admin.ModelAdmin):
-    list_display = ["id", "title","timestamp", "markup", "page"]
-    list_filter=["title","markup"]
+@admin.register(CMSUser)
+class CMSUserAdmin(UserAdmin):
+    add_form = CMSUserCreationForm
+    form = CMSUserChangeForm
+    model = CMSUser
+    list_display = ['email', 'username',]
+
+@admin.register(PageType)
+class PageTypeAdmin(admin.ModelAdmin):
+    list_display = ["id","display_name","class_name","base_path"]
     
-    
-def make_published(modeladmin, request, queryset):
-    queryset.update(published=True)
-    
-make_published.short_description= "Publish Selected CMSEntries"
-    
-@admin.register(CMSEntries)
-class CMSEntries(admin.ModelAdmin):
-    list_display = ['id', 'title', 'slug', 'path', 'page_type', 'published', 'frontpage']
-    list_filter =["page_type", "template"]
-    search_fields = ('title',)
-    actions = [make_published]
-
-@admin.register(CMSMarkUps)
-class CMSMarkUps(admin.ModelAdmin):
-    pass
-
-@admin.register(CMSTemplates)
-class CMSTemplates(admin.ModelAdmin):
-    pass
-
-@admin.register(CMSPageTypes)
-class CMSPageTypesAdmin(admin.ModelAdmin):
-    list_filter = ("page_type", "text", "view_class")
-    list_display = ['id','page_type', 'text', 'view_class', 'view_template']
-    
-
-
-    
+@admin.register(Node)
+class NodeAdmin(admin.ModelAdmin):
+    list_display = ["id","path","title","created","modified"]

@@ -1,1 +1,0 @@
-from .testsclass.category_page_tests import CategoryPageTests

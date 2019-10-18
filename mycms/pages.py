@@ -6,79 +6,17 @@ from django.utils.text import slugify
 
 from rest_framework import viewsets
 
+from mycms import cmsfields
 from . exceptions import NodeDoesNotExist
 from . exceptions import PageDoesNotExist
 from . utils import sanitize_path
 from . models import Node
 from . models import PageType
-from .serializers import PageSerializerBase
+from . serializers import PageSerializerBase
+from . registry import PageRegistry
+from . cmsfields import CMSField
 
 
-class PageRegistry(type):
-
-    REGISTRY = {}
-    VIEWCLASS_REGISTRY = {}
-
-    def __new__(cls, name, bases, attrs):
-        new_cls = type.__new__(cls, name, bases, attrs)
-       
-        if cls.__name__ not in ["BasePage"]:
-            cls.REGISTRY[new_cls.__name__] = new_cls
-            return new_cls
-        
-    @classmethod 
-    def sync_pagetypes_to_db(cls):
-        """
-        This makes sure that all the pages registered here 
-        are also in the database. 
-        """
-        
-        for name, klass in cls.REGISTRY.items():
-            
-            if name not in ["BasePage"]:
-                cls._make_pagetype_db_entry(name, klass)
-    
-    @classmethod
-    def _make_pagetype_db_entry(cls,name, klass):
-        from mycms.models import PageType
-        pt, c = PageType.objects.get_or_create( class_name = name)
-        
-        if c: 
-            "It was just created, add the defaults"
-            if klass.get_display_name():
-                pt.display_name = klass.get_display_name()
-            else:
-                pt.display_name = klass.__name__
-                
-            if klass.get_base_path():
-                pt.base_path = klass.get_base_path()
-            else:
-                pt.base_path = "/cms"
-                
-            if klass.get_template():
-                pt.template = klass.get_template()
-
-            pt.save()
-                    
-    @classmethod
-    def register_api_views(self):
-        pass
-    
-    @classmethod
-    def get_registry(cls):
-        return dict(cls.REGISTRY)
-
-
-    @classmethod
-    def build_router_urls(cls, router):
-        #router = routers.DefaultRouter()
-        for name, klass in cls.REGISTRY.items():
-            prefix = "api/v1/{}".format(name.lower())
-            viewset = klass.build_viewset()
-            router.register(prefix, viewset,basename=name.lower())
-            
-        return router.urls
-    
 class BasePage(metaclass=PageRegistry):
     
     @classmethod
@@ -107,9 +45,36 @@ class BasePage(metaclass=PageRegistry):
         Builds a serializer for this class based on the CMSField definitions. 
         """
         name = "{}Serializer".format(cls.__name__) 
-        SerializerClass = type(name, (PageSerializerBase,), {} )
+        
+        """
+        cls is a subclass of Page. We should iterate through all of the 
+        members and filter the CMSField subclasses. 
+        
+        Each CMSField returns a serializer. 
+        
+        CMSField.get_serializer()
+        
+        class Meta:
+            content = CMSContentField()
+        
+        content.get_serializer()
+        
+        """
+        
+        attribute_names = dir(cls) 
+        attrs = {}
+        
+        for attribute_name in attribute_names:
+            attribute = getattr(cls, attribute_name)
+            if isinstance(attribute,(CMSField)):
+                serializer = attribute.get_serializer()
+                attrs.update({attribute_name: serializer })
+
+        SerializerClass = type(name, (PageSerializerBase,), attrs )
+        
         return SerializerClass
-      
+        #return PageSerializerBase
+        
     @classmethod
     def build_viewset(cls):
         from .api import PageViewSet
@@ -117,18 +82,55 @@ class BasePage(metaclass=PageRegistry):
         class_dict = { "serializer_class": cls.build_serializer()}
         ViewClass = type(class_name, (PageViewSet,),  class_dict )
         return ViewClass
+
         
-        
-        
+from copy import deepcopy
+
 class Page(BasePage): 
     
-    #class Meta:
-    #    name = "Page" #defaults to cls.__name__
-    #    template = "base.html" #defaults to cls.__name__.html 
+    node = cmsfields.CMSNodeField()
         
-    def __init__(self, node, *args, **kwargs): 
-        self.node = node
-       
+    def __init__(self, pk, *args, **kwargs): 
+        
+        self.pk = pk
+     
+ 
+    @property    
+    def fields(self):
+        """
+        The field definitions are global instances that all classes have a
+        reference to. 
+        
+        We want our own copy of the globaly defined fields. 
+        
+        """
+        _fields = {}
+        attribute_names = dir(self.__class__)
+        for attribute_name in attribute_names:
+            attribute = getattr(self.__class__, attribute_name)
+            if isinstance(attribute,(CMSField)):
+                attribute = deepcopy(attribute)
+                _fields.update({attribute_name: attribute})
+    
+        return _fields         
+        
+            
+    @property  
+    def data(self):
+        """
+        Builds the data_dict for the page. Just iterates through the CMSFields
+        and calls their get_values:
+        """
+        _data = {}
+        
+        for field_name, field_instance in self.fields.items():
+            field_instance.initialize(self.pk)
+            _data.update({field_name: field_instance.get_value()})
+            
+        return _data
+        
+        
+        
     @property 
     def name(self):
         pass
@@ -157,7 +159,7 @@ class Page(BasePage):
     def create_child(self, title, page_type, owner):
         
         slug = slugify(title)
-        path = os.path.join(self.node.path, slug)
+        path = os.path.join(self._node.path, slug)
         
         node = Node()
         node.title = title
@@ -174,7 +176,9 @@ class Page(BasePage):
         from django.http import HttpResponse
         return HttpResponse("This is a test")
     
-    
+    def page_dict(self):
+        
+        pass
     
 class PageData(object):
     """

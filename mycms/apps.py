@@ -28,21 +28,21 @@ class MyCMSConfig(AppConfig):
             from mycms.models import Node
             
             PageRegistry.sync_pagetypes_to_db()
-            
+            PageRegistry.register_default_serializers ()
             #Make sure "/" exists
             index_node, c = Node.objects.get_or_create(path="/")
                         
-                  
+            
         except OperationalError as e:
             """
             The database is not yet created.
             """
             pass
         
-        except Exception as e:
-            print(e)
-            import sys
-            sys.exit()
+        #except Exception as e:
+            #print(e)
+            #import sys
+            #sys.exit()
             
         
       

@@ -8,6 +8,9 @@ from .forms import CMSUserCreationForm, CMSUserChangeForm
 from .models import CMSUser
 from .models import PageType
 from .models import Node
+from .models import CMSModelField
+from .models import CMSContentModelField
+from .models import CMSModelTextField
 
 @admin.register(CMSUser)
 class CMSUserAdmin(UserAdmin):
@@ -23,3 +26,17 @@ class PageTypeAdmin(admin.ModelAdmin):
 @admin.register(Node)
 class NodeAdmin(admin.ModelAdmin):
     list_display = ["id","path","title","created","modified"]
+    
+@admin.register(CMSModelField)
+class CMSModelFieldAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(CMSContentModelField)
+class CMSContentModelField(admin.ModelAdmin):
+    pass
+    
+@admin.register(CMSModelTextField)
+class CMSModelTextField(admin.ModelAdmin):
+    pass
+    
+    

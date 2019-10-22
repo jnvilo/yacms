@@ -1,14 +1,17 @@
 import os
+from functools import lru_cache
 
 from  django.core.exceptions import ObjectDoesNotExist
 from rest_framework import routers
 from django.utils.text import slugify
+from django.http import response
 
 from rest_framework import viewsets
 
 from mycms import cmsfields
 from . exceptions import NodeDoesNotExist
 from . exceptions import PageDoesNotExist
+from mycms import exceptions as cmsexceptions
 from . utils import sanitize_path
 from . models import Node
 from . models import PageType
@@ -42,35 +45,43 @@ class BasePage(metaclass=PageRegistry):
     @classmethod
     def build_serializer(cls):
         """
-        Builds a serializer for this class based on the CMSField definitions. 
+        Builds the root serializer for this class based on the 
+        CMSField definitions. 
         """
-        name = "{}Serializer".format(cls.__name__) 
-        
-        """
-        cls is a subclass of Page. We should iterate through all of the 
-        members and filter the CMSField subclasses. 
-        
-        Each CMSField returns a serializer. 
-        
-        CMSField.get_serializer()
-        
-        class Meta:
-            content = CMSContentField()
-        
-        content.get_serializer()
-        
-        """
-        
+        name = "{}Serializer".format(cls.__name__)     
         attribute_names = dir(cls) 
         attrs = {}
+        
+        """
+        All Page subclassses would have one or more field defnitions 
+        at the top of the page. (Does not have to be at the top).
+        
+        class CustomPage(Page):
+        
+            content = cmsfields.CMSContentField()
+            node = cmsfields.CMSNodeField()
+        
+        We iterate through the class attributes and filter out anything that is
+        subclass of a CMSField and get its serializer class which then 
+        gets added as an instance attribute. 
+        """
         
         for attribute_name in attribute_names:
             attribute = getattr(cls, attribute_name)
             if isinstance(attribute,(CMSField)):
                 serializer = attribute.get_serializer()
-                attrs.update({attribute_name: serializer })
+                
+                """
+                Now add an instance of the serializer for the field. 
+                Note that this could also just be a serializer.Field attribute. 
+                """
+                
+                attrs.update({attribute_name: serializer() })
 
+       
+        print(attrs)
         SerializerClass = type(name, (PageSerializerBase,), attrs )
+        
         
         return SerializerClass
         #return PageSerializerBase
@@ -91,30 +102,41 @@ class Page(BasePage):
     node = cmsfields.CMSNodeField()
         
     def __init__(self, pk, *args, **kwargs): 
-        
         self.pk = pk
-     
- 
+        self._fields =  None
+        
+    
+    def get_node(self):
+        
+        if not hasatt(self, "_node"):
+            try:
+                _node = Node.objects.get(id=self.pk)
+            except ObjectDoesNotExist as e:
+                msg = "Node with id:{} does not exist".format(self.pk)
+                raise cmsexceptions.NodeDoesNotExist(msg)
+            
+        return self._node
     @property    
     def fields(self):
         """
         The field definitions are global instances that all classes have a
-        reference to. 
-        
-        We want our own copy of the globaly defined fields. 
-        
+        reference to. This can become a problem if some fields have instance
+        specific data so here we just create a copy of our own fields 
+        and stick to using those instead.
         """
-        _fields = {}
-        attribute_names = dir(self.__class__)
-        for attribute_name in attribute_names:
-            attribute = getattr(self.__class__, attribute_name)
-            if isinstance(attribute,(CMSField)):
-                attribute = deepcopy(attribute)
-                _fields.update({attribute_name: attribute})
-    
-        return _fields         
         
-            
+        if self._fields is None:
+        
+            self._fields = {}
+            attribute_names = dir(self.__class__)
+            for attribute_name in attribute_names:
+                attribute = getattr(self.__class__, attribute_name)
+                if isinstance(attribute,(CMSField)):
+                    attribute = deepcopy(attribute)
+                    self._fields.update({attribute_name: attribute})
+        
+        return self._fields         
+        
     @property  
     def data(self):
         """
@@ -124,11 +146,10 @@ class Page(BasePage):
         _data = {}
         
         for field_name, field_instance in self.fields.items():
-            field_instance.initialize(self.pk)
+            field_instance.initialize(page_id=self.pk, name=field_name)
             _data.update({field_name: field_instance.get_value()})
             
         return _data
-        
         
         
     @property 
@@ -137,7 +158,16 @@ class Page(BasePage):
     
     @property 
     def template(self):
-        pass
+        """
+        The template to use is stored and overriden in multiple places and it 
+        is resolved as follows:
+        
+        1) Try to get it from the node definition.
+        2) from the page definition
+        """
+        
+        
+        
     
     @classmethod
     def load(cls, path):
@@ -155,26 +185,11 @@ class Page(BasePage):
         except ObjectDoesNotExist as e:    
             raise PageDoesNotExist("{} could not be found".format(path))
         
-    
-    def create_child(self, title, page_type, owner):
-        
-        slug = slugify(title)
-        path = os.path.join(self._node.path, slug)
-        
-        node = Node()
-        node.title = title
-        node.path = path
-        
-        if not page_type(isinstance(obj, PageType)):
-            pass
-            
-        node.page_type = page_type
-        
         
     def render(self):
         
         from django.http import HttpResponse
-        return HttpResponse("This is a test")
+        return response()
     
     def page_dict(self):
         
@@ -201,7 +216,8 @@ class ViewSet(object):
 
 class ArticlePage(Page):
     
-    pass
+    content = cmsfields.CMSTextField()
+    another = cmsfields.CMSTextField()
 
 class ListPage(Page):
     pass

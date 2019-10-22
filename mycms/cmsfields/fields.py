@@ -135,6 +135,11 @@ class CMSTextField(CMSField):
     
     
 class DebugInfoField(CMSField):
+    """
+    A field to provide debugging attributes. This exposes many 
+    page attributes usually should not be available to the 
+    template. 
+    """
     
     def get_value(self, *args, **kwargs ):
         """

@@ -19,7 +19,12 @@ class PageType(models.Model):
     
     def __str__(self):
         return self.class_name 
-
+class Templates(models.Model):
+    name = models.CharField(max_length=128, null=True)
+    
+    def __str__(self):
+        return self.name
+    
 class Node(models.Model):
     """
     Node 
@@ -32,6 +37,7 @@ class Node(models.Model):
     owner = models.ForeignKey("CMSUser", on_delete=models.DO_NOTHING, null=True)
     parent = models.ForeignKey("Node", on_delete=models.PROTECT,null=True)
     page_type = models.ForeignKey(PageType, on_delete=models.PROTECT, null=True)
+    template == models.ForeignKey(Templates, null=True, on_delete=models.DO_NOTHING)
     
     def __str__(self):
         return self.path
@@ -58,9 +64,26 @@ class Node(models.Model):
 
 
 
+class CMSModelField(models.Model):
     
+    """A lame attempt at obsfucating the name of these model fields
+    such that any child classes will hopefully decide not clash with 
+    the following two fields.
+    """
+    cmsmodelfield_node_9824 = models.ForeignKey("Node", on_delete=models.PROTECT)
+    cmsmodelfield_name_9824 = models.CharField(max_length=92, null=False)
+
     
+class CMSModelTextField(CMSModelField):
     
+    content = models.TextField(max_length=4096, null=True,default="No Content")
+        
+
+
+    
+class CMSContentModelField(CMSModelField):
+    
+    content = models.TextField(max_length=4096, null=True,default="No Content")
         
 
     

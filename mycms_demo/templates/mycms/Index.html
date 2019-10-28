@@ -1,0 +1,78 @@
+{% extends "base.html"%}
+
+{%block PAGE_CONTENT %}
+<div class="container">
+
+    <!-- Heading Row -->
+    <div class="row align-items-center my-5">
+      <div class="col-lg-7">
+        <img class="img-fluid rounded mb-4 mb-lg-0" src="/static/mycms/images/fedora.png" alt="">
+      </div>
+      <!-- /.col-lg-8 -->
+      <div class="col-lg-5">
+        <h1 class="font-weight-light">Fedora: The Perfect Desktop</h1>
+        <p>If you haven't installed Fedora yet, then the first thing you need to do is head over to 
+        the install guide. You don't really need to because these days 
+        installing Fedora is a matter of click next.. next .. next.. The installer even lets you 
+        try to use Fedora without installing it. </p>
+        <a class="btn btn-primary" href="/cms/install-fedora-30">Install Fedora!</a>
+      </div>
+      <!-- /.col-md-4 -->
+    </div>
+    <!-- /.row -->
+
+    <!-- Call to Action Well -->
+    <div class="card text-white bg-secondary my-5 py-4 text-center">
+      <div class="card-body">
+        <p class="text-white m-0">NOTE: This website does not provide official form of support. This is not an official service of Red Hat or Fedora Project. These things may solve your worst nightmare, or they may eat all of the cheese in your house. I make no guarantees. YMMV.</p>
+      </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="card-title">Post Install Steps</h2>
+            <p class="card-text">Fedora Installed? What now? Now its time to make sure it is up to date with the latest and greatest, that the most important
+            source of packages required are configured and now is also the time to start tweaking your gnome desktop environment..</p>
+            </div>
+          <div class="card-footer">
+            <a href="/cms/fedora-post-install-steps" class="btn btn-primary btn-sm">Read More</a>
+          </div>
+        </div>
+      </div>
+      <!-- /.col-md-4 -->
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="card-title">Essential Must Have Apps!</h2>
+            <p class="card-text">Next step to achieving your usefull or even perfect Fedora desktop is to install apps. Here we have a curated list of 
+            the best apps for multimedia, productivity, communication and other areas.</p>
+          </div>
+          <div class="card-footer">
+            <a href="/cms/fedora-essential-apps" class="btn btn-primary btn-sm">Read More</a>
+          </div>
+        </div>
+      </div>
+      <!-- /.col-md-4 -->
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="card-title">Switch Desktop</h2>
+            <p class="card-text">Gnome 3 is the default desktop but Gnome but we are actually spoilt for choice. You can swap desktop environments 
+            anytime you want. Fedora also has different spins (install media) that comes with a different desktop enviroment.</p>
+            </div>
+          <div class="card-footer">
+            <a href="#" class="btn btn-primary btn-sm">More Info</a>
+          </div>
+        </div>
+      </div>
+      <!-- /.col-md-4 -->
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  
+{% endblock PAGE_CONTENT%}

@@ -1,0 +1,23 @@
+{% extends "base_with_header.html"%}
+
+<h1>Article Page</h1>
+
+
+ {%block PAGE_CONTENT%}
+{{another}}
+
+
+<br>
+{{debuginfo}}
+<br>
+{{debuginfo.node.title}}
+
+{% load lorem_ipsum %}
+{% lorem_paragraphs %}
+
+
+<br>
+{{debuginfo.node.path}}
+{%endblock PAGE_CONTENT%}
+
+#"our ambitions and our dreams gives us a glimpse of what we could be. "

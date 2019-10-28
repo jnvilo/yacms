@@ -5,48 +5,46 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="{%block META_DESCRIPTION%}description{%endblock META_DESCRIPTION%}">
-  <meta name="author" content="jnvilo">
-  <!-- meta property="og:url"           content="https://www.jnvilo.com/cms/" / -->
-  <meta property="og:type"          content="website" />
-  <meta property="og:title"         content="{{title}}" />
-  <meta property="og:description"   content="{{introduction}}" />
-  <title>{%block TITLE %}jnvilo.com{%endblock TITLE %}</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>{{TITLE}}TheUsefulDesktop{{TITLE}}</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/static/mycms/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome css-->
   <link href="/static/mycms/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
+  
   <link href="/static/mycms/vendor/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
   <link href="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
   <link href="/static/mycms/vendor/pygments-css/colorful.css" media="all" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-
-
-
+ 
+  
+    
   <!-- MyCMS default styles -->
   <link href="/static/mycms/css/custom.css" rel="stylesheet">
   <link href="/static/mycms/css/editors.css" rel="stylesheet">
-
+  
   <!-- Override styles defined by mycms -->
-  <link href="/static/css/site.css" rel="stylesheet">
+  <link href="/static/css/custom.css" rel="stylesheet" -->
+  
   
   
   {%comment%}
-  WARNING:The following HEADER_CONTENT can be overrided in child templates. This means
-  it is not advisable to override these here in the main base template because you
+  WARNING:The following HEADER_CONTENT can be overrided in child templates. This means 
+  it is not advisable to override these here in the main base template because you 
   can be guaranteed to loose any overrides you put in here.
   {%endcomment%}
   {%block HEADER_CONTENT %}
-
+   
     {%block EXTRA_HEADER_CONTENT %}
-
+  
     {%endblock EXTRA_HEADER_CONTENT %}
-
+  
   {%endblock HEADER_CONTENT %}
-
-
+  
+  
   {%if view_object.json_data %}
   <script>
     var view_json = {{view_object.json_data | safe }}
@@ -59,7 +57,7 @@
   <!-- Navigation -->
   <nav id="mainHeader" class="navbar navbar-expand-lg bg-grey fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Fedora Install Howto</a>
+      <a class="navbar-brand" href="/">The Usefull Desktop</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -70,10 +68,10 @@
               <span class="sr-only">(current)</span>
             </a>
           </li>
-          {%comment%}
-           {% load menus %}
-          {% dropdown_menu "/howtos" %}
-          {%endcomment%}
+          
+           {# load menus #}
+          {# dropdown_menu "/howtos" #}
+          
           <li class="nav-item">
             <a class="nav-link" href="/cms/about">About</a>
           </li>
@@ -85,13 +83,13 @@
   <!-- Page Content -->
 {%block BASE_CONTAINER %}
     {%block PAGE_HEADER %}
-
+    
     {%endblock PAGE_HEADER %}
 
-    {%block MAIN_CANVAS %}
-
+    {%block MAIN_CANVAS %}  
+    
         {%block PAGE_CONTENT %}
-
+        
           {# This is just an example. It is overriden already in the other templates. #}
         <div class="container">
           <div class="row">
@@ -106,52 +104,72 @@
           </div>
         </div>
         {%endblock PAGE_CONTENT %}
-
+        
       {%endblock MAIN_CANVAS %}
-
-
+  
+  
 {%endblock BASE_CONTAINER %}
 
+
 {% if view_object.show_toolbar %}
-  <div id="admin-bar">
+  <div id="admin-bar test">
+    {%comment%}
+    The img has a jquery handler registered by both any loaded PageAdmin. Look at static/mycms/js/admin/js. 
+    
+    The Admin class has a method called show() which controls the visibility of the 
+    element with id "overlay". 
+    
+    At this time this is defined by any implementation of the AdminPages tag. 
+    Look at mycms/templatetags/PageAdmin.htm for the template that defines the 
+    div and its contents for this overlay.
+    {%endcomment%}
+    
     {% if view_object.request.user.username == "admin" %}
-            <img id="show-admin-overlay-button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>
+          
+    
+            <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/actions/document-properties.svg"></image>
     {% else %}
-            <img id="show_admin_overlay" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>
+            <img id="show_admin_overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/actions/document-properties.svg"></image>
     {%endif%}
   </div>
 {% endif %}
 
-
 <!-- Core JavaScript Requirements -->
   <script src="/static/mycms/vendor/jquery/jquery.min.js"></script>
-  <script src="/static/mycms/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/mycms/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
   <script src="/static/mycms/js/js.cookie.js"></script>
   <script src="/static/mycms/js/csrf.js"></script>
   <script src="/static/mycms/js/loglevel.min.js"></script>
-
+  <script src="/static/mycms/js/site.js"></script>
+  
+ 
 {%block BOTTOM_HTML %}
 
 
-
-
+  
 
 {%endblock BOTTOM_HTML %}
-
+  
+  
+<div id="toolbar">
+  <ul>
+    <li><img src=/static/mycms/icons/gnome-desktop-tango-icons/32x32/actions/document-new.png></li>
+  </ul>
+  
+</div>
+  
+  
   <!-- /.container -->
 
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; www.fedora-install-howto.com 2019</p>
+      <p class="m-0 text-center text-white">Copyright &copy; www.theusefuldesktop.com 2019</p>
     </div>
     <!-- /.container -->
   </footer>
 
-<div id="overlay"></div>
-
-
 </body>
-
+<!--Defined at the last of the page-->
 </html>

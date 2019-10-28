@@ -16,8 +16,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path,re_path,include
+from mycms.views import IndexPage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^cms/',include('mycms.urls')),
+    re_path(r'^$',IndexPage.as_view())
 ]

@@ -5,19 +5,17 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mycms', '0003_cmsmodeltextfield'),
-    ]
+    dependencies = [("mycms", "0003_cmsmodeltextfield")]
 
     operations = [
         migrations.RenameField(
-            model_name='cmsmodelfield',
-            old_name='name',
-            new_name='cmsmodelfield_name_9824',
+            model_name="cmsmodelfield",
+            old_name="name",
+            new_name="cmsmodelfield_name_9824",
         ),
         migrations.RenameField(
-            model_name='cmsmodelfield',
-            old_name='node',
-            new_name='cmsmodelfield_node_9824',
+            model_name="cmsmodelfield",
+            old_name="node",
+            new_name="cmsmodelfield_node_9824",
         ),
     ]

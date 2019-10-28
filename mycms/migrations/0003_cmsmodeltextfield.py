@@ -6,17 +6,28 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mycms', '0002_cmscontentmodelfield_cmsmodelfield'),
-    ]
+    dependencies = [("mycms", "0002_cmscontentmodelfield_cmsmodelfield")]
 
     operations = [
         migrations.CreateModel(
-            name='CMSModelTextField',
+            name="CMSModelTextField",
             fields=[
-                ('cmsmodelfield_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='mycms.CMSModelField')),
-                ('content', models.TextField(default='No Content', max_length=4096, null=True)),
+                (
+                    "cmsmodelfield_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="mycms.CMSModelField",
+                    ),
+                ),
+                (
+                    "content",
+                    models.TextField(default="No Content", max_length=4096, null=True),
+                ),
             ],
-            bases=('mycms.cmsmodelfield',),
-        ),
+            bases=("mycms.cmsmodelfield",),
+        )
     ]

@@ -36,6 +36,8 @@ PageRegistry.build_router_urls(router)
 # urlpatterns = router.urls + urlpatterns
 
 urlpatterns = [
+    re_path(r"sandbox/$", views.SandboxView.as_view(), name="sandbox"),
+    
     re_path(r"^api/v1/", include((router.urls, "mycms"))),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",

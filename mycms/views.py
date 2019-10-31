@@ -11,6 +11,10 @@ class IndexPage(View):
 
         return render(request, "mycms/Index.html")
 
+class SandboxView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "mycms/sandbox.html")
+    
 
 class PageView(View):
     def get(self, request, *args, **kwargs):
@@ -31,3 +35,6 @@ class PageView(View):
         and will call it. We could also do return page.response().
         """
         return page
+
+
+    

@@ -1,0 +1,34 @@
+<div class="row">
+   <div class="col-12">
+     <nav>
+       <div class="nav nav-tabs" id="nav-tab" role="tablist">
+         <!-- The href must match the target-->
+         <a class="nav-item nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab" aria-controls="first" aria-selected="true">Content Editor</a>
+         <a class="nav-item nav-link" id="second-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Preview</a>
+         <a class="nav-item nav-link" id="third-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Media</a>
+       </div>
+     </nav>
+     <div class="tab-content" id="nav-tabContent">
+
+       <div class="tab-pane fade show active" id="first" role="tabpanel" aria-labelledby="nav-home-tab">
+         {% include "mycms/admin/widgets/editor.html" %}
+       </div><!-- end tab page first-->
+
+       <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+         <div class="widget-container padding-top-10px">
+           <div class="w80pcnt">
+           {% include "mycms/admin/widgets/node.html" %}
+           </div>
+         </div>
+       </div>
+       
+      <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+        <div class="widget-container padding-top-10px">
+          <div class="w100pcnt">
+            {% include "mycms/admin/node.html"%}
+          </div>
+        </div>
+       </div>
+     </div>      
+   </div>
+</div>

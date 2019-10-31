@@ -55,7 +55,7 @@ class PageViewSet(viewsets.ViewSet):
 
         # get the CMSField Attributes.
 
-        page = PageClass(self.pk)
+        page = PageClass.load(self.pk, self.request)
 
         # get the value of the attributes
         return page.data
@@ -100,3 +100,16 @@ class PageViewSet(viewsets.ViewSet):
         serializer.save()
 
         return Response(data=serializer.data)
+
+
+    def update(self, request, pk=None):
+        print(request.data)
+        print(pk)
+        
+        #Page updates by pk. The 
+        
+        
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        
+        print(serializer.data)

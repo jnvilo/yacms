@@ -52,7 +52,7 @@ class PageSerializerBase(serializers.Serializer):
         for name in declared_fields.keys():
             if name not in data.keys():
                 msg = "entry {} is missing from the POST param ".format(name)
-                raise APIException(defail=msg)
+                raise APIException(detail=msg)
 
         return data
 

@@ -12,9 +12,14 @@ logger = logging.getLogger("mycms.page_handlers")
 class BasePage(object):
     
     def get_list_params(self):
+        """
+        Used by pages that recieves a limit and a page number. 
+        This is here to simply getting the parameters from the 
+        request. 
+        """
         
         LIMIT = 10
-        if self.request: 
+        if hasattr(self, "request"): 
             try: 
                 limit = int(self.request.GET.get("limit",LIMIT))
             except Exception as e: 

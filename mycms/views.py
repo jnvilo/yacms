@@ -1103,6 +1103,7 @@ class CMSPageView(View):
         template = obj.template
        
         if settings.DEBUG:
+            from mycms.view_handlers import page_types
             return render_to_response(template, {"view_object": obj})
         else:
         

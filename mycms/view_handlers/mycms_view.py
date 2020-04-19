@@ -22,19 +22,15 @@ from . formatters import CreoleFormatter
 
 class ArticleList(list):
     """
-    Encapsulates a list of CMSEntries to provide helpful properties needed
-    by the template to properly show and manage a list. 
-    
-    This is used by view_object.articles() which returns an Articles List.
-    
-    This is just a reimplementation of the django Paginator because when I first
-    wrote this, I did not know about the paginator.
-    
+    This is used by CategoryPage to manage all articles. 
+    Given an X amount of articles and we want to list a subset of it, for 
+    example 10 articles per page, provide methods to be able to 
+    get the current article, 
     """
     
     def __init__(self, page_cmsentries,total_entries,page,limit=2):
         super().__init__(self)
-        
+
         self.limit = limit
         self.total_entries = total_entries
         self.page  = page  #The current page we are on.
@@ -46,6 +42,7 @@ class ArticleList(list):
         is True when limit is less than the total number of CMSEntries that
         can be shown.
         """
+    
         if (self.total_entries >  self.limit):
             return True
         else:
@@ -60,7 +57,6 @@ class ArticleList(list):
     def page_range(self):
         return range(1,self.total_pages() +1)
         
-    
     def has_previous(self):
         return  self.page > 1
         
@@ -68,17 +64,19 @@ class ArticleList(list):
         total_pages = self.total_pages()
         return self.page < total_pages
     
-        
     def has_other_pages(self):
         return self.has_previous() or self.has_next()
-    
-    
-    def next_page(self):
-        
+
+    def next_page(self):        
         return self.page + 1
     
     def previous_page(self):
         return self.page - 1
+        
+    def debug(self):
+        print("has_next: {}".format(self.has_next()))
+        print("has_other_pages: {}".format(self.has_other_pages()))
+        print("next_page: {}".format(self.next_page().title))
         
 
 class ContentTopicsContainer(object):
@@ -125,6 +123,10 @@ class ViewObject(object):
             self.path = page_object.path.path
             self._page_id = page_object.id
             self._obj = page_object
+            
+            if hasattr(page_object, "page_number"):
+                self.page_number = page_object.page_number
+                
 
         else:
             self.path = path

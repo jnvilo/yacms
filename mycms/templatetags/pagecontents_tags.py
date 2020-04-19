@@ -22,6 +22,25 @@ class PageNavigationNode(template.Node):
         t = template.loader.get_template("mycms/templatetags/PageNavigation.html")
     
         return t.render(context.flatten())
+
+
+@register.tag
+def MemberPageNavigation(parser, token):
+    
+    return MemberPageNavigationNode()
+
+class MemberPageNavigationNode(template.Node):
+    
+    def __init__(self):
+        
+        pass
+    
+    def render(self, context):
+        
+        self.request = template.Variable('request')
+        t = template.loader.get_template("mycms/templatetags/MemberPageNavigation.html")
+        return t.render(context.flatten())
+
         
         
 @register.inclusion_tag('mycms/templatetags/widgets/categories.html')

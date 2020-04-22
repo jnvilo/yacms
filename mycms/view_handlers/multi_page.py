@@ -17,6 +17,9 @@ class MultiPageList(list):
         
         super(MultiPageList, self).__init__()
         self.total_entries = total_entries
+        self.current_page_obj = None
+    
+    
     
     @property
     def page_range(self):
@@ -31,11 +34,12 @@ class MultiPageList(list):
         Returns boolean, True if there is a previous page
         and False if we are at the beginning.
         """
-        pass
         
+        if self.current_page_obj.page_number == 1:
+            return False
+        else:
+            return True
         
-        
- 
     @property 
     def page(self):
         """
@@ -48,8 +52,46 @@ class MultiPageList(list):
         """
         Returns the next page. 
         """
-        
+        if self.current_page_obj.page_number < len(self) -1 :
+            return self[self.current_page_obj.page_number + 1]
+        pass   
 
+
+    @property
+    def has_next(self):
+        
+        last_page_number = len(self)
+        if self.current_page_obj.page_number < last_page_number:
+            return True
+        else:
+            return False
+        
+    @property
+    def has_previous(self):
+        
+        last_page_number = len(self)
+        if self.current_page_obj.page_number > 1:
+            return True
+        else:
+            return False
+        
+    @property
+    def previous_page(self):
+        if self.has_previous:
+            obj = self[self.current_page_obj.page_number -2 ]
+            print(obj.title)
+            return obj
+        
+        else:
+            return None
+            
+    @property
+    def next_page(self):
+        if self.has_next:
+            return self[self.current_page_obj.page_number -2 ]
+            
+            
+        
 class MultiPage(object):
 
     def __init__(self, page_object, request=None):
@@ -58,7 +100,7 @@ class MultiPage(object):
         #which represents the page.
 
         self.page_object = page_object
-
+        self.page_number = 1 #This is always the first page.
 
         try:
             self.memberpageview_pagetype_obj = CMSPageTypes.objects.get(page_type="MEMBERPAGE")
@@ -116,8 +158,10 @@ class MultiPage(object):
         article_list = MultiPageList(total_entries = children_count)      
         
         #We are the first in the list
-        article_list.append(self.page_object)
         self.page_object.page_number = 1
+        article_list.append(self.page_object)
+        article_list.current_page_obj = self.page_object
+        
         
         index = 1
         
@@ -127,6 +171,9 @@ class MultiPage(object):
             obj.page_number = index
             if self.page_object.id == obj.id:
                 obj.current_page = True
+                article_list.current_page_obj = obj
+            else:
+                obj.current_page = False
             article_list.append(obj)
         return article_list
     
@@ -198,9 +245,6 @@ class MultiPage(object):
         #else:
             #return True
         
-        
-        
-
 class MemberPage(page_types.BasePage):
 
     def __init__(self, page_object, request=None):
@@ -208,11 +252,9 @@ class MemberPage(page_types.BasePage):
         self.page_object = page_object
         self._page_number = 0 
 
+        self.last_member_page = 1
 
     def on_create(self):
-
-        #print("Created a new article {}".format(self.page_object.title))
-
         """
         A new member page has been created. Append it as the last page.
 
@@ -350,7 +392,12 @@ class MemberPage(page_types.BasePage):
     
         article_list = MultiPageList(total_entries = all_cmsentries_count)      
     
-        index = 0
+    
+        #insert the parent 
+        
+        parent = CMSEntries.objects.get(path = self.page_object.parent().path)
+        article_list.append(parent)
+        index = 1
         
         for obj in page_cmsentries:
             #BUG: We are just adding everythign into the article_list here!
@@ -358,6 +405,9 @@ class MemberPage(page_types.BasePage):
             obj.page_number = index
             if self.page_object.id == obj.id:
                 obj.current_page = True
+                article_list.current_page_obj = obj
+            else:
+                obj.current_page = False
             article_list.append(obj)
         return article_list
         

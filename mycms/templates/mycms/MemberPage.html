@@ -31,7 +31,22 @@ s.setAttribute('data-timestamp', +new Date());
       
 {%block SIDEBAR %}
 
-        <!-- Search Widget -->
+       
+  
+        <div class="card my-4">
+          <h5 class="card-header">Index</h5>
+          <div class="card-body">
+            <ul>
+            {% for page in view_object.articles %}
+            <li class="primary">                     
+              <a href="/cms{{page.path}}" class="firstLevel">{{page.title}}</a>
+            </li>
+            {% endfor %}
+            <ul>
+          </div>
+        </div>
+        
+         <!-- Search Widget -->
         <div class="card my-4">
           <h5 class="card-header">Search</h5>
           <div class="card-body">
@@ -44,24 +59,6 @@ s.setAttribute('data-timestamp', +new Date());
             </div>
           </div>
         </div>
-  
-        <div class="card my-4">
-          <h5 class="card-header">Index</h5>
-          <div class="card-body">
-            <ul>
-            {% for page in view_object.articles %}
-            <li class="primary">                     
-              <a href="/cms{{page.path}}" class="firstLevel">{{page.title}}</a>
-            </li>
-            {% endfor %}
-            <ul>
-                
-        
-                                            
-          
-          </div>
-        </div>
-        
         {%load widgets %}
         {%google_adds%}
 

@@ -184,7 +184,8 @@ class CMSEditorWidget extends AdminWidget{
         /** 
         Handles keyboard events for the content-editor. 
         **/
-        
+       
+        var tab_spaces = 4;  
         var editor  = $("#content-editor");
         
         if(event.keyCode === 9) { // tab was pressed
@@ -193,21 +194,48 @@ class CMSEditorWidget extends AdminWidget{
             **/
             var start = editor.prop("selectionStart");
             var end = editor.prop("selectionEnd");
-    
-            console.log("STart: ", start);
+            console.log("selectionStart: ", start);
+            console.log("selectionEnd: ", end);
             // set textarea value to: text before caret + 4 spaces + text after caret
-            editor.val(editor.val().substring(0, start)
-                        + "    "
+          
+            var indented = "";
+            var selection = editor.val().substring(start, end);
+            
+            if (start != end){
+                console.log("start not end ==============================");
+                var ks = selection.split(/\r?\n/);
+            console.log(" line : ",ks);
+                var num_lines = ks.length;
+                for (var i=0; i < num_lines; i++){
+                    indented = indented + "    " + ks[i] + "\r\n";
+                }
+            }else
+            {
+                indented = "    ";
+            }
+            
+                
+            console.log(selection);
+                      editor.val(editor.val().substring(0, start)
+                        + indented + selection 
                         + editor.val().substring(end));
-    
+            
+            
+        
+        
+        
             // put caret at right position again
-            editor.selectionStart = editor.selectionEnd = start + 5;
-    
+            editor.prop("selectionStart",start + tab_spaces) ;
+            editor.prop("selectionEnd", end + tab_spaces) ;
+        
+        
             // prevent the focus lose
             //editor.focus(); //This did not work to regain focus
             //return false;   //This did not work to regain focus
             //Found a solution and explanation here: https://stackoverflow.com/questions/8380759/why-isnt-this-textarea-focusing-with-focus
             event.preventDefault();
+            
+            
         }    
     }
 
@@ -216,7 +244,7 @@ class CMSEditorWidget extends AdminWidget{
         url = "/cms/api/v2/cmsentries/" + this.cmsentry.id + "/";
         var published_status = $("#published_checkbox").is(':checked');
         
-        log.debug("Setting published to:", published_status)
+        log.debug("Setting published to:", published_status);
  
         $.ajax({
             url: url,

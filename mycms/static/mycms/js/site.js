@@ -19,3 +19,5 @@ function close_image_overlay(){
   document.getElementById("image-overlay").style.display = "none";
 
 }
+
+

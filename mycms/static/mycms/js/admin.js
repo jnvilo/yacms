@@ -6,9 +6,6 @@ class BaseAdmin{
         this.cmsentry_id = data["id"];
           
     }
-    
-   
-
 }
 
 
@@ -16,8 +13,6 @@ class Admin extends BaseAdmin{
     
     constructor(data){
         super(data);
-        
-              
     }
 
     //display the admin page
@@ -68,6 +63,7 @@ class CategoryPageAdmin extends Admin{
     }
     
     register_click_handlers(){
+        console.log("Registered handles");
         var cmsEditorWidget = this.cmsEditorWidget;
         var cmsEntriesWidget = this.cmsEntriesWidget;
         $("#editor-save-button").click((event) =>{cmsEditorWidget.save();})
@@ -77,6 +73,8 @@ class CategoryPageAdmin extends Admin{
         $("#createpage_title").focusout((event) => {cmsEntriesWidget.create_page_title_focus_out(); })
         $(".table_entry_published").click(function(){ cmsEntriesWidget.toggle_table_entry_published(); }); 
         $(".table_entry_frontpage").click(function(){ cmsEntriesWidget.toggle_table_entry_frontpage(); }); 
+        $("#content-editor").keydown((event)=>{ cmsEditorWidget.handleKeyDownEvent(event); event.stopPropagation();});
+        
           $(document).on('click','td',function() {
             log.debug('clicked', this.getAttribute("class"));
             
@@ -154,7 +152,7 @@ class CMSEditorWidget extends AdminWidget{
     }
 
     save(){
-    
+  
         log.debug("#editor-save-button pressed CMSEditorWidget->save() invoked")
         var content_txt = $("#content-editor").val();
         var start = Date.now();
@@ -179,6 +177,38 @@ class CMSEditorWidget extends AdminWidget{
                 log.debug("Content was successfully saved..(" + seconds  + "s) "+ completed.toLocaleString());
             }
         });
+    }
+    
+    
+     handleKeyDownEvent(event){
+        /** 
+        Handles keyboard events for the content-editor. 
+        **/
+        
+        var editor  = $("#content-editor");
+        
+        if(event.keyCode === 9) { // tab was pressed
+            /** 
+            When tab is pressed, insert 4 spaces.
+            **/
+            var start = editor.prop("selectionStart");
+            var end = editor.prop("selectionEnd");
+    
+            console.log("STart: ", start);
+            // set textarea value to: text before caret + 4 spaces + text after caret
+            editor.val(editor.val().substring(0, start)
+                        + "    "
+                        + editor.val().substring(end));
+    
+            // put caret at right position again
+            editor.selectionStart = editor.selectionEnd = start + 5;
+    
+            // prevent the focus lose
+            //editor.focus(); //This did not work to regain focus
+            //return false;   //This did not work to regain focus
+            //Found a solution and explanation here: https://stackoverflow.com/questions/8380759/why-isnt-this-textarea-focusing-with-focus
+            event.preventDefault();
+        }    
     }
 
     toggle_published(){
@@ -250,6 +280,8 @@ class CMSEditorWidget extends AdminWidget{
             }
         });  
     }
+    
+   
 }
 
 
@@ -347,9 +379,6 @@ class CMSEntriesWidget extends AdminWidget{
     update(){
             
         var path_id = view_json["path"];
-        
-    
-    
         var url = "/cms/api/v2/cmsentries/?limit=100&parent_path_id="+path_id;
         console.log("GOING TO FETCH", url);
        
@@ -534,5 +563,7 @@ $(document).ready(function () {
     });
     
 });
+
+
 
 

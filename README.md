@@ -14,7 +14,7 @@ never versioned it until now. I am iteratively preparing it for public consumpti
  
 	yum -y install npm gcc sqlite-devel openssl-devel libtiff-devel openjpeg-devel \
 	openjpeg2-devel libjpeg-turbo-devel  zlib-devel  freetype-devel lcms-devel \
-	lcms2-devel libkexif-devel libffi-devel
+	lcms2-devel libexif-devel libffi-devel
 
 	make
 

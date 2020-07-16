@@ -12,4 +12,5 @@ requirements.txt.old
 virtualenv
 static_root
 dist/
-
+venv
+pypirc

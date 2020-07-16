@@ -15,7 +15,7 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.1.7"
+VERSION_STRING="0.1.8"
 URL = "https://github.com/jnvilo/mycms"
 DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -35,7 +35,7 @@ def get_authors():
 def get_requirements():
     reqs = []
     try:
-        f = file(os.path.join(PACKAGE_ROOT,"requirements.txt"), "r")
+        f = open(os.path.join(PACKAGE_ROOT,"requirements.txt"), "r")
         l = f.readlines()
         for e in l:
             reqs.append(e.strip("\n"))

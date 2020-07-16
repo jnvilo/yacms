@@ -58,6 +58,7 @@ setup(
     version=VERSION_STRING,
     description='Yet another CMS. This one for django.',
     long_description=get_long_description(), 
+    long_description_content_type="text/markdown",
     author=get_authors(),
     author_email="jnvilo@gmail.com",
     maintainer="Jason Viloria",

@@ -41,6 +41,7 @@ from django.http import HttpResponse
 from rest_framework import permissions
 from django.contrib.auth import logout
 from django.contrib.auth import login
+from django.db.models import Q
 
 
 from django.core.exceptions import ObjectDoesNotExist

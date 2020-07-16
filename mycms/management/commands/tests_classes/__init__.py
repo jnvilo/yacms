@@ -1,1 +1,1 @@
-from . category_page_tests import CategoryPageTests
+from .category_page_tests import CategoryPageTests

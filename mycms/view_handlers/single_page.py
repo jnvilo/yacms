@@ -1,14 +1,10 @@
-
 class SinglePage(object):
-
     def __init__(self, page_object, request=None):
-        
-        self.request = request
 
+        self.request = request
 
     def on_create(self):
         pass
-
 
     @property
     def html_content(self):
@@ -17,7 +13,7 @@ class SinglePage(object):
 
         logger.debug("html_content entered")
 
-        #TODO: Fix me: This loads only the first content entry.
+        # TODO: Fix me: This loads only the first content entry.
         #      This should be updated to load by date.
 
         try:
@@ -31,15 +27,14 @@ class SinglePage(object):
             else:
                 return "Error: There is no content for this page."
 
-        #TODO: Fix me: right now hardcoded to creole.
+        # TODO: Fix me: right now hardcoded to creole.
 
-        #We pass the view into our custom CreoleFormatter so that the
-        #custom creole markup can have access.
-        _html_content =  CreoleFormatter(content_obj.content,view=self).html()
+        # We pass the view into our custom CreoleFormatter so that the
+        # custom creole markup can have access.
+        _html_content = CreoleFormatter(content_obj.content, view=self).html()
 
-        logger.debug("Call to YACMSObject.html_content returns: \n {}".format(_html_content))
-        
-        
+        logger.debug(
+            "Call to YACMSObject.html_content returns: \n {}".format(_html_content)
+        )
+
         return _html_content
-    
-     

@@ -38,7 +38,6 @@ def _mask_content(emitter, node, mask_tag):
     return start_tag + content + end_tag
 
 
-
 def raise_unknown_node(emitter, node):
     """
     unknown_emit callable for Html2CreoleEmitter
@@ -47,9 +46,8 @@ def raise_unknown_node(emitter, node):
     """
     content = emitter.emit_children(node)
     raise NotImplementedError(
-        "Node from type '%s' is not implemented! (child content: %r)" % (
-            node.kind, content
-        )
+        "Node from type '%s' is not implemented! (child content: %r)"
+        % (node.kind, content)
     )
 
 

@@ -4,14 +4,14 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from django.utils.text import slugify
+
 try:
 
     unicode("test")
 
 except NameError as e:
-    #we must be in python 3
+    # we must be in python 3
     unicode = str
-
 
 
 from loremipsum import generate_paragraphs
@@ -28,11 +28,13 @@ from xml.sax.saxutils import escape
 try:
     from pygments import highlight
     from pygments.formatters.html import HtmlFormatter
+
     PYGMENTS = True
 except ImportError:
     PYGMENTS = False
 
 from mycms.creole.shared.utils import get_pygments_lexer, get_pygments_formatter
+
 
 def html(text):
     """
@@ -41,33 +43,35 @@ def html(text):
     """
     return text
 
-#----------------------------------------------------------------------
-def  HTML(*args, **kwargs):
+
+# ----------------------------------------------------------------------
+def HTML(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
     return html(text)
 
 
 def NEWLINE(*args, **kwargs):
-    
-    text = kwargs.get("text",0)
-    
+
+    text = kwargs.get("text", 0)
+
     text_result = "</br>"
     try:
         numlines = int(text)
         for i in range(numlines):
             text_result += "</br>"
-        return text_result;
-       
-    except ValueError as e: 
+        return text_result
+
+    except ValueError as e:
         return "[[ERROR: NEWLINE tag requires a number. {} was given".format(text)
-        
+
+
 def pre(text):
     """
     Macro tag <<pre>>...<</pre>>.
     Put text between html pre tag.
     """
-    return '<pre>%s</pre>' % escape(text)
+    return "<pre>%s</pre>" % escape(text)
 
 
 def code(*args, **kwargs):
@@ -78,70 +82,74 @@ def code(*args, **kwargs):
 
     text = kwargs.get("text", None)
     ext = kwargs.get("ext", ".sh")
-    nums = kwargs.get("nums",None)
+    nums = kwargs.get("nums", None)
 
     if not PYGMENTS:
         return pre(text)
 
     try:
-        source_type = ''
-        if '.' in ext:
-            source_type = ext.strip().split('.')[1]
+        source_type = ""
+        if "." in ext:
+            source_type = ext.strip().split(".")[1]
         else:
             source_type = ext.strip()
     except IndexError:
-        source_type = ''
+        source_type = ""
 
     lexer = get_pygments_lexer(source_type, text)
-    #formatter = get_pygments_formatter()
+    # formatter = get_pygments_formatter()
 
     try:
         if nums:
-            formatter = HtmlFormatter(linenos='table',lineseparator="\n")
+            formatter = HtmlFormatter(linenos="table", lineseparator="\n")
         else:
             formatter = HtmlFormatter(lineseparator="\n")
-        
-        #highlighted_text = highlight(text, lexer, formatter).decode('utf-8')
-        #It seems with python3 there is no need to do a decode.
+
+        # highlighted_text = highlight(text, lexer, formatter).decode('utf-8')
+        # It seems with python3 there is no need to do a decode.
         highlighted_text = highlight(text, lexer, formatter)
     except Exception as e:
         print(e)
         highlighted_text = pre(text)
-    #finally:
+    # finally:
     #    return highlighted_text.replace('\n', '<br />\n')
 
     return highlighted_text
 
-#----------------------------------------------------------------------
-def  alertblock(*args, **kwargs):
+
+# ----------------------------------------------------------------------
+def alertblock(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
     return template.format(text)
 
-#----------------------------------------------------------------------
-def  alertwarning(*args, **kwargs):
+
+# ----------------------------------------------------------------------
+def alertwarning(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
     template = """<div class="alert alert-warning">{}</div>"""
     return template.format(text)
 
-#----------------------------------------------------------------------
-def  alertsuccess(*args, **kwargs):
+
+# ----------------------------------------------------------------------
+def alertsuccess(*args, **kwargs):
     """"""
 
     text = kwargs.get("text", None)
     template = """<div class="alert alert-success ">{}</div>"""
     return template.format(text)
 
-#----------------------------------------------------------------------
-def  alertinfo(*args, **kwargs):
+
+# ----------------------------------------------------------------------
+def alertinfo(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
     template = """<div class="alert alert-info">{}</div>"""
     return template.format(text)
 
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 def H1(*args, **kwargs):
     """"""
     text = kwargs.get("text", None)
@@ -160,9 +168,8 @@ def H2(*args, **kwargs):
     return template.format(text, anchor_text_url)
 
 
-
-#----------------------------------------------------------------------
-def  infoblock(*args, **kwargs):
+# ----------------------------------------------------------------------
+def infoblock(*args, **kwargs):
     """"""
 
     text = kwargs.get("text", "No text provided.")
@@ -170,27 +177,30 @@ def  infoblock(*args, **kwargs):
     image = kwargs.get("image", None)
     author = kwargs.get("author", None)
 
-
     if image:
-        image = """<div class="quote-photo"><img src="img/temp/user.jpg" alt=""></div>"""
+        image = (
+            """<div class="quote-photo"><img src="img/temp/user.jpg" alt=""></div>"""
+        )
     else:
         image = ""
 
     if author:
         author = """<div class="quote-author">James Livinston - <span>The New York Post</span></div>"""
     else:
-        author=""
+        author = ""
 
     template = """
     <div class="boxinfo" style="{}">
         <div class="testimonials-user">{}<p>{}</p>{}</div>
-</div>""".format(style,image, text, author)
+</div>""".format(
+        style, image, text, author
+    )
 
     return template
 
 
-#----------------------------------------------------------------------
-def  image(*args, **kwargs):
+# ----------------------------------------------------------------------
+def image(*args, **kwargs):
     """
     We parse the content of the text to get the information about the image.
     """
@@ -202,79 +212,72 @@ def  image(*args, **kwargs):
     style = kwargs.get("style", "width:80%")
     path_str = view.path_str
 
-
-    
     img_url = "/static/assets/{}/{}".format(view.path_str, name)
     img = """<div class="image-holder">
     <img src="{}" class="{}" style="{}" />
     <p class="image-description">{}</p>
-    </div>""".format(img_url, class_, style,text)
-    
+    </div>""".format(
+        img_url, class_, style, text
+    )
+
     return img
 
 
 def imagelist(*args, **kwargs):
-    
+
     text = kwargs.get("text", None)
     names_str = kwargs.get("names", None)
     class_ = kwargs.get("class", "article-image")
     style = kwargs.get("style", "width:80%")
 
     html = ""
-    names_str = names_str.replace(","," ")
+    names_str = names_str.replace(",", " ")
     names = names_str.split(" ")
     view = kwargs.get("view", None)
     path_str = view.path_str
 
-
-    
     if names != None:
-            
-        
+
         start = """
         <div>
         <div class="container" id="imagelist">
           <div class="row">
         """
-        
-        html = html + start    
-        
+
+        html = html + start
+
         for name in names:
-    
-            img_url = "/static/assets/{}/{}".format(view.path_str, name)            
-            content =  """
+
+            img_url = "/static/assets/{}/{}".format(view.path_str, name)
+            content = """
                  <div class="col-sm image-holder">
                   <img src="{}" class="article-image clickable-image" style="width:80%" onclick="show_images_overlay(this)">
                 </div>
             """
-            html= html + content.format(img_url)
-       
+            html = html + content.format(img_url)
+
         end = """
             </div>
           </div>
         </div>   
         """
-        
+
         html = html + end
     else:
         html = "Warning: No images were provided."
-        
-    return html
-    
 
-    
-    
-    
+    return html
+
 
 def google_addsense_code(*args, **kwargs):
-    
+
     """"""
     text = kwargs.get("text", None)
-    #template = """<h2 class="multipage-submenu-h2">{}</h2><a name="{}"></a> """
-    #anchor_text_url = slugify(text)
+    # template = """<h2 class="multipage-submenu-h2">{}</h2><a name="{}"></a> """
+    # anchor_text_url = slugify(text)
 
     if settings.FORCE_SHOW_ADVERTS or (settings.DEBUG == False):
-    
+
         code = """
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- 200x200 -->
@@ -288,14 +291,16 @@ def google_addsense_code(*args, **kwargs):
 	"""
     else:
         code = """<img src="/static/mycms/images/200x200.png">"""
-    
-    frame = """<div class="frame_200x200" style="float: right;width: 205px;height: 205px;padding-left:15px;">{}</div>""".format(code)
-    
-    
+
+    frame = """<div class="frame_200x200" style="float: right;width: 205px;height: 205px;padding-left:15px;">{}</div>""".format(
+        code
+    )
+
     return frame
 
-#----------------------------------------------------------------------
-def  debug(*args, **kwargs):
+
+# ----------------------------------------------------------------------
+def debug(*args, **kwargs):
 
     """
     Just a simple example which shows the view's json_data.
@@ -307,23 +312,23 @@ def  debug(*args, **kwargs):
     if view is None:
         return "MACRO: Debug did not get a view"
 
-    result =  "Object dictionary: {} ".format(view.json_data)
+    result = "Object dictionary: {} ".format(view.json_data)
 
     return result
 
 
 ########################################################################
-class  CreoleFormatter(object):
+class CreoleFormatter(object):
     """"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, raw_content=None, view=None):
         """Constructor"""
         self.raw_content = raw_content
         self.view = view
 
-    #----------------------------------------------------------------------
-    def  html(self, fake_content=False, view=None):
+    # ----------------------------------------------------------------------
+    def html(self, fake_content=False, view=None):
         """Returns the html"""
 
         if view is None:
@@ -333,33 +338,32 @@ class  CreoleFormatter(object):
             paragraphs = generate_paragraphs(5, start_with_lorem=False)
             p = ""
             for paragraph in paragraphs:
-                p =  unicode(paragraph[2]) + "\n\n" + p
+                p = unicode(paragraph[2]) + "\n\n" + p
             return creole2html(p)
 
-
-
-        #The view object is actually passed to the macro being called such that
-        #it can manipulate the view object to update it.
-        return creole2html(self.raw_content, macros={ "code": code,
-                                                   "pre": pre,
-                                                   "html": html,
-                                                   "HTML":HTML,
-                                                   "H1": H1,
-                                                   "H2":H2,
-                                                   "alertblock":alertblock,
-                                                   "alertsuccess":alertsuccess,
-                                                   "alertinfo":alertinfo,
-                                                   "alerterror":alertwarning,
-                                                   "infoblock":infoblock,
-                                                   "image": image,
-                                                   "debug":debug,
-                                                   "google_addsense_code":google_addsense_code, 
-                                                   "imagelist":imagelist,
-                                                   "NEWLINE": NEWLINE,
-                                                   
-                                                  },
-                                           verbose=None,
-                                           stderr=None,
-                                           view=view)
-
-
+        # The view object is actually passed to the macro being called such that
+        # it can manipulate the view object to update it.
+        return creole2html(
+            self.raw_content,
+            macros={
+                "code": code,
+                "pre": pre,
+                "html": html,
+                "HTML": HTML,
+                "H1": H1,
+                "H2": H2,
+                "alertblock": alertblock,
+                "alertsuccess": alertsuccess,
+                "alertinfo": alertinfo,
+                "alerterror": alertwarning,
+                "infoblock": infoblock,
+                "image": image,
+                "debug": debug,
+                "google_addsense_code": google_addsense_code,
+                "imagelist": imagelist,
+                "NEWLINE": NEWLINE,
+            },
+            verbose=None,
+            stderr=None,
+            view=view,
+        )

@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mycms', '0002_cmsarchivesindex'),
+        ("mycms", "0002_cmsarchivesindex"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cmsentries',
-            name='lists_include',
+            model_name="cmsentries",
+            name="lists_include",
             field=models.BooleanField(default=True),
         ),
     ]

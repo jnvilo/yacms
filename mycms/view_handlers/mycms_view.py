@@ -18,7 +18,8 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger("mycms.view_handlers.ViewObject")
 
-from . formatters import CreoleFormatter
+from .formatters import CreoleFormatter
+
 
 class ArticleList(list):
     """
@@ -27,14 +28,14 @@ class ArticleList(list):
     example 10 articles per page, provide methods to be able to 
     get the current article, 
     """
-    
-    def __init__(self, page_cmsentries,total_entries,page,limit=2):
+
+    def __init__(self, page_cmsentries, total_entries, page, limit=2):
         super().__init__(self)
 
         self.limit = limit
         self.total_entries = total_entries
-        self.page  = page  #The current page we are on.
-        
+        self.page = page  # The current page we are on.
+
     @property
     def show_pagination(self):
         """
@@ -42,45 +43,44 @@ class ArticleList(list):
         is True when limit is less than the total number of CMSEntries that
         can be shown.
         """
-    
-        if (self.total_entries >  self.limit):
+
+        if self.total_entries > self.limit:
             return True
         else:
             return False
-        
+
     def total_pages(self):
         """
         Returns the total number of pages. 
         """
         return math.ceil(self.total_entries / self.limit)
-        
+
     def page_range(self):
-        return range(1,self.total_pages() +1)
-        
+        return range(1, self.total_pages() + 1)
+
     def has_previous(self):
-        return  self.page > 1
-        
+        return self.page > 1
+
     def has_next(self):
         total_pages = self.total_pages()
         return self.page < total_pages
-    
+
     def has_other_pages(self):
         return self.has_previous() or self.has_next()
 
-    def next_page(self):        
+    def next_page(self):
         return self.page + 1
-    
+
     def previous_page(self):
         return self.page - 1
-        
+
     def debug(self):
         print("has_next: {}".format(self.has_next()))
         print("has_other_pages: {}".format(self.has_other_pages()))
         print("next_page: {}".format(self.next_page().title))
-        
+
 
 class ContentTopicsContainer(object):
-
     def __init__(self, title, anchor_text=None):
 
         self.title = title
@@ -112,21 +112,20 @@ class ViewObject(object):
     be serialized.  The ViewObject handles the management of the
     attributes of the CMSEntry model.
     """
-    
+
     def __init__(self, path=None, page_id=None, page_object=None, request=None):
 
         self.request = request
-        
-        if  page_object:
-            # A page_object is a models.CMSEntries instance. 
-            # 
+
+        if page_object:
+            # A page_object is a models.CMSEntries instance.
+            #
             self.path = page_object.path.path
             self._page_id = page_object.id
             self._obj = page_object
-            
+
             if hasattr(page_object, "page_number"):
                 self.page_number = page_object.page_number
-                
 
         else:
             self.path = path
@@ -135,39 +134,39 @@ class ViewObject(object):
 
         x = __import__("mycms.view_handlers")
         y = getattr(x, "view_handlers")
-        
-        #the view class take care of providing extra implementation that is 
-        #needed in the page. vie_class is defined as an attribute inside the 
-        #the database.
-        # 
-        # we provide it the page_object and 
-        
-        ViewClass  = getattr(y, self.page_object.page_type.view_class)
-        instance =  ViewClass(self.page_object, request=self.request)
+
+        # the view class take care of providing extra implementation that is
+        # needed in the page. vie_class is defined as an attribute inside the
+        # the database.
+        #
+        # we provide it the page_object and
+
+        ViewClass = getattr(y, self.page_object.page_type.view_class)
+        instance = ViewClass(self.page_object, request=self.request)
         self.view_handler = instance
 
     @property
     def DEBUG(self):
         return settings.DEBUG
-    
+
     @property
-    def FORCE_SHOW_ADVERTS(self):    
+    def FORCE_SHOW_ADVERTS(self):
         return getattr(settings, "FORCE_SHOW_ADVERTS", False)
-    
+
     @property
     def SHOW_ADVERTS(self):
-        
-        #We follow the settings on DEBUG unless a flag for 
-        #FORCE_SHOW_ADVERTS has been set. 
-        
-        if self.FORCE_SHOW_ADVERTS :
+
+        # We follow the settings on DEBUG unless a flag for
+        # FORCE_SHOW_ADVERTS has been set.
+
+        if self.FORCE_SHOW_ADVERTS:
             print("FORCE_SHOW_ADVERTS ")
             return True
         elif self.DEBUG == False:
             return True
         else:
             return False
-    
+
     def __getattr__(self, name):
         """Maps values to attributes.
         Only called if there *isn't* an attribute with this name
@@ -185,8 +184,9 @@ class ViewObject(object):
     def author(self):
         a = self.page_object.created_by
         if a is None:
-            a= "admin"
+            a = "admin"
         return a
+
     @property
     def page_object(self, reload=False):
         """
@@ -195,24 +195,23 @@ class ViewObject(object):
 
         if (self._obj is None) or (reload):
             from mycms.models import CMSEntries
-            
+
             if self.path:
                 if not self.path.startswith("/"):
-                    self.path =   "/" + self.path
+                    self.path = "/" + self.path
 
                 try:
                     obj = CMSEntries.objects.get(path__path=self.path)
                 except CMSEntries.MultipleObjectsReturned:
-                    #Something is wrong with the database. It is inconsistent 
-                    #and this is usually caused by having two pages with the same
-                    #path. To resolve this, we take the newest one. 
-                    
-                    #TODO: Fix logging here too
-                    
-                    objs =  CMSEntries.objects.filter(path__path=self.path)
+                    # Something is wrong with the database. It is inconsistent
+                    # and this is usually caused by having two pages with the same
+                    # path. To resolve this, we take the newest one.
+
+                    # TODO: Fix logging here too
+
+                    objs = CMSEntries.objects.filter(path__path=self.path)
                     obj = objs[1]
-                    
-            
+
             elif self.page_id:
                 obj = CMSEntries.objects.get(pk=self.page_id)
             else:
@@ -223,8 +222,6 @@ class ViewObject(object):
 
         else:
             return self._obj
-
-
 
     @property
     def page_id(self):
@@ -261,7 +258,7 @@ class ViewObject(object):
 
         logger.debug("html_content entered")
 
-        #TODO: Fix me: This loads only the first content entry.
+        # TODO: Fix me: This loads only the first content entry.
         #      This should be updated to load by date.
 
         try:
@@ -275,18 +272,18 @@ class ViewObject(object):
             else:
                 return "Error: There is no content for this page."
 
-        #TODO: Fix me: right now hardcoded to creole.
+        # TODO: Fix me: right now hardcoded to creole.
 
-        #We pass the view into our custom CreoleFormatter so that the
-        #custom creole markup can have access.
-        _html_content =  CreoleFormatter(content_obj.content,view=self).html()
+        # We pass the view into our custom CreoleFormatter so that the
+        # custom creole markup can have access.
+        _html_content = CreoleFormatter(content_obj.content, view=self).html()
 
-        logger.debug("Call to YACMSObject.html_content returns: \n {}".format(_html_content))
-        
-        
+        logger.debug(
+            "Call to YACMSObject.html_content returns: \n {}".format(_html_content)
+        )
+
         return _html_content
-    
-    
+
     @property
     def meta_keywords(self):
         """Returns a string list of keywords."""
@@ -297,7 +294,6 @@ class ViewObject(object):
         """Returns the author of the page."""
         pass
 
-
     @property
     def date_modified(self):
         """Date the page was modified"""
@@ -305,7 +301,7 @@ class ViewObject(object):
 
     @property
     def introduction(self):
-        #We use beautifulsoup to extract the first paragraph
+        # We use beautifulsoup to extract the first paragraph
         html_content = self.html_content
         soup = BeautifulSoup(html_content)
         intro = soup.find("p")
@@ -314,14 +310,13 @@ class ViewObject(object):
     @property
     def template(self):
 
-        #If self.page_object.template is empty, then we're fucked because
-        #this will raise an AttributeError
+        # If self.page_object.template is empty, then we're fucked because
+        # this will raise an AttributeError
         try:
-            tmpl  = self.page_object.template.name
+            tmpl = self.page_object.template.name
         except AttributeError as e:
-            #no specific template defined so we just use the default template
+            # no specific template defined so we just use the default template
             tmpl = self.page_object.page_type.view_template
-
 
         """
         TODO: Fix this so that it is not forcing to
@@ -329,39 +324,36 @@ class ViewObject(object):
         directory.
         """
         if not tmpl.startswith("mycms"):
-            tmpl = "mycms/"+tmpl
+            tmpl = "mycms/" + tmpl
 
         return tmpl
 
-
     @property
     def data(self):
-        d =  model_to_dict(self.page_object, exclude="content")
+        d = model_to_dict(self.page_object, exclude="content")
         path_str = self.page_object.path.path
         d["path_str"] = path_str
         d["content"] = [x.id for x in self.page_object.content.all()]
         page_object = self.page_object
-        
-        #django model_to_dict ignores the datetime field.
+
+        # django model_to_dict ignores the datetime field.
         date_created = self.page_object.date_created
-        date_created_epoch = int(time.mktime(date_created.timetuple())*1000)
+        date_created_epoch = int(time.mktime(date_created.timetuple()) * 1000)
 
-
-        #django model_to_dict ignores the datetime field.
+        # django model_to_dict ignores the datetime field.
         date_modified = self.page_object.date_created
-        date_modified_epoch = int(time.mktime(date_modified.timetuple())*1000)
+        date_modified_epoch = int(time.mktime(date_modified.timetuple()) * 1000)
 
         d["date_created_epoch"] = date_created_epoch
         d["date_modified_epoch"] = date_modified_epoch
-        
-        return d
 
+        return d
 
     @property
     def json_data(self):
-        
+
         try:
-            value =  json.dumps(self.data)
+            value = json.dumps(self.data)
             return value
         except Exception as e:
             print("fuck", e)
@@ -377,17 +369,15 @@ class ViewObject(object):
         if not cms_base_path.endswith("/"):
             cms_base_path = cms_base_path.rstrip("/")
 
-        #we assume here that self.path.path will always start with a /
-        abs_url =  "{}{}".format(cms_base_path, self.page_object.path.path)
+        # we assume here that self.path.path will always start with a /
+        abs_url = "{}{}".format(cms_base_path, self.page_object.path.path)
         return abs_url
 
-        
     @property
     def title_sha1sum(self):
-        #TODO: fix this so that it is cached.
-        hash_object = hashlib.md5(self.title.encode('utf-8'))
+        # TODO: fix this so that it is cached.
+        hash_object = hashlib.md5(self.title.encode("utf-8"))
         return hash_object.hexdigest()
-        
 
     @property
     def request(self):
@@ -398,66 +388,58 @@ class ViewObject(object):
         self._request = value
 
     @property
-    #----------------------------------------------------------------------
-    def  slug(self):
+    # ----------------------------------------------------------------------
+    def slug(self):
         """"""
         return self.page_object.slug
 
-
-    #----------------------------------------------------------------------
-    def  timestamp(self):
+    # ----------------------------------------------------------------------
+    def timestamp(self):
         """"""
         pass
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def created_timestamp_str(self):
         """"""
         return self.page_object.date_created.strftime("%Y/%m/%d %H:%M")
 
-
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def modified_timestamp_str(self):
         """"""
         return self.page_object.date_modified.strftime("%Y/%m/%d %H:%M")
 
-    #----------------------------------------------------------------------
-    def  id(self):
+    # ----------------------------------------------------------------------
+    def id(self):
         """
         Returns the id of the curren cms_entry
         """
         _id = self.page_object.id
         return _id
 
-
     def parent_entries_list(self):
 
         return self.page_object.parents_list()
 
     def content_topics(self):
-        #Get all H1 entries from the page.
+        # Get all H1 entries from the page.
         soup = BeautifulSoup(self.html_content)
-        x = soup.findAll("h1", class_ = "multipage-submenu-h1" )
+        x = soup.findAll("h1", class_="multipage-submenu-h1")
 
         y = []
         for z in x:
             y.append(ContentTopicsContainer(z.text))
         return y
 
-    #def on_create(self):
+    # def on_create(self):
     #    pass
 
-class MenuEntry(object):
 
+class MenuEntry(object):
     def __init__(self, cmspath):
         self.path = cmspath
-
 
     def entries(self):
         pass
 
-
-
     def expand(self):
         pass
-
-

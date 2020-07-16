@@ -1,11 +1,14 @@
 class PageDoesNotExist(Exception):
     pass
-    
+
+
 class PageClassNotFound(Exception):
     pass
 
+
 class PageActionNotFound(Exception):
     pass
+
 
 class IncompatiblePageClass(Exception):
     pass

@@ -8,13 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mycms', '0003_cmsentries_lists_include'),
+        ("mycms", "0003_cmsentries_lists_include"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cmsentries',
-            name='logo_url',
-            field=models.CharField(blank=True, default='/static/mycms/images/png/default.png', max_length=1024, null=True),
+            model_name="cmsentries",
+            name="logo_url",
+            field=models.CharField(
+                blank=True,
+                default="/static/mycms/images/png/default.png",
+                max_length=1024,
+                null=True,
+            ),
         ),
     ]

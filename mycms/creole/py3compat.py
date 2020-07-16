@@ -34,10 +34,12 @@ else:
     # http://bugs.python.org/issue3955
     # http://www.python-forum.de/viewtopic.php?f=1&t=27509 (de)
     origin_OutputChecker = doctest.OutputChecker
+
     class OutputChecker2(origin_OutputChecker):
         def check_output(self, want, got, optionflags):
             got = got.replace("u'", "'").replace('u"', '"')
             return origin_OutputChecker.check_output(self, want, got, optionflags)
+
     doctest.OutputChecker = OutputChecker2
 
 
@@ -49,5 +51,3 @@ def repr2(obj):
         return repr(obj).lstrip("u")
     else:
         return repr(obj)
-
-

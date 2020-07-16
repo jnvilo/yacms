@@ -18,6 +18,7 @@ from mycms.creole.py3compat import TEXT_TYPE, PY3, repr2
 try:
     from pygments import lexers
     from pygments.formatters import HtmlFormatter
+
     PYGMENTS = True
 except ImportError:
     PYGMENTS = False
@@ -29,6 +30,7 @@ KEYWORD_MAP = {
     "False": False,
     "None": None,
 }
+
 
 def string2dict(raw_content, encoding="utf-8"):
     """
@@ -88,9 +90,13 @@ def dict2string(d):
 
 def get_pygments_formatter():
     if PYGMENTS:
-        return HtmlFormatter(lineos = True, encoding='utf-8',
-                             style='colorful', outencoding='utf-8',
-                             cssclass='pygments')
+        return HtmlFormatter(
+            lineos=True,
+            encoding="utf-8",
+            style="colorful",
+            outencoding="utf-8",
+            cssclass="pygments",
+        )
 
 
 def get_pygments_lexer(source_type, code):
@@ -105,4 +111,5 @@ def get_pygments_lexer(source_type, code):
 
 if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())

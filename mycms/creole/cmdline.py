@@ -31,11 +31,12 @@ class CreoleCLI(object):
 
         self.parser.add_argument("sourcefile", help="source file to convert")
         self.parser.add_argument("destination", help="Output filename")
-        self.parser.add_argument("--encoding",
+        self.parser.add_argument(
+            "--encoding",
             default="utf-8",
-            help="Codec for read/write file (default encoding: utf-8)"
+            help="Codec for read/write file (default encoding: utf-8)",
         )
-        
+
         args = self.parser.parse_args()
 
         sourcefile = args.sourcefile
@@ -45,10 +46,11 @@ class CreoleCLI(object):
         self.convert(sourcefile, destination, encoding)
 
     def convert(self, sourcefile, destination, encoding):
-        print("Convert %r to %r with %s (codec: %s)" % (
-            sourcefile, destination, self.convert_func.__name__, encoding
-        ))
-        
+        print(
+            "Convert %r to %r with %s (codec: %s)"
+            % (sourcefile, destination, self.convert_func.__name__, encoding)
+        )
+
         with codecs.open(sourcefile, "r", encoding=encoding) as infile:
             with codecs.open(destination, "w", encoding=encoding) as outfile:
                 content = infile.read()
@@ -59,23 +61,35 @@ class CreoleCLI(object):
 
 def cli_creole2html():
     cli = CreoleCLI(creole2html)
+
+
 #     cli.convert()
+
 
 def cli_html2creole():
     cli = CreoleCLI(html2creole)
+
+
 #     cli.convert()
-    
+
+
 def cli_html2rest():
     cli = CreoleCLI(html2rest)
+
+
 #     cli.convert()
-    
+
+
 def cli_html2textile():
     cli = CreoleCLI(html2textile)
+
+
 #     cli.convert()
 
 
 if __name__ == "__main__":
     import sys
+
     sys.argv += ["../README.creole", "../test.html"]
     print(sys.argv)
     cli_creole2html()

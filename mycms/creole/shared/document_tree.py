@@ -25,7 +25,8 @@ class DocNode:
     
     The Document tree would be created in the parser and used in the emitter.
     """
-    def __init__(self, kind='', parent=None, content=None, attrs=[], level=None):
+
+    def __init__(self, kind="", parent=None, content=None, attrs=[], level=None):
         self.kind = kind
 
         self.children = []
@@ -35,8 +36,9 @@ class DocNode:
 
         self.attrs = dict(attrs)
         if content:
-            assert isinstance(content, TEXT_TYPE), "Given content %r is not unicode, it's type: %s" % (
-                content, type(content)
+            assert isinstance(content, TEXT_TYPE), (
+                "Given content %r is not unicode, it's type: %s"
+                % (content, type(content))
             )
 
         self.content = content
@@ -61,7 +63,8 @@ class DocNode:
 
     def __repr__(self):
         return "<DocNode %s: %r>" % (self.kind, self.content)
-#        return "<DocNode %s (parent: %r): %r>" % (self.kind, self.parent, self.content)
+
+    #        return "<DocNode %s (parent: %r): %r>" % (self.kind, self.parent, self.content)
 
     def debug(self):
         print("_" * 80)
@@ -80,17 +83,20 @@ class DebugList(list):
         super(DebugList, self).__init__()
 
     def append(self, item):
-#        for stack_frame in inspect.stack(): print(stack_frame)
+        #        for stack_frame in inspect.stack(): print(stack_frame)
 
         line, method = inspect.stack()[1][2:4]
         msg = "%-8s   append: %-35r (%-15s line:%s)" % (
-            self.html2creole.getpos(), item,
-            method, line
+            self.html2creole.getpos(),
+            item,
+            method,
+            line,
         )
         warnings.warn(msg)
         list.append(self, item)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())

@@ -21,7 +21,7 @@
 from __future__ import division, absolute_import, print_function, unicode_literals
 
 __version__ = (1, 2, 1)
-__api__ = (1, 0) # Creole 1.0 spec - http://wikicreole.org/
+__api__ = (1, 0)  # Creole 1.0 spec - http://wikicreole.org/
 
 
 import os
@@ -37,16 +37,22 @@ from mycms.creole.py3compat import TEXT_TYPE
 # TODO: Add git date to __version__
 
 
-VERSION_STRING = '.'.join(str(part) for part in __version__)
-API_STRING = '.'.join(str(integer) for integer in __api__)
+VERSION_STRING = ".".join(str(part) for part in __version__)
+API_STRING = ".".join(str(integer) for integer in __api__)
 
 
-def creole2html(markup_string, debug=False,
-        parser_kwargs={}, emitter_kwargs={},
-        block_rules=None, blog_line_breaks=True,
-        macros=None, verbose=None, stderr=None,
-        view=None,
-    ):
+def creole2html(
+    markup_string,
+    debug=False,
+    parser_kwargs={},
+    emitter_kwargs={},
+    block_rules=None,
+    blog_line_breaks=True,
+    macros=None,
+    verbose=None,
+    stderr=None,
+    view=None,
+):
     """
     convert creole markup into html code
 
@@ -62,7 +68,10 @@ def creole2html(markup_string, debug=False,
         "blog_line_breaks": blog_line_breaks,
     }
     if parser_kwargs:
-        warnings.warn("parser_kwargs argument in creole2html would be removed in the future!", PendingDeprecationWarning)
+        warnings.warn(
+            "parser_kwargs argument in creole2html would be removed in the future!",
+            PendingDeprecationWarning,
+        )
         parser_kwargs2.update(parser_kwargs)
 
     # Create document tree from mycms.creole markup
@@ -74,10 +83,13 @@ def creole2html(markup_string, debug=False,
         "macros": macros,
         "verbose": verbose,
         "stderr": stderr,
-        "view":view,
+        "view": view,
     }
     if emitter_kwargs:
-        warnings.warn("emitter_kwargs argument in creole2html would be removed in the future!", PendingDeprecationWarning)
+        warnings.warn(
+            "emitter_kwargs argument in creole2html would be removed in the future!",
+            PendingDeprecationWarning,
+        )
         emitter_kwargs2.update(emitter_kwargs)
 
     # Build html code from document tree
@@ -95,12 +107,12 @@ def parse_html(html_string, debug=False):
     return document_tree
 
 
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("runing local doctest...")
     import doctest
-    print(doctest.testmod(
-#            verbose=True
-    ))
+
+    print(
+        doctest.testmod(
+            #            verbose=True
+        )
+    )

@@ -17,6 +17,7 @@ from xml.sax.saxutils import escape
 
 try:
     from pygments import highlight
+
     PYGMENTS = True
 except ImportError:
     PYGMENTS = False
@@ -37,7 +38,7 @@ def pre(text):
     Macro tag <<pre>>...<</pre>>.
     Put text between html pre tag.
     """
-    return '<pre>%s</pre>' % escape(text)
+    return "<pre>%s</pre>" % escape(text)
 
 
 def code(ext, text):
@@ -49,20 +50,20 @@ def code(ext, text):
         return pre(text)
 
     try:
-        source_type = ''
-        if '.' in ext:
-            source_type = ext.strip().split('.')[1]
+        source_type = ""
+        if "." in ext:
+            source_type = ext.strip().split(".")[1]
         else:
             source_type = ext.strip()
     except IndexError:
-        source_type = ''
+        source_type = ""
 
     lexer = get_pygments_lexer(source_type, code)
     formatter = get_pygments_formatter()
 
     try:
-        highlighted_text = highlight(text, lexer, formatter).decode('utf-8')
+        highlighted_text = highlight(text, lexer, formatter).decode("utf-8")
     except:
         highlighted_text = pre(text)
     finally:
-        return highlighted_text.replace('\n', '<br />\n')
+        return highlighted_text.replace("\n", "<br />\n")

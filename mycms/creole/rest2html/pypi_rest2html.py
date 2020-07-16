@@ -36,58 +36,59 @@ except ImportError as err:
     raise DocutilsImportError(msg)
 
 
-ALLOWED_SCHEMES = '''file ftp gopher hdl http https imap mailto mms news nntp
+ALLOWED_SCHEMES = """file ftp gopher hdl http https imap mailto mms news nntp
 prospero rsync rtsp rtspu sftp shttp sip sips snews svn svn+ssh telnet
-wais irc'''.split()
+wais irc""".split()
 
 
-def pypi_rest2html(source, output_encoding='unicode'):
+def pypi_rest2html(source, output_encoding="unicode"):
     """
     >>> pypi_rest2html("test!")
     u'<p>test!</p>\n'
     """
     settings_overrides = {
-        'raw_enabled': 0,  # no raw HTML code
-        'file_insertion_enabled': 0,  # no file/URL access
-        'halt_level': 2,  # at warnings or errors, raise an exception
-        'report_level': 5,  # never report problems with the reST code
-        }
+        "raw_enabled": 0,  # no raw HTML code
+        "file_insertion_enabled": 0,  # no file/URL access
+        "halt_level": 2,  # at warnings or errors, raise an exception
+        "report_level": 5,  # never report problems with the reST code
+    }
 
     # Convert reStructuredText to HTML using Docutils.
-    document = publish_doctree(source=source,
-        settings_overrides=settings_overrides)
+    document = publish_doctree(source=source, settings_overrides=settings_overrides)
 
     for node in document.traverse():
-        if node.tagname == '#text':
+        if node.tagname == "#text":
             continue
-        if node.hasattr('refuri'):
-            uri = node['refuri']
-        elif node.hasattr('uri'):
-            uri = node['uri']
+        if node.hasattr("refuri"):
+            uri = node["refuri"]
+        elif node.hasattr("uri"):
+            uri = node["uri"]
         else:
             continue
         o = urlparse(uri)
         if o.scheme not in ALLOWED_SCHEMES:
-            raise TransformError('link scheme not allowed')
+            raise TransformError("link scheme not allowed")
 
     # now turn the transformed document into HTML
-    reader = readers.doctree.Reader(parser_name='null')
-    pub = Publisher(reader, source=io.DocTreeInput(document),
-        destination_class=io.StringOutput)
-    pub.set_writer('html')
+    reader = readers.doctree.Reader(parser_name="null")
+    pub = Publisher(
+        reader, source=io.DocTreeInput(document), destination_class=io.StringOutput
+    )
+    pub.set_writer("html")
     pub.process_programmatic_settings(None, settings_overrides, None)
     pub.set_destination(None, None)
     pub.publish()
     parts = pub.writer.parts
 
-    output = parts['body']
+    output = parts["body"]
 
-    if output_encoding != 'unicode':
+    if output_encoding != "unicode":
         output = output.encode(output_encoding)
 
     return output
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())

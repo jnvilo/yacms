@@ -22,29 +22,35 @@ from mycms.creole.py3compat import TEXT_TYPE, BINARY_TYPE
 from mycms.creole.shared.document_tree import DocNode, DebugList
 from mycms.creole.shared.html_parser import HTMLParser
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-block_re = re.compile(r'''
+block_re = re.compile(
+    r"""
     ^<pre> \s* $
     (?P<pre_block>
         (\n|.)*?
     )
     ^</pre> \s* $
     [\s\n]*
-''', re.VERBOSE | re.UNICODE | re.MULTILINE)
+""",
+    re.VERBOSE | re.UNICODE | re.MULTILINE,
+)
 
-inline_re = re.compile(r'''
+inline_re = re.compile(
+    r"""
     <pre>
     (?P<pre_inline>
         (\n|.)*?
     )
     </pre>
-''', re.VERBOSE | re.UNICODE)
+""",
+    re.VERBOSE | re.UNICODE,
+)
 
 
 headline_tag_re = re.compile(r"h(\d)", re.UNICODE)
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 class HtmlParser(HTMLParser):
@@ -80,6 +86,7 @@ class HtmlParser(HTMLParser):
         data: ' html2'
     ********************************************************************************
     """
+
     # placeholder html tag for pre cutout areas:
     _block_placeholder = "blockdata"
     _inline_placeholder = "inlinedata"
@@ -89,9 +96,7 @@ class HtmlParser(HTMLParser):
 
         self.debugging = debug
         if self.debugging:
-            warnings.warn(
-                message="Html2Creole debug is on! warn every data append."
-            )
+            warnings.warn(message="Html2Creole debug is on! warn every data append.")
             self.result = DebugList(self)
         else:
             self.result = []
@@ -129,10 +134,10 @@ class HtmlParser(HTMLParser):
             if text is not None:
                 if self.debugging:
                     print("%15s: %r (%r)" % (name, text, match.group(0)))
-                method = getattr(self, '_pre_%s_cut' % name)
+                method = getattr(self, "_pre_%s_cut" % name)
                 return method(groups)
 
-#        data = match.group("data")
+    #        data = match.group("data")
 
     def feed(self, raw_data):
         assert isinstance(raw_data, TEXT_TYPE), "feed data must be unicode!"
@@ -153,15 +158,14 @@ class HtmlParser(HTMLParser):
             print("cleaned data:")
             print(data)
             print("-" * 79)
-#            print(clean_data.replace(">", ">\n"))
-#            print("-"*79)
+        #            print(clean_data.replace(">", ">\n"))
+        #            print("-"*79)
 
         HTMLParser.feed(self, data)
 
         return self.root
 
-
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def _upto(self, node, kinds):
         """
@@ -181,7 +185,7 @@ class HtmlParser(HTMLParser):
         self.cur = self._upto(self.cur, kinds)
         self.debug_msg("go up to", self.cur)
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def handle_starttag(self, tag, attrs):
         self.debug_msg("starttag", "%r atts: %s" % (tag, attrs))
@@ -191,9 +195,7 @@ class HtmlParser(HTMLParser):
 
         headline = headline_tag_re.match(tag)
         if headline:
-            self.cur = DocNode(
-                "headline", self.cur, level=int(headline.group(1))
-            )
+            self.cur = DocNode("headline", self.cur, level=int(headline.group(1)))
             return
 
         if tag in ("li", "ul", "ol"):
@@ -227,12 +229,12 @@ class HtmlParser(HTMLParser):
         attr_dict = dict(attrs)
         if tag in (self._block_placeholder, self._inline_placeholder):
             id = int(attr_dict["id"])
-#            block_type = attr_dict["type"]
+            #            block_type = attr_dict["type"]
             DocNode(
                 "%s_%s" % (tag, attr_dict["type"]),
                 self.cur,
                 content=self.blockdata[id],
-#                attrs = attr_dict
+                #                attrs = attr_dict
             )
         else:
             DocNode(tag, self.cur, None, attrs)
@@ -243,7 +245,7 @@ class HtmlParser(HTMLParser):
 
         self.debug_msg("endtag", "%r" % tag)
 
-        if tag == "br": # handled in starttag
+        if tag == "br":  # handled in starttag
             return
 
         self.debug_msg("starttag", "%r" % self.get_starttag_text())
@@ -256,7 +258,7 @@ class HtmlParser(HTMLParser):
         else:
             self.cur = self.cur.parent
 
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def debug_msg(self, method, txt):
         if not self.debugging:
@@ -276,6 +278,7 @@ class HtmlParser(HTMLParser):
             print("  tree from %s:" % start_node)
 
         print("=" * 80)
+
         def emit(node, ident=0):
             for child in node.children:
                 txt = "%s%s" % (" " * ident, child.kind)
@@ -291,17 +294,19 @@ class HtmlParser(HTMLParser):
 
                 print(txt)
                 emit(child, ident + 4)
+
         emit(start_node)
         print("*" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())
 
 #    p = HtmlParser(debug=True)
 #    p.feed("""\
-#<p><span>in span</span><br />
-#<code>in code</code></p>
-#""")
+# <p><span>in span</span><br />
+# <code>in code</code></p>
+# """)
 #    p.debug()

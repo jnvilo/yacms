@@ -1,6 +1,6 @@
 import unittest
 import mycms
-from . import  tests_classes
+from . import tests_classes
 
 
 from django.core.management.base import BaseCommand, CommandError
@@ -29,37 +29,40 @@ class TestExample(unittest.TestCase):
 
     def test_something(self):
         # Create a file in the temporary directory
-        f = open(path.join(self.test_dir, 'test.txt'), 'w')
+        f = open(path.join(self.test_dir, "test.txt"), "w")
         # Write something to it
-        f.write('The owls are not what they seem')
+        f.write("The owls are not what they seem")
         # Reopen the file and check if what we read back is the same
-        f = open(path.join(self.test_dir, 'test.txt'))
-        self.assertEqual(f.read(), 'The owls are not what they seem')
+        f = open(path.join(self.test_dir, "test.txt"))
+        self.assertEqual(f.read(), "The owls are not what they seem")
+
 
 import sys
+
+
 class Command(BaseCommand):
 
     """
     Example on how to create and run a unittest from within the django 
     management commands. 
     """
+
     def add_arguments(self, parser):
-        parser.add_argument('--test_classes', nargs='+', type=str)
-   
+        parser.add_argument("--test_classes", nargs="+", type=str)
 
     def handle(self, *args, **options):
-        
-        suite = unittest.TestSuite()        
-        test_class_names =  options.get("test_classes", None)
-        
-        if test_class_names: 
-        
-            for test_class in test_class_names: 
+
+        suite = unittest.TestSuite()
+        test_class_names = options.get("test_classes", None)
+
+        if test_class_names:
+
+            for test_class in test_class_names:
                 print(test_class)
-                suite.addTest(unittest.defaultTestLoader.loadTestsFromName(test_class, 
-                module=tests_classes))
-                
-                
+                suite.addTest(
+                    unittest.defaultTestLoader.loadTestsFromName(
+                        test_class, module=tests_classes
+                    )
+                )
+
             unittest.TextTestRunner().run(suite)
-                    
-        

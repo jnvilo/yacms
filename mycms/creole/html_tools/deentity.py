@@ -13,23 +13,24 @@
 from __future__ import division, absolute_import, print_function, unicode_literals
 
 import re
+
 try:
     import htmlentitydefs as entities
 except ImportError:
-    from html import entities # python 3
+    from html import entities  # python 3
 
 from mycms.creole.py3compat import PY3
 
 
-entities_rules = '|'.join([
-    r"(&\#(?P<number>\d+);)",
-    r"(&\#x(?P<hex>[a-fA-F0-9]+);)",
-    r"(&(?P<named>[a-zA-Z]+);)",
-])
-#print(entities_rules)
-entities_regex = re.compile(
-    entities_rules, re.VERBOSE | re.UNICODE | re.MULTILINE
+entities_rules = "|".join(
+    [
+        r"(&\#(?P<number>\d+);)",
+        r"(&\#x(?P<hex>[a-fA-F0-9]+);)",
+        r"(&(?P<named>[a-zA-Z]+);)",
+    ]
 )
+# print(entities_rules)
+entities_regex = re.compile(entities_rules, re.VERBOSE | re.UNICODE | re.MULTILINE)
 
 
 class Deentity(object):
@@ -50,6 +51,7 @@ class Deentity(object):
     >>> d.replace_named("amp")
     '&'
     """
+
     def replace_number(self, text):
         """ unicode number entity """
         unicode_no = int(text)
@@ -80,11 +82,12 @@ class Deentity(object):
 
     def replace_all(self, content):
         """ replace all html entities form the given text. """
+
         def replace_entity(match):
             groups = match.groupdict()
             for name, text in groups.items():
                 if text is not None:
-                    replace_method = getattr(self, 'replace_%s' % name)
+                    replace_method = getattr(self, "replace_%s" % name)
                     return replace_method(text)
 
             # Should never happen:
@@ -93,6 +96,7 @@ class Deentity(object):
         return entities_regex.sub(replace_entity, content)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())

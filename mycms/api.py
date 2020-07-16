@@ -42,38 +42,38 @@ In order to create a CMSEntry we use the endpoint /cms/api/v2/cmsentries/id/crea
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
+# from rest_framework.renderers import JSONRenderer
+# from rest_framework.parsers import JSONParser
 from rest_framework import serializers
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+# from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework import views as drf_views
+# from rest_framework import views as drf_views
 from rest_framework import status
 from rest_framework.views import APIView
 
 from rest_framework.decorators import detail_route
-from rest_framework.decorators import list_route
+#from rest_framework.decorators import list_route
 
 from rest_framework.authtoken.models import Token
 
 from mycms.serializers import CMSPageTypesSerializer
 from mycms.serializers import CMSContentsSerializer
 from mycms.serializers import CMSEntrySerializer
-from mycms.serializers import CMSMarkUpSerializer
-from mycms.serializers import CMSTemplatesSerializer
+# from mycms.serializers import CMSMarkUpSerializer
+# from mycms.serializers import CMSTemplatesSerializer
 from mycms.serializers import CMSPathsSerializer
-from mycms.serializers import CMSEntryExpandedSerializer
-from mycms.serializers import LoremIpsumSerializer
+# from mycms.serializers import CMSEntryExpandedSerializer
+# from mycms.serializers import LoremIpsumSerializer
 from mycms.serializers import CMSChildEntrySerializer
 
 import mycms.serializers as mycmsserializers
 
 from mycms.models import CMSContents
-from mycms.models import CMSMarkUps
-from mycms.models import CMSTemplates
+# from mycms.models import CMSMarkUps
+# from mycms.models import CMSTemplates
 from mycms.models import CMSPageTypes
 from mycms.models import CMSEntries
 from mycms.models import CMSPaths

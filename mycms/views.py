@@ -919,29 +919,29 @@ class CMSIndexView(APIView):
         pass
 
 
-class CMSArticleListsView(View):
-    """
-    Implements a paginated list view of all published articles. 
-    """
+#class CMSArticleListsView(View):
+    #"""
+    #Implements a paginated list view of all published articles. 
+    #"""
 
-    from django.db.models import Q
+    #from django.db.models import Q
 
-    def get(self, request, **kwargs):
+    #def get(self, request, **kwargs):
 
-        obj_list = CMSEntries.objects.filter(
-            (
-                Q(page_type=singlepageview_pagetype_obj)
-                | Q(page_type=multipageview_pagetype_obj)
-            )
-            & Q(path__parent__id=self.page_object.path.id)
-        )[start : start + page_size]
-        # wrap the entries of the obj_list into their view_handler representations
-        view_list = []
+        #obj_list = CMSEntries.objects.filter(
+            #(
+                #Q(page_type=singlepageview_pagetype_obj)
+                #| Q(page_type=multipageview_pagetype_obj)
+            #)
+            #& Q(path__parent__id=self.page_object.path.id)
+        #)[start : start + page_size]
+        ## wrap the entries of the obj_list into their view_handler representations
+        #view_list = []
 
-        for obj in obj_list:
-            view_list.append(ViewObject(page_object=obj))
+        #for obj in obj_list:
+            #view_list.append(ViewObject(page_object=obj))
 
-        return view_list
+        #return view_list
 
 
 class CMSPageView(View):

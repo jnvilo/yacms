@@ -15,7 +15,6 @@ mycms.wpu
 package-lock.json
 postgres.txt
 requirements-latest.txt
-setup.cfg
 static_root
 test.txt
 todo.txt

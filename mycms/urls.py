@@ -83,17 +83,17 @@ cms_root = [
 
 
 router = routers.DefaultRouter()
-# router.register(r'zones/(?P<zone_name>[-/\.a-z\d_]*)/records', RecordsViewSet, base_name='Records')
-router.register(r"api/v2/cmscontents", api.CMSContentsViewSet, base_name="cmscontents")
-router.register(r"api/v2/cmsentries", api.CMSEntriesViewSet, base_name="cmsentries")
-router.register(r"api/v2/cmspaths", api.CMSPathsViewSet, base_name="cmspaths")
-router.register(r"api/v2/cmspages", api.CMSPagesViewSet, base_name="cmspages")
+# router.register(r'zones/(?P<zone_name>[-/\.a-z\d_]*)/records', RecordsViewSet, basename='Records')
+router.register(r"api/v2/cmscontents", api.CMSContentsViewSet, basename="cmscontents")
+router.register(r"api/v2/cmsentries", api.CMSEntriesViewSet, basename="cmsentries")
+router.register(r"api/v2/cmspaths", api.CMSPathsViewSet, basename="cmspaths")
+router.register(r"api/v2/cmspages", api.CMSPagesViewSet, basename="cmspages")
 router.register(
-    r"api/v2/cmspagetypes", api.CMSPageTypeViewSet, base_name="cmspagetypes"
+    r"api/v2/cmspagetypes", api.CMSPageTypeViewSet, basename="cmspagetypes"
 )
-# router.register(r'api/v2/cmspreview', api.CMSContentPreview, base_name='cmspreview')
-# router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, base_name='cmsauthtoken')
-# router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, base_name='cmsformatter')
+# router.register(r'api/v2/cmspreview', api.CMSContentPreview, basename='cmspreview')
+# router.register(r'api/v2/cmsauthtoken', api.CMSAuthToken, basename='cmsauthtoken')
+# router.register(r'api/v2/utils/cmsformatter/(?P<content_id>[\d]*)/$', CMSFormatterContent, basename='cmsformatter')
 
 urlpatterns = cms_root + router.urls + urlpatterns
 

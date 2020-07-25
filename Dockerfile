@@ -1,42 +1,22 @@
-from alpine:latest
-MAINTAINER Jason Viloria <jnvilo@gmail.com> 
+FROM hub.lnxsystems.com/library/python:centos8-1
 
-RUN apk update
-RUN apk add --no-cache python3 \
-    py3-tz \
-    py3-gunicorn \
-    ca-certificates \
-    build-base \
-    zlib-dev  \ 
-    zlib \ 
-    jpeg-dev \ 
-    py3-pillow \ 
-   python3-dev \
-   freetype-dev \ 
-   freetype \
-   libjpeg-turbo-dev \
-   libjpeg-turbo \
-   tiff \
-   tiff-dev \
-   libwebp-dev \
-   libwebp \
-     
-&& pip3 install -U pip
+ENV DBNAME /app/data/db.sqlite3
 
-RUN mkdir /website
-WORKDIR /website
-ADD requirements.txt requirements.txt
-RUN pip3 install --trusted-host pypi.python.org -r requirements.txt;
+RUN mkdir -p /app/data && mkdir /app/mycms
+COPY mycms /app/mycms/mycms
+COPY demo_website /app/mycms/demo_website
+COPY entrypoint.sh /app/mycms/entrypoint.sh 
+COPY LICENSE.txt /app/mycms/LICENSE.txt
+COPY setup.py /app/mycms/setup.py
+COPY setup.cfg /app/mycms/setup.cfg
+copy AUTHORS.txt /app/mycms/AUTHORS.txt
+COPY README.md /app/mycms/README.md
+COPY requirements.txt /app/mycms/requirements.txt
+COPY MANIFEST.in /app/mycms/MANIFEST.in
+WORKDIR /app/mycms/
+RUN python3.8 setup.py install 
 
-ADD mycms mycms
-ADD demo_app demo_app
-ADD setup.py setup.py
-ADD MANIFEST.in MANIFEST.in
-ADD README.md README.md
-ADD LICENSE.txt LICENSE.txt
-ADD AUTHORS.txt AUTHORS.txt 
-RUN python3 setup.py install  
+WORKDIR /app/mycms/demo_website
+ENTRYPOINT ["/app/mycms/demo_website/rundev.sh"] 
+#ENTRYPOINT ["/bin/bash"]
 
-EXPOSE 8001
-WORKDIR /website/demo_app
-CMD ["sh", "run.sh"]

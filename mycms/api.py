@@ -53,9 +53,7 @@ from rest_framework import viewsets
 # from rest_framework import views as drf_views
 from rest_framework import status
 from rest_framework.views import APIView
-
-from rest_framework.decorators import detail_route
-#from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 
 from rest_framework.authtoken.models import Token
 
@@ -98,7 +96,7 @@ class CMSContentsViewSet(viewsets.ModelViewSet):
     queryset = CMSContents.objects.all()
     serializer_class = CMSContentsSerializer
 
-    @detail_route(methods=["get"])
+    @action(detail=True, methods=["get"])
     def html(self, request, pk=None):
 
         content_obj = CMSContents.objects.get(id=pk)
@@ -134,7 +132,7 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(path__parent=parent_path_id)
         return queryset
 
-    @detail_route(methods=["get"])
+    @action(detail=True, methods=["get"])
     def get_categories(self, request, pk=None):
         parent_obj = CMSEntries.objects.get(id=pk)
         print(parent_obj)
@@ -144,7 +142,7 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
         serializer = CMSEntrySerializer(c, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @detail_route(methods=["post"])
+    @action(detail=True,methods=["post"])
     def create_child(self, request, pk=None):
         """
         A utility function to create an article including path information.
@@ -185,7 +183,7 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @detail_route(methods=["get"])
+    @action(detail=True,methods=["get"])
     def toggle_published(self, request, *args, **kwargs):
 
         try:
@@ -204,7 +202,7 @@ class CMSEntriesViewSet(viewsets.ModelViewSet):
             {"published": cms_entry.published}, status=status.HTTP_202_ACCEPTED
         )
 
-    @detail_route(methods=["get"])
+    @action(detail=True,methods=["get"])
     def toggle_frontpage(self, request, *args, **kwargs):
 
         try:

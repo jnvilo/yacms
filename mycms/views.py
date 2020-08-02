@@ -398,7 +398,7 @@ class CMSLogoutView(View):
 class CMSFrontPage(View):
     def get(self, request, **kwargs):
 
-        template_name = "mycms/Index.html"
+        template_name = "mycms/pages/Index.html"
 
         # TODO: Fix this hack. We create a fake view_object for the frontpage
         # so that we can pass a few template data.

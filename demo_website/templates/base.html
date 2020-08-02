@@ -107,15 +107,18 @@
   
 {%endblock BASE_CONTAINER %}
 
+
 {% if view_object.show_toolbar %}
-  <div id="admin-bar">
+  <div id="admin-bar test">
     {% if view_object.request.user.username == "admin" %}
-            <img id="show-admin-overlay-button" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>		
+            <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image>
     {% else %}
-            <img id="show_admin_overlay" src="/static/mycms/editor/tango_icon_library/svg/iconfinder_accessories-text-editor_118805.svg"></image>
+            <img id="show_admin_overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/action/document-properties.svg"></image>
+            <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image>
     {%endif%}
   </div>
 {% endif %}
+
 
 
 <!-- Core JavaScript Requirements -->

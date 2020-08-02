@@ -324,7 +324,7 @@ class ViewObject(object):
         directory.
         """
         if not tmpl.startswith("mycms"):
-            tmpl = "mycms/" + tmpl
+            tmpl = "mycms/pages/" + tmpl
 
         return tmpl
 

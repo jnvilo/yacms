@@ -53,6 +53,13 @@
     //border-top-right-radius: 5px;
 }
 
+#admin-message-alert {
+    font-size: 1.3rem;
+        padding-top:5px;
+        color:#FFF;
+        display: block;
+}
+
 #creole-editor-pane{
     height:100%;
 }

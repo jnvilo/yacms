@@ -408,7 +408,9 @@ class CMSFrontPage(View):
 
         view_object = View_Object()
 
-        if settings.FORCE_SHOW_ADVERTS or (settings.DEBUG == False):
+        show_adverts = getattr(settings, "FORCE_SHOW_ADVERTS", False)
+
+        if show_adverts or (settings.DEBUG == False):
             view_object.SHOW_ADVERTS = True
         else:
             print("SHOW_ADDS_IS FALSE")

@@ -135,6 +135,25 @@ The HTML assumes to have  the following elements.
     #content-editor  - a textarea for displaying the editable content.
 **/
 
+
+
+
+
+function set_admin_message_alert(message){
+
+    log.debug("Setting admin message:", message);
+    $("#admin-message-alert").text(message);
+     $("#admin-message-alert").show();
+   setTimeout(hide_admin_message_alert, 2000);
+    
+}       
+
+
+function hide_admin_message_alert(){
+    $("#admin-message-alert").hide(); 
+}
+    
+
 class CMSEditorWidget extends AdminWidget{
     
     constructor(value){
@@ -168,6 +187,8 @@ class CMSEditorWidget extends AdminWidget{
             error: function(data){
                 log.error("Ajax PUT failed:" + url , data);
                 $("#editor_message_pane").html("Failed to save  content with error:." + data);
+                log.debug("Failed to save  content with error:." + data);
+                set_admin_message_alert("Error saving document.");
             },
             success: (data)=>{
                 /**Update the editor for the newly created pages.**/
@@ -175,6 +196,8 @@ class CMSEditorWidget extends AdminWidget{
                var completed = Date.now()
                var seconds = ( completed - start)/1000;
                 log.debug("Content was successfully saved..(" + seconds  + "s) "+ completed.toLocaleString());
+                
+                set_admin_message_alert("Content saved..");
             }
         });
     }
@@ -253,11 +276,18 @@ class CMSEditorWidget extends AdminWidget{
     
             error: function(data){ 
                 log.debug("Publishe toggle failed.", data);
+                 set_admin_message_alert("Failed to publish");
             },
             
             success: (data) => {
                 log.debug("Set published to :" ,data);
                 this.cmsentry.published = data["published"];
+                
+                if ( published_status == false){
+                    set_admin_message_alert("Article unpublished");    
+                }  else {
+                    set_admin_message_alert("Article published");
+                }
             }
         });
     
@@ -277,6 +307,7 @@ class CMSEditorWidget extends AdminWidget{
     
             error: function(data){ 
                 log.debug("Frontpage toggle failed.", data);
+                 set_admin_message_alert("Could not set to frontpage");
                 
                 
             },
@@ -284,6 +315,11 @@ class CMSEditorWidget extends AdminWidget{
             success: (data) => {
                 log.debug("Set frontpage to :" ,data);
                 this.cmsentry.frontpage = data["frontpage"];
+                if ( frontpage_status == false){
+                    set_admin_message_alert("Article unpublished");    
+                }  else {
+                    set_admin_message_alert("Article published");
+                }
             }
         });
     }

@@ -136,13 +136,7 @@ Media specific css
 
  @media only screen and (min-device-width: 1920px) {
 
-    .page-header {
-        padding-top: 10px;
-        margin: 0;
-        margin-top: 50px;
-    }
-   
- 
+  
    #markup { 
    
         width: 100%;

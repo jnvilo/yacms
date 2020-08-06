@@ -313,7 +313,7 @@ class CMSLoginView(View):
         next_page = request.GET.get("next", "")
 
         if not request.user.is_authenticated:
-            template_name = "mycms/Login.html"
+            template_name = "mycms/pages/Login.html"
 
             # also set a session variable to show the toolbar
             request.session["show_toolbar"] = True
@@ -370,7 +370,7 @@ class CMSLoginView(View):
 
 class CMSUserProfileView(View):
     def get(self, request, **kwargs):
-        template_name = "mycms/Profile.html"
+        template_name = "mycms/pages/Profile.html"
         if not request.user.is_authenticated:
             return HttpResponseRedirect("/login")
         else:

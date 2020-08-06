@@ -17,6 +17,13 @@ body {
 }
 
 
+#page-header {
+    padding: 0px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid rgba(1,1,1,0.075);
+  
+}
+
 #navbar {
     min-height: 50px;
     border: 1px solid transparent;
@@ -28,19 +35,7 @@ body {
     padding-top:20px;
 }
 
-.page-header {
-    padding: 0px 0 0 0;
-    margin: 0;
-    border-bottom: 1px solid rgba(1,1,1,0.075);
-    background: #eaeaea;
-}
 
-
-.page-header .row{
-
-    border-bottom-width: 30px;
- 
-}
 
 
 
@@ -49,7 +44,7 @@ body {
     margin-bottom: 20px;
     list-style: none;
     border-radius: 4px;
-    background-color: #eaeaea;
+    
 }
 
 
@@ -85,12 +80,11 @@ ul.breadcrumb {
 }
 
 footer {
-    color: #777;
-    background: #222;
-    border-top: 2px solid #444;
+    
     bottom: 0px;
     /* position: absolute; */
     width: 100%;
+    //margin-top:10px;
 }
 
 
@@ -183,6 +177,19 @@ hr {
     padding-right: 0px;
 }
 
+pre {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
 
 

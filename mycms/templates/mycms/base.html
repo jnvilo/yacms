@@ -16,7 +16,7 @@
   <link href="/static/mycms/vendor/fontawesome-free-5.14.0-web/css/fontawesome.min.css" rel="stylesheet"> 
   <!-- link href="/static/mycms/vendor/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/ -->
   <!-- link href="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/ -->
-  <!-- link href="/static/mycms/vendor/pygment-themes/colorful.css" media="all" rel="stylesheet" type="text/css"/ -->
+  <link href="/static/mycms/vendor/pygments-css/colorful.css" media="all" rel="stylesheet" type="text/css"/>
  
  
   
@@ -27,7 +27,8 @@
 
   <link href="/static/mycms/css/media.css" rel="stylesheet">
     <link href="/static/mycms/css/admin.css" rel="stylesheet">
-      <link href="/static/mycms/css/editors.css" rel="stylesheet">
+    <link href="/static/mycms/css/editors.css" rel="stylesheet">
+  <link href="/static/mycms/css/colors.css" rel="stylesheet">
   
   
   {%comment%}
@@ -53,7 +54,7 @@
 
 <body>
 
-
+ <main>
   <!-- Navigation -->
   <nav id="mainHeader" class="navbar navbar-expand-lg bg-grey fixed-top">
     <div class="container">
@@ -80,10 +81,12 @@
     </div>
   </nav>
 
+
+
   <!-- Page Content -->
 {%block BASE_CONTAINER %}
     {%block PAGE_HEADER %}
-    
+ 
     {%endblock PAGE_HEADER %}
 
     {%block MAIN_CANVAS %}  
@@ -110,14 +113,22 @@
   
 {%endblock BASE_CONTAINER %}
 
-  <div id="admin-bar test">
+{% if view_object.show_toolbar %}
+
+  <div id="admin-bar">
+  <ul class="admin-buttons">
     {% if view_object.request.user.username == "admin" %}
-            <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image>
+         <li>   <img class="admin-button" id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image></li>
+         <li>   <img id="show_admin_overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image></li>
+         <li>   <img id="show_admin_overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image></li>
     {% else %}
             <img id="show_admin_overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/action/document-properties.svg"></image>
-            <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image>
     {%endif%}
+  </ul>
   </div>
+  
+{%endif%}
+
 
 
 
@@ -130,16 +141,15 @@
  
 {%block BOTTOM_HTML %}
 
+</main>
 
-
-  
 
 {%endblock BOTTOM_HTML %}
   
   <!-- /.container -->
 
   <!-- Footer -->
-  <footer class="py-5 bg-dark">
+  <footer>
     <div class="container">
       <p class="m-0 text-center text-white">Copyright &copy; www.mycmsproject.com 2019</p>
     </div>

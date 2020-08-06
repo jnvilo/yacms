@@ -31,6 +31,7 @@ try:
 
     PYGMENTS = True
 except ImportError:
+    print("Warning: Pygments was not found! Not Formatting Source Code")
     PYGMENTS = False
 
 from mycms.creole.shared.utils import get_pygments_lexer, get_pygments_formatter

@@ -1,11 +1,5 @@
-#show-admin-overlay-button{
-    position: fixed;
-    bottom: 50px;
-    left: 50px;
-    z-index: 2048;
-    width: 30px;
-    height: 30px;
-}
+
+
 
 #overlay {
     position: fixed;
@@ -104,6 +98,39 @@ color:black;
     resize: none;
     padding:5px;
 }
+
+
+#admin-bar{
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 2048;
+}
+
+
+.admin-buttons {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+    
+
+}
+
+.admin-buttons li {
+  float: left;
+}
+
+.admin-buttons li image {
+  display: block;
+  color: white;
+  text-align: center;
+  margin: 16px;
+
+}
+
+
+
 
 
 

@@ -2,6 +2,15 @@
 
 {% extends "mycms/base.html"%}
 
+{%block PAGE_HEADER %}
+	 <header id="page-header">
+	 
+	 
+	 </header>
+
+{%endblock PAGE_HEADER %}
+
+
 {%block PAGE_CONTENT %}
 <div class="container">
 
@@ -23,7 +32,7 @@
     <!-- /.row -->
 
     <!-- Call to Action Well -->
-    <div class="card text-white bg-secondary my-5 py-4 text-center">
+    <div class="card red-notice text-white bg-secondary my-5 py-4 text-center">
       <div class="card-body">
         <p class="text-white m-0">NOTE: MyCMS has not yet reached a stable release. I use it at <a href="https://jnvilo.com" class="text-white">https://www.jnvilo.com</a> and currently features
 are implemented as I figure out what I need. If you wish to join, do let me know. I would gladly mentor anyone in django and python. .</p>
@@ -73,7 +82,28 @@ and manuals on the use of MyCMS to help you get your website up and running as f
 
     </div>
     <!-- /.row -->
-
+	
   </div>
   
+  
+  <div class="container">
+  	  <div class="cold-lg-12">
+		<div class="card h-100">
+		  <div class="card-body">
+			<h2 class="card-title">Extensible Creole Formatting.</h2>
+			<p class="card-text">
+			
+			The default markup used by MyCMS is WikiCreole.  Creole is a common wiki markup language used accross different wikis. One could say that it implements only the common markup tags used by different wikis whether opensource or commercial. 
+
+Although it is often enough to just use the Creole markup to write our html pages, we often want more power, and also easier to use. The Creole implementation used in MyCMS is easily extensible and out of the box there are already different extensions available. 
+
+			
+			</p></div>
+		  <div class="card-footer">
+			<a href="/cms/extensible-creole-formatting/" class="btn btn-primary btn-sm">More Info</a>
+		  </div>
+		</div>
+	  </div>
+  
+  </div>
 {% endblock PAGE_CONTENT%}

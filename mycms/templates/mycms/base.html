@@ -13,20 +13,23 @@
   <!-- Bootstrap core CSS -->
   <link href="/static/mycms/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome css-->
-  <link href="/static/mycms/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet"> 
-  <link href="/static/mycms/vendor/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-  <link href="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-  <link href="/static/mycms/vendor/pygment-themes/colorful.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="/static/mycms/vendor/fontawesome-free-5.14.0-web/css/fontawesome.min.css" rel="stylesheet"> 
+  <!-- link href="/static/mycms/vendor/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/ -->
+  <!-- link href="/static/mycms/vendor/fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/ -->
+  <!-- link href="/static/mycms/vendor/pygment-themes/colorful.css" media="all" rel="stylesheet" type="text/css"/ -->
  
  
   
     
   <!-- MyCMS default styles -->
-  <link href="/static/mycms/css/custom.css" rel="stylesheet">
-  <link href="/static/mycms/css/editors.css" rel="stylesheet">
+  <link href="/static/mycms/css/layout.css" rel="stylesheet"> 
+  <link href="/static/mycms/css/cartography.css" rel="stylesheet"> 
+
+  <link href="/static/mycms/css/media.css" rel="stylesheet">
+    <link href="/static/mycms/css/admin.css" rel="stylesheet">
+      <link href="/static/mycms/css/editors.css" rel="stylesheet">
   
-  <!-- Override styles defined by mycms -->
-  <link href="/static/css/site.css" rel="stylesheet">
+  
   {%comment%}
   WARNING:The following HEADER_CONTENT can be overrided in child templates. This means 
   it is not advisable to override these here in the main base template because you 
@@ -107,7 +110,6 @@
   
 {%endblock BASE_CONTAINER %}
 
-{% if view_object.show_toolbar %}
   <div id="admin-bar test">
     {% if view_object.request.user.username == "admin" %}
             <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image>
@@ -116,17 +118,15 @@
             <img id="show-admin-overlay-button" src="/static/mycms/icons/gnome-desktop-tango-icons/24x24/actions/document-properties.png"></image>
     {%endif%}
   </div>
-{% endif %}
 
 
 
 <!-- Core JavaScript Requirements -->
-  <script src="/static/mycms/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/mycms/vendor/jquery/js/jquery-3.5.1.min.js"></script>
   <script src="/static/mycms/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-  <script src="/static/mycms/js/js.cookie.js"></script>
+  <script src="/static/mycms/vendor/misc/js.cookie.min.js"></script>
   <script src="/static/mycms/js/csrf.js"></script>
-  <script src="/static/mycms/js/loglevel.min.js"></script>
+  <script src="/static/mycms/vendor/misc/loglevel/loglevel.min.js"></script>
  
 {%block BOTTOM_HTML %}
 

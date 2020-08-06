@@ -1,0 +1,5 @@
+0.1.10
+
+ - Cleanup of static files
+ - Moved templates back into mycms rather than in the projects
+ - Updated fontawesome in staticfiles

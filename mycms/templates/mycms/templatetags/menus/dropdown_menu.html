@@ -7,18 +7,8 @@
         
              <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
             {% for child in parent.categories %}
-                <li class="dropdown-submenu">
             
-                {% if child.categories %} 
-                    <a class="dropdown-item" href="/cms{{child.path}}">{{child.title}}</a>
-                    <ul class="dropdown-menu">
-                    {% for grandchild in child.categories %}
-                        <li class="dropdown-item"><a href="/cms{{grandchild.path}}">{{grandchild.title}}</a></li>        
-                    {% endfor %}
-                </ul>
-                {% else %}
                     <li class="dropdown-item"><a href="/cms{{child.path}}">{{child.title}}</a></li>
-                {%endif%}
             {%endfor%}
             </ul>
     </div>        

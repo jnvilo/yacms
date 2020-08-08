@@ -61,3 +61,12 @@ def addsbygoogle():
         "data-ad-format": "auto",
         "data-full-width-responsive": "true",
     }
+
+@register.inclusion_tag("mycms/templatetags/widgets/sub_categories_card.html",
+                        takes_context=True)
+def sub_categories_card(context):
+    
+    view_object = context["view_object"]
+    return { "view_object" : view_object}
+
+    

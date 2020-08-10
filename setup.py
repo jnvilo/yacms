@@ -15,7 +15,15 @@ import sys
 
 from setuptools import setup, find_packages, Command
 
-VERSION_STRING="0.1.12"
+
+def get_version():
+
+    with open("VERSION.txt", "r") as f:
+        version = f.read().strip()
+    return version
+
+VERSION_STRING = get_version()
+
 URL = "https://github.com/jnvilo/mycms"
 DOWNLOAD_URL="{}/archive/{}.tar.gz".format(URL, VERSION_STRING)
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -55,7 +63,7 @@ def get_long_description():
     
 setup(
     name='mycms',
-    version=VERSION_STRING,
+    version=get_version(),
     description='Yet another CMS. This one for django.',
     long_description=get_long_description(), 
     long_description_content_type="text/markdown",

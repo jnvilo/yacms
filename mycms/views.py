@@ -107,6 +107,8 @@ from mycms.api import CMSContentsViewSet
 from mycms.api import CMSFormatterContent
 from mycms import funclib
 
+from mycms.view_handlers.mycms_view import BaseViewObject
+
 logger = logging.getLogger(name="mycms.views")
 
 try:
@@ -316,8 +318,19 @@ class CMSLoginView(View):
             template_name = "mycms/pages/Login.html"
 
             # also set a session variable to show the toolbar
+            
+            view_object = BaseViewObject(request)
             request.session["show_toolbar"] = True
-            context = {"form": CMSLoginForm(), "next": next_page}
+            
+            """
+            Pass the form and next page and also a BaseViewObject so that
+            the templatetags can work because they expect to have a 
+            ViewObject like entry that contains the request. 
+            """
+            context = {"form": CMSLoginForm(), 
+                       "next": next_page,
+                       "view_object": view_object}
+            
             return render(request, template_name, context)
         else:
             return HttpResponseRedirect("/profile")
@@ -364,17 +377,20 @@ class CMSLoginView(View):
             # the authentication system was unable to verify the username and password
             error_msg = "The system was unable to verify the username and password."
 
-        template_name = "mycms/Login.html"
+        template_name = "mycms/pages/Login.html"
         return render(request, template_name, {"error_msg": error_msg})
 
 
 class CMSUserProfileView(View):
-    def get(self, request, **kwargs):
-        template_name = "mycms/pages/Profile.html"
+    
+    def get(self, request, **kwargs):    
         if not request.user.is_authenticated:
             return HttpResponseRedirect("/login")
         else:
-            return render(request, template_name)
+            template_name = "mycms/pages/Profile.html"           
+            view_object = BaseViewObject(request)
+            context = {"view_object": view_object}   
+            return render(request, template_name, context)
 
 
 class CMSUserAdminPagesView(View):
@@ -400,14 +416,26 @@ class CMSFrontPage(View):
 
         template_name = "mycms/pages/Index.html"
 
-        # TODO: Fix this hack. We create a fake view_object for the frontpage
-        # so that we can pass a few template data.
-
-        class View_Object:
-            pass
-
-        view_object = View_Object()
-
+        """
+        The rest of different pages within MyCMS are handled by 
+        mycms.view_handlers.mycms_view.View_object() but in the case
+        of the CMSFrontPage, there is no handler. It is implemented
+        as a basic django page that uses templatetags to show 
+        bits of required mycms contents. 
+        
+        This was done within the design because I thought that 
+        the frontpage should not be part of the mycms and best left
+        to the implementation of the mycms user. 
+        
+        However it has turned out that the end user should instead 
+        just implement a view_handler. 
+        
+        Since most templatetags used in pages expect a View_Object, 
+        we create a BaseViewObject that has the most basic needs 
+        of the templatetags. 
+        """
+        view_object = BaseViewObject(request)
+        
         show_adverts = getattr(settings, "FORCE_SHOW_ADVERTS", False)
 
         if show_adverts or (settings.DEBUG == False):
@@ -421,7 +449,10 @@ class CMSFrontPage(View):
                 settings.FORCE_SHOW_ADVERTS, settings.DEBUG, view_object.SHOW_ADVERTS
             )
         )
-        return render(request, template_name, {"view_object": view_object})
+        
+        
+        response = render(request, template_name, {"view_object": view_object})
+        return response
 
 
 class LoremIpsumAPIView(APIView):
@@ -1070,7 +1101,7 @@ class CMSPageView(View):
 
         """
         Whenever ?toolbar is added to the get parameter, we save it to the session
-        This is used as a flag to show the files. 
+        This is used as a flag to show toolbar or not. 
         """
         toolbar = request.GET.get("toolbar", None)
         if toolbar and toolbar.upper() == "TRUE":
@@ -1122,15 +1153,11 @@ class CMSPageView(View):
 
         if settings.DEBUG:
             from mycms.view_handlers import page_types
-
             return render_to_response(template, {"view_object": obj})
         else:
-
             try:
                 return render_to_response(template, {"view_object": obj})
-
             except Exception as e:
-
                 # if we are in debug mode then show then let django handle showing
                 # the debug error:
                 msg = "Application Error {}".format(e)

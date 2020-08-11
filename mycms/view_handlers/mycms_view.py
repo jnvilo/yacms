@@ -104,7 +104,13 @@ class ContentTopicsContainer(object):
         return slugify(self.title)
 
 
-class ViewObject(object):
+class BaseViewObject(object):
+    
+    def __init__(self, request):
+        self.request = request
+
+
+class ViewObject(BaseViewObject):
 
     """
     A ViewObject represents a full page object. It takes care of
@@ -115,6 +121,7 @@ class ViewObject(object):
 
     def __init__(self, path=None, page_id=None, page_object=None, request=None):
 
+        BaseViewObject.__init__(self,request=request)
         self.request = request
 
         if page_object:
@@ -433,6 +440,13 @@ class ViewObject(object):
     # def on_create(self):
     #    pass
 
+    @property 
+    def user(self):
+        return self.request.user
+
+   
+        
+        
 
 class MenuEntry(object):
     def __init__(self, cmspath):

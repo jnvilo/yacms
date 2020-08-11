@@ -89,6 +89,8 @@ class MultiPageList(list):
             return self[self.current_page_obj.page_number - 2]
 
 
+    
+
 class MultiPage(object):
     def __init__(self, page_object, request=None):
 

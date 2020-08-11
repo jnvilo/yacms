@@ -1,0 +1,6 @@
+
+{% if view_object.request.user.is_authenticated %}
+    <a type="submit" class="btn btn-primary" href="?logout=True">Logout</a>
+{% else %}
+    <a type="submit" class="btn btn-primary" href="?login=True">Login</a>
+{% endif %}

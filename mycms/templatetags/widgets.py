@@ -70,3 +70,13 @@ def sub_categories_card(context):
     return { "view_object" : view_object}
 
     
+@register.inclusion_tag("mycms/templatetags/widgets/login_button.html", 
+                        takes_context=True)
+def login_button(context):
+    
+    try:
+        view_object = context["view_object"]
+    except Exception as e:
+        #There is no view_object. 
+        pass
+    return {"view_object": view_object} 

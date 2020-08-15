@@ -76,7 +76,7 @@ def login_button(context):
     
     try:
         view_object = context["view_object"]
+        return {"view_object": view_object} 
     except Exception as e:
         #There is no view_object. 
-        pass
-    return {"view_object": view_object} 
+        print("Error: login_button : {}".format(e))

@@ -131,6 +131,74 @@ def get_static_files_dir():
             """Static Files Dir Not Found. Please create a 'static' dir within the parent path."""
         )
 
+def process_actions(f):
+    """
+    A decorator for all views to use to provide the ?action=login and ?action=logout
+    
+    If the incoming request contains any of the above actions, then 
+    we redirect the user to the login or to the logout and then 
+    return them back to the page. 
+    """
+    def wrapper(self, request,**kwargs):
+        
+        action = request.GET.get("action", None)
+        if action:
+            #Process the actions first
+            return do_actions(action, request, self, kwargs)
+        else:
+            #No actions to process
+            return f(self, request, **kwargs)
+            
+        
+            
+
+    def do_actions(action, request, self, kwargs):
+        if action == "login":
+           
+            # But only do it if user is not yet logged in
+            if not request.user.is_authenticated:
+                # so redirecto user to log in page and give our path to come back to
+                return HttpResponseRedirect("/cms/login/?next={}".format(request.path))
+            else:
+                """
+            The user is not logged in. 
+            """
+                ###
+                # TODO: Implement a message to the user that he is already logged in.
+                ###
+                # For now do dnothing
+                pass
+    
+        elif (action == "logout") and request.user.is_authenticated:
+            # jist logout the current user and send him to the logout.
+            return HttpResponseRedirect("/cms/logout/")
+        
+        elif action == "show_toolbar":
+            request.session["show_toolbar"] = True
+            
+        elif action == "hide_toolbar":
+            request.session["show_toolbar"] = False
+                 
+        return f(self, request, **kwargs)
+
+
+    return wrapper
+
+  
+
+
+class CMSView(View):
+    
+    
+    def get_object(self, request, **kwargs):
+        """
+        Not all views have a ViewObject. This provides a default ViewObject
+        that contains only the request. 
+        
+        In the future this may contain more other things. 
+        """
+    
+        return BaseViewObject(request=request)
 
 class CMSFileUpload(View):
     def get(self, request, **kwargs):
@@ -310,7 +378,9 @@ class CMSLoginForm(forms.Form):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput)
 
 
-class CMSLoginView(View):
+class CMSLoginView(CMSView):
+    
+    @process_actions
     def get(self, request, **kwargs):
 
         next_page = request.GET.get("next", "")
@@ -349,13 +419,13 @@ class CMSLoginView(View):
         if len(next_page) == 0:
             next_page = "/profile"
 
-        if not (
-            (next_page == "/")
-            or next_page.startswith("/cms")
-            or (next_page == "/profile")
-        ):
-            # We only allow redirects to cms contents or to /profile
-            self.log.info("redirect after login denied to: {}".format(next_page))
+        #if not (
+            #(next_page == "/")
+            #or next_page.startswith("/cms")
+            #or (next_page == "/profile")
+        #):
+            ## We only allow redirects to cms contents or to /profile
+            ##self.log.info("redirect after login denied to: {}".format(next_page))
 
         from django.contrib.auth import authenticate
 
@@ -379,7 +449,8 @@ class CMSLoginView(View):
             error_msg = "The system was unable to verify the username and password."
 
         template_name = "mycms/pages/Login.html"
-        return render(request, template_name, {"error_msg": error_msg})
+        return render(request, template_name, {"error_msg": error_msg, 
+                                               "view_object": self.get_object(request)})
 
 
 class CMSUserProfileView(View):
@@ -413,6 +484,8 @@ class CMSLogoutView(View):
 
 
 class CMSFrontPage(View):
+    
+    @process_actions
     def get(self, request, **kwargs):
 
         template_name = "mycms/pages/Index.html"
@@ -1092,53 +1165,11 @@ class CMSPageView(View):
                 # TODO: Make sure to log this too
                 raise Http404("Page Does Not Exist.")
 
+    @process_actions
     def get(self, request, **kwargs):
         """
         The main entry point to the frontend of the CMS. 
         All website user pages are obtained through this method."""
-
-        get = request.GET
-
-        """
-        Whenever ?toolbar is added to the get parameter, we save it to the session
-        This is used as a flag to show toolbar or not. 
-        """
-        toolbar = request.GET.get("toolbar", None)
-        if toolbar and toolbar.upper() == "TRUE":
-            request.session["show_toolbar"] = True
-        elif toolbar and toolbar.upper() == "FALSE":
-            request.session["show_toolbar"] = False
-
-        login = request.GET.get("login", None)
-        logout = request.GET.get("logout", None)
-
-        if login:
-            """
-            When a page is requested with ?login=X where X can be anything, we 
-            redirect them to the login page which will send it back to this 
-            page once logged in. 
-            """
-
-            # But only do it if user is not yet logged in
-            if not request.user.is_authenticated:
-                # so redirecto user to log in page and give our path to come back to
-                return HttpResponseRedirect("/cms/login/?next={}".format(request.path))
-
-            else:
-                """
-                The user is not logged in. 
-                """
-
-                ###
-                # TODO: Implement a message to the user that he is already logged in.
-                ###
-
-                # For now do dnothing
-                pass
-
-        if logout and request.user.is_authenticated:
-            # jist logout the current user and send him to the logout.
-            return HttpResponseRedirect("/cms/logout/")
 
         # get object will load return an instance of mycms.view_handlers.ViewObject
         # which encapsulates the CMSEntry and all other operations on it.

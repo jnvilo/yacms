@@ -75,7 +75,7 @@ from django.conf import settings
 
 from django.http import HttpResponse
 from django.views.generic import CreateView, DeleteView, ListView
-
+from django.core.cache import cache
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -106,6 +106,7 @@ from mycms.view_handlers import ViewObject
 from mycms.api import CMSContentsViewSet
 from mycms.api import CMSFormatterContent
 from mycms import funclib
+
 
 from mycms.view_handlers.mycms_view import BaseViewObject
 
@@ -450,10 +451,9 @@ class CMSFrontPage(View):
             )
         )
         
-        
+       
         response = render(request, template_name, {"view_object": view_object})
         return response
-
 
 class LoremIpsumAPIView(APIView):
 

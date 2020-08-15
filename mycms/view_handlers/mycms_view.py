@@ -106,8 +106,10 @@ class ContentTopicsContainer(object):
 
 class BaseViewObject(object):
     
-    def __init__(self, request):
+    def __init__(self, request=None):
         self.request = request
+
+    
 
 
 class ViewObject(BaseViewObject):

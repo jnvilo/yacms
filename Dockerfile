@@ -13,6 +13,7 @@ copy AUTHORS.txt /app/mycms/AUTHORS.txt
 COPY README.md /app/mycms/README.md
 COPY requirements.txt /app/mycms/requirements.txt
 COPY MANIFEST.in /app/mycms/MANIFEST.in
+COPY VERSION.txt /app/mycms/VERSION.txt
 WORKDIR /app/mycms/
 RUN python3.8 setup.py install 
 

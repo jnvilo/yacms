@@ -2,7 +2,7 @@
 REGISTRY_URL=hub.lnxsystems.com
 PROJECT=library
 IMAGE_NAME=mycms-demo-website
-TAG=0.1.10-13
+TAG=$(shell cat VERSION.txt)
 
 .PHONY: build  all
 
@@ -20,3 +20,10 @@ tag:
 push:  build
 	docker push ${REGISTRY_URL}/${PROJECT}/${IMAGE_NAME}:latest
 	docker push ${REGISTRY_URL}/${PROJECT}/${IMAGE_NAME}:${TAG}
+
+.PHONY: dev
+dev: 	tango-icon-themes
+
+.PHONY: tango-icon-themes
+tango-icon-themes: 
+	if [[ ! -d "tango-icon-themes" ]];then git clone git@github.com:jnvilo/tango-icon-themes.git;fi

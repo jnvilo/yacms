@@ -45,9 +45,11 @@ An Admin class implements the whole admin interface view for each pagetype.
 The name matches the page for its purpose.
 **/
 
-class CategoryPageAdmin extends Admin{
+class PageAdmin extends Admin{
 
     constructor(data){
+    
+        console.log("CteagorypageAdmin constructor");
         super(data);
         this.x = "An X";
     }
@@ -67,6 +69,7 @@ class CategoryPageAdmin extends Admin{
         var cmsEditorWidget = this.cmsEditorWidget;
         var cmsEntriesWidget = this.cmsEntriesWidget;
         $("#editor-save-button").click((event) =>{cmsEditorWidget.save();})
+        $("#editor-save-preview-button").click((event) =>{cmsEditorWidget.save_preview();})
         $("#published_checkbox").click((event) =>{cmsEditorWidget.toggle_published(); event.stopPropagation();})
         $("#frontpage_checkbox").click((event) =>{cmsEditorWidget.toggle_frontpage(); event.stopPropagation();})
         $("#create-cms-entry-button").click((event) => {cmsEntriesWidget.create_cms_entry(); })
@@ -91,10 +94,10 @@ class CategoryPageAdmin extends Admin{
     
 }
 
-class SinglePageAdmin extends Admin{
+class SinglePageAdmin extends PageAdmin{}
 
 
-}
+class CategoryPageAdmin extends PageAdmin{}
 
 
 /** A Base class for all Admin widget 
@@ -169,6 +172,40 @@ class CMSEditorWidget extends AdminWidget{
         
         
     }
+    
+    save_preview(){
+    
+  
+        log.debug("#editor-save-button pressed CMSEditorWidget->save() invoked")
+        var content_txt = $("#content-editor").val();
+        var start = Date.now();
+        log.debug(content_txt);
+        
+        var data = { "content": content_txt,};
+            url = "/cms/api/v2/cmscontents/" + this.draft_id + "/";
+             $.ajax({
+            url: url,
+            type: 'PUT',
+            data: data,
+    
+            error: function(data){
+                log.error("Ajax PUT failed:" + url , data);
+                $("#editor_message_pane").html("Failed to save  content with error:." + data);
+                log.debug("Failed to save  content with error:." + data);
+                set_admin_message_alert("Error saving document.");
+            },
+            success: (data)=>{
+                /**Update the editor for the newly created pages.**/
+               log.debug("Ajax PUT success: " + url , data);;
+               var completed = Date.now()
+               var seconds = ( completed - start)/1000;
+                log.debug("Content was successfully saved..(" + seconds  + "s) "+ completed.toLocaleString());
+                
+                set_admin_message_alert("Content saved..");
+            }
+        });
+    }
+    
 
     save(){
   

@@ -141,7 +141,8 @@ class CMSEntries(models.Model):
 
     # We make the content a many to many to be able to handle multiple
     # so we can version by published.
-    content = models.ManyToManyField(CMSContents, blank=True)
+    content = models.ManyToManyField(CMSContents, blank=True, related_name="cmsentries_content")
+    draft = models.ForeignKey(CMSContents, null=True, on_delete=models.DO_NOTHING, related_name="cmsentries_draft")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now_add=True)
 

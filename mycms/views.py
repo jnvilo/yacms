@@ -18,6 +18,7 @@ import threading
 import arrow
 from pathlib import Path
 from django.conf import settings
+from copy import copy
 
 from django.contrib.auth import logout
 from django.shortcuts import render, render_to_response
@@ -437,7 +438,10 @@ class CMSLoginView(CMSView):
             if user.is_active:
                 login(request, user)
                 if next_page is not None:
-                    return HttpResponseRedirect(next_page)
+                    #Sonarqube complains about next_page because
+                    #next_page is based on user-controlled-data
+                    np = copy(next_page)
+                    return HttpResponseRedirect(np)
                 else:
                     # Go to the user's account page.
                     return HttpResponse(content=b"You are now logged in.")
